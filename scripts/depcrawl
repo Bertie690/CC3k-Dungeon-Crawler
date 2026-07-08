@@ -1,0 +1,303 @@
+#! /bin/bash
+
+shopt -s globstar nullglob
+set -uo pipefail
+
+## Utilities
+script_version="1.0.2"
+
+# Show help text for the depcrawl script.
+help_msg() {
+  cat <<EOF
+Usage: depcrawl [flags] [modules]
+
+Check the provided C++ modules' dependencies and output the corresponding syslibs.txt and order.txt files.
+Note: This exclusively uses textual analysis and assumes all files are part of the same translation unit.
+
+Flags:
+  -h, --help                Show this help message and exit.
+  -V, --version             Print version number and exit.
+  -o, --output-dir          The directory to write produced artifacts (default: current directory).
+  -e, --ext                 The file extension to use when searching for C++ source files (default: 'cc').
+  -v, --verbose             Print verbose output during execution.
+
+Arguments:
+  modules                   A list of files and/or directories to check. If omitted, will search the current directory and all subdirectories.
+EOF
+}
+
+# NB: Putting the first argument inside the format string lets us wrap printf more directly
+
+# Color text orange.
+orange() {
+  format=$1
+  # shellcheck disable=SC2059
+  shift && printf "\e[33m$format\e[0m" "$@"
+}
+
+# Color text red.
+red() {
+  format=$1
+  # shellcheck disable=SC2059
+  shift && printf "\e[31m$format\e[0m" "$@"
+}
+
+# Color text green.
+green() {
+  format=$1
+  # shellcheck disable=SC2059
+  shift && printf "\e[32m$format\e[0m" "$@"
+}
+
+# Color text blue.
+blue() {
+  format=$1
+  # shellcheck disable=SC2059
+  shift && printf "\e[34m$format\e[0m" "$@"
+}
+
+## Flag parsing
+
+if ! command -v getopt >/dev/null; then
+  red "Error: getopt is required to run this script!
+
+(This is typically provided by the util-linux package on Linux systems.)" >&2
+  exit 1
+fi
+
+if ! parsed_args=$(getopt -o ho:e:vV --long help,output-dir:,ext:,verbose,version -n 'depcrawl' -- "$@"); then
+  help_msg
+  exit 1
+fi
+
+eval set -- "$parsed_args"
+
+output_dir="$(pwd)"
+ext="cc"
+verbose=""
+
+case "$1" in
+-h | --help)
+  help_msg
+  exit 0
+  ;;
+-V | --version)
+  echo "depcrawl version $script_version"
+  exit 0
+  ;;
+-o | --output-dir)
+  output_dir="$2"
+  shift 2
+  ;;
+-e | --ext)
+  # remove leading period
+  ext="${2#.}"
+  shift 2
+  ;;
+-v | --verbose)
+  verbose=1
+  blue "Verbose output enabled.\n"
+  shift
+  ;;
+esac
+
+# shift an extra time to discard the trailing '--'
+shift
+
+## Argument parsing
+
+files=""
+if [ "$#" -eq 0 ]; then
+  files=$(find . -type f -name "*.$ext")
+else
+  for target in "$@"; do
+    if [ -d "$target" ]; then
+      files="$files $(find "$target" -type f -name "*.$ext")"
+    elif [ -f "$target" ] && [[ "$target" =~ \.$ext$ ]]; then
+      files="$files $target"
+    else
+      orange "Warning: '$target' is not a valid file or directory. Skipping..."
+    fi
+  done
+fi
+
+if [ -z "$files" ]; then
+  red "Error: No '.$ext' files found!" >&2
+  exit 1
+fi
+shift
+
+syslibs_file="$output_dir/syslibs.txt"
+order_file="$output_dir/order.txt"
+
+## Syslibs
+
+# Output the syslibs.txt file.
+output_syslibs() {
+  # we want word splitting here so grep can process all the files
+  # shellcheck disable=SC2086
+  libs=$(grep -hoE "^\s*import\s+<(.*?)>;$" $files | sed -E 's/import\s+<(.*?)>;/\1/' | sort -u | paste -d ' ' -s)
+  # add string to back of syslibs if included (counteracting G++14 bug)
+  if [[ "$libs" =~ "string" ]]; then
+    libs="${libs// string/} string"
+  fi
+
+  [ "$verbose" ] && blue "Found system libraries: %s\n" "$libs" || true
+
+  echo "$libs" >"$syslibs_file"
+
+  green "Wrote syslibs information to $(realpath --relative-to="$(pwd)" "$syslibs_file")!\n"
+}
+
+## Dependency Crawling
+
+# A map from each module to the names of their dependent modules.
+declare -A deps_graph=()
+# A map from each module name to the files (in order) that implement it.
+declare -A module_files=()
+
+# Print the dependency graph for debugging purposes.
+print_dependency_graph() {
+  blue "Dependency information:\n"
+  for module in "${!module_files[@]}"; do
+    deps="${deps_graph["$module"]:-None}"
+    deps="${deps// /, }"
+    module_files_str="${module_files["$module"]:-None}"
+    module_files_str="${module_files_str// /, }"
+    blue "  Module %s (%s): %s\n" \
+      "$module" "${module_files_str%%, }" "${deps%%, }"
+  done
+}
+
+# Build a DAG of the dependencies between the given C++ source files.
+# Errors if 2 interface files attempt to export the same module.
+trawl_dependencies() {
+  local -A seen_interfaces
+
+  for file in $files; do
+    module_line=$(grep -P "^(?:export\s+)?module\s+.*?;$" "$file")
+    module_name="$(echo "$module_line" | sed -E 's/.*module\s+(.*?);/\1/')"
+
+    if [ -z "$module_line" ]; then
+      # no module declaration presumably means this is the entrypoint with main()
+      [ "$verbose" ] && blue "File '$file' does not contain a module declaration, using filename as module name...\n" >&2 || true
+      module_name="$(basename "$file" ."$ext")"
+    fi
+
+    # disallow angle braces to avoid system libraries
+    deps="$(grep -oE "^\s*import\s+([^<>]*?);$" "$file" | sed -E 's/import\s+(.*?);/\1/' | sort -u | paste -d ' ' -s)"
+    if [[ -n "$deps" && -v "deps_graph[$module_name]" ]]; then
+      deps_graph["$module_name"]="${deps_graph["$module_name"]} $deps"
+    elif [[ -n "$deps" ]]; then
+      deps_graph["$module_name"]="$deps"
+    fi
+
+    if [[ "$module_line" =~ ^module.* ]]; then
+      # implementation files can be repeated, but must go after interface files
+      if [[ -v "module_files[$module_name]" ]]; then
+        module_files["$module_name"]="${module_files["$module_name"]} $file"
+      else
+        module_files["$module_name"]="$file"
+      fi
+    else
+      # interface files must be unique within each translation unit
+      if [ -n "${seen_interfaces["$module_name"]:-}" ]; then
+        red "Error: files ${seen_interfaces["$module_name"]} and $file both export a module named '$module_name'!\n" >&2
+        return 1
+      fi
+      seen_interfaces["$module_name"]="$file"
+
+      # prepend to front
+      if [[ -v "module_files[$module_name]" ]]; then
+        module_files["$module_name"]="$file ${module_files["$module_name"]}"
+      else
+        module_files["$module_name"]="$file"
+      fi
+    fi
+  done
+
+  [ "$verbose" ] && print_dependency_graph || true
+}
+
+# Output files in dependency order to order.txt.
+# Errors if any cycle is found in the dependency graph.
+output_order() {
+  # An array of already-seen modules to detect cycles.
+  local -a seen_modules
+  # An associative array of already-processed modules to avoid reprocessing.
+  local -A processed
+  # The ordered list of files to output.
+  local -a ordered_files
+
+  visit_module() {
+    local module_name="$1"
+    if [[ -n "${processed[$module_name]:-}" ]]; then
+      # already checked
+      return 0
+    fi
+
+    if [[ " ${seen_modules[*]} " =~ $module_name ]]; then
+      red "Error: cyclic dependency detected!\n" >&2
+
+      # print the cycle in order, starting from the current module
+      local i=0
+      while [[ i -lt "${#seen_modules[@]}" && "$module_name" != "${seen_modules[i]}" ]]; do
+        i=$((i + 1))
+      done
+
+      local cycle=("${seen_modules[@]:i}")
+      cycle+=("${seen_modules[@]:0:i}")
+
+      output="${cycle[0]}"
+      for ((j = 1; j < ${#cycle[@]}; j++)); do
+        output+=" -> ${cycle[j]}"
+      done
+      output+=" -> ${cycle[0]}"
+
+      red "Import cycle: ${output}\n" >&2
+      return 1
+    fi
+
+    seen_modules+=("$module_name")
+
+    # check dependent modules
+    for dep in ${deps_graph["$module_name"]:-}; do
+      visit_module "$dep" || return 1
+    done
+
+    # add files for this module to the ordered list
+    seen_modules=("${seen_modules[@]::${#seen_modules[@]}-1}")
+    processed["$module_name"]=1
+    if ! [[ -v "module_files[$module_name]" ]]; then
+      # find all modules that depend on this module and print them
+      deps=""
+      for mod in "${!deps_graph[@]}"; do
+        if [[ " ${deps_graph["$mod"]} " =~ $module_name ]]; then
+          deps+="$mod, "
+        fi
+      done
+      red "Error: Module $module_name not found!\n" >&2
+      echo "Required by: ${deps%, }" >&2
+      return 1
+    fi
+    mapfile -t files_for_module <<<"${module_files["$module_name"]}"
+    ordered_files+=("${files_for_module[@]}")
+    return 0
+  }
+
+  for module in "${!module_files[@]}"; do
+    visit_module "$module" || return 1
+  done
+
+  rm "$order_file" 2>/dev/null || true
+
+  for file in "${ordered_files[@]}"; do
+    echo "$file" >>"$order_file"
+  done
+
+  green "Wrote dependency order to $(realpath --relative-to="$(pwd)" "$order_file")!\n"
+}
+
+output_syslibs || exit
+trawl_dependencies || exit
+output_order || exit

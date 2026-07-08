@@ -1,0 +1,8 @@
+pre-commit:
+  skip:
+    - merge
+    - rebase
+  commands:
+    clang-format:
+      run: git clang-format
+      stage_fixed: true

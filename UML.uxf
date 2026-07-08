@@ -1,0 +1,188 @@
+<diagram program="umletino" version="15.1"><zoom_level>8</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>744</x><y>960</y><w>56</w><h>56</h></coordinates><panel_attributes>Stats
+--
++hp : int
++atk : int
++def : int
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>528</x><y>624</y><w>88</w><h>72</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+Action
+--
+Pass
+Move(Position)
+Attack(Character)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>736</x><y>664</y><w>48</w><h>48</h></coordinates><panel_attributes>Position
+--
++x : int
++y : int
+----
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>72</x><y>144</y><w>112</w><h>64</h></coordinates><panel_attributes>template=Event
+/Observer/
+--
+/-onNotify(Event)/
+
+group=group-0</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>56</x><y>0</y><w>152</w><h>80</h></coordinates><panel_attributes>template=Event
+Subject
+--
++attach(Observer&lt;Event&gt;)
++detach(Observer&lt;Event&gt;)
++notify(Event)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>72</y><w>64</w><h>96</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=0..n
+observers</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>768</y><w>96</w><h>48</h></coordinates><panel_attributes>/Entity/
+--
+/#onSpawn(Floor f)/
+/-hasCollision() : bool/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>400</x><y>864</y><w>264</w><h>168</h></coordinates><panel_attributes>/Character/
+--
++act()
+-hasCollision(): bool
+/-getNextMove(Floor f) : Action/
+/-getStats() : Stats/
+/-tryPickup(Item p) :bool/
+/-getAccuracy(Character defender) : double/
+/-getAttackDamageMultiplier(Character defender) : double/
+/-getGoldMultiplier() : double/
+/-getPotionEffectMultiplier(Potion p) : double/
+/-onHit(Character defender, int damage)/
+/-getDrainMulti(Character attacker, int damage) : double /
+/-onDeath()/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>152</x><y>1048</y><w>160</w><h>64</h></coordinates><panel_attributes>Player
+--
+-getNextMove(Floor f) : Action
+-getStats()
+-onNotify(PlayerCommandEvent)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>568</x><y>1088</y><w>144</w><h>48</h></coordinates><panel_attributes>Enemy
+--
+-getNextMove(Floor f) : Action
+-getStats()
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>1152</y><w>256</w><h>160</h></coordinates><panel_attributes>/CharacterDecorator/
+--
+#unlink()
+/-getNextMove(Floor f) : Action/
+/-getStats() : Stats/
+/-tryPickup(Item p) :bool/
+/-getAccuracy(Character defender) : double/
+/-getAttackDamageMultiplier(Character defender) : double/
+/-getGoldMultiplier() : double/
+/-getPotionEffectMultiplier(Potion p) : double/
+/-onHit(Character defender, int damage)/
+/-getDrainMulti(Character attacker, int damage) : double /
+/-onDeath()/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>152</x><y>1160</y><w>128</w><h>48</h></coordinates><panel_attributes>/TempCharacterDecorator/
+--
+-onNotify(NewFloorEvent)
+-unlink()
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>912</x><y>1056</y><w>136</w><h>64</h></coordinates><panel_attributes>/Item/
+--
++pickup(Character c) : bool
+/-canPickup(Character c) : bool/
+/-applyEffect(Character c)/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>848</x><y>1184</y><w>120</w><h>56</h></coordinates><panel_attributes>GoldPile
+--
+-size int
+--
+-applyEffect(Character c)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>976</x><y>1184</y><w>144</w><h>64</h></coordinates><panel_attributes>/Potion/
+--
++pickup(Character c) : bool
+-canPickup(Character c) : bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>488</x><y>1024</y><w>24</w><h>144</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>10;10;10;160</additional_attributes></element><element><id>Relation</id><coordinates><x>304</x><y>1024</y><w>112</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>120;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>632</x><y>1024</y><w>24</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>272</x><y>1168</y><w>104</w><h>32</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>110;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>168</y><w>88</w><h>928</h></coordinates><panel_attributes>lt=&lt;&lt;-
+apples
+</panel_attributes><additional_attributes>90;11;10;11;10;1140</additional_attributes></element><element><id>Relation</id><coordinates><x>752</x><y>704</y><w>56</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+position</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>656</x><y>976</y><w>104</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+baseStats</panel_attributes><additional_attributes>10;20;110;20</additional_attributes></element><element><id>Relation</id><coordinates><x>912</x><y>1112</y><w>24</w><h>88</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1032</x><y>1112</y><w>24</w><h>88</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>448</x><y>1024</y><w>40</w><h>144</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+next
+m2=0..1</panel_attributes><additional_attributes>10;160;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>808</y><w>96</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>100;10;10;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>984</x><y>1304</y><w>120</w><h>40</h></coordinates><panel_attributes>/PotionDecorator/
+--
+/	-applyEffect(Character c)/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>808</y><w>144</w><h>264</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;160;310</additional_attributes></element><element><id>UMLClass</id><coordinates><x>784</x><y>1304</y><w>168</w><h>48</h></coordinates><panel_attributes>DragonHoard
+--
+-onNotify(CharacterChangeEvent)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>888</x><y>1232</y><w>24</w><h>88</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1064</x><y>1240</y><w>24</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>1008</x><y>1240</y><w>40</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+next
+m2=0..1</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1176</y><w>168</w><h>40</h></coordinates><panel_attributes>lt=-
+&lt;NewFloorEvent&gt;
+</panel_attributes><additional_attributes>10;21;190;20</additional_attributes></element><element><id>Relation</id><coordinates><x>408</x><y>1024</y><w>40</w><h>144</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+prev
+m2=0..1</panel_attributes><additional_attributes>10;160;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>128</x><y>1248</y><w>184</w><h>48</h></coordinates><panel_attributes>TempStatChangeCharacterDecorator
+--
+-getStats() : Stats</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>208</x><y>1200</y><w>24</w><h>64</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>872</x><y>296</y><w>136</w><h>64</h></coordinates><panel_attributes>/Renderer/
+--
++render()
+/-onNotify(EntityChangeEvent)/
+/-onNotify(NewGameEvent)/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>384</y><w>144</w><h>56</h></coordinates><panel_attributes>TuiRenderer
+--
++render()
+-onNotify(EntityChangeEvent)
+-onNotify(NewGameEvent)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>704</x><y>184</y><w>144</w><h>48</h></coordinates><panel_attributes>/InputHandler/
+--
++processInput()
+/-readCommand() Command/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>704</x><y>264</y><w>144</w><h>40</h></coordinates><panel_attributes>StdinInputHandler
+--
+-readCommand() Command
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>928</x><y>88</y><w>168</w><h>48</h></coordinates><panel_attributes>Game
+--
++run()
+-onNotify(GameCommandEvent)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1072</x><y>232</y><w>192</w><h>48</h></coordinates><panel_attributes>RNG
+--
++randSeedInt(int range, int start) : int
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1048</x><y>360</y><w>120</w><h>48</h></coordinates><panel_attributes>/FloorGenerator/
+--
++generateFloor() : Floor
+/-generateChamber()/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1184</x><y>160</y><w>152</w><h>48</h></coordinates><panel_attributes>Scoreboard
+--
++getScore(PlayerData) : int
+-onNotify(EntityChangeEvent)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>168</x><y>608</y><w>144</w><h>72</h></coordinates><panel_attributes>Floor
+--
++runTurn()
++add(Entity e)
++remove(Entity e)
+-onNotify(EntityChangeEvent)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>72</x><y>440</y><w>144</w><h>64</h></coordinates><panel_attributes>/Room/
+--
+-RoomType type
+--
++isInBounds(Position p): bool
++isOccupied(Position p): bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>648</x><y>1248</y><w>112</w><h>32</h></coordinates><panel_attributes>Doubly-linked list
+allows timed removal
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>608</x><y>1248</y><w>56</w><h>32</h></coordinates><panel_attributes>lt=&lt;-
+</panel_attributes><additional_attributes>10;20;50;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>96</x><y>328</y><w>96</w><h>40</h></coordinates><panel_attributes>Cell
+--
++isOccupied() : bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1088</x><y>104</y><w>112</w><h>104</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+cbase=r
+scoreboard</panel_attributes><additional_attributes>10;10;40;10;40;100;120;100</additional_attributes></element><element><id>Relation</id><coordinates><x>1072</x><y>128</y><w>40</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+rng</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>768</x><y>224</y><w>24</w><h>56</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>824</x><y>128</y><w>144</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+cbase=r
+
+inputs
+m2=1
+m2pos=-13,1</panel_attributes><additional_attributes>160;10;160;50;10;50;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>1032</x><y>128</y><w>88</w><h>248</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+floor</panel_attributes><additional_attributes>10;10;10;220;80;220;80;290</additional_attributes></element><element><id>Relation</id><coordinates><x>96</x><y>360</y><w>56</w><h>96</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1..n
+cells
+cbase=l</panel_attributes><additional_attributes>30;100;30;10</additional_attributes></element><element><id>Relation</id><coordinates><x>120</x><y>360</y><w>72</w><h>96</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+chamber
+cbase=l</panel_attributes><additional_attributes>60;10;60;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>224</x><y>376</y><w>144</w><h>48</h></coordinates><panel_attributes>Passage
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>928</x><y>352</y><w>24</w><h>48</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>976</x><y>128</y><w>64</w><h>184</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+cbase=r
+
+renderer
+m2=1</panel_attributes><additional_attributes>10;10;10;210</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1072</y><w>24</w><h>280</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;10;10;330</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1064</y><w>168</w><h>40</h></coordinates><panel_attributes>lt=-
+&lt;PlayerCommandEvent&gt;
+</panel_attributes><additional_attributes>10;20;190;20</additional_attributes></element><element><id>Relation</id><coordinates><x>144</x><y>1320</y><w>656</w><h>32</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes>10;20;800;20</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1320</y><w>168</w><h>40</h></coordinates><panel_attributes>lt=-
+&lt;NewFloorEvent&gt;
+</panel_attributes><additional_attributes>10;20;190;20</additional_attributes></element></diagram>

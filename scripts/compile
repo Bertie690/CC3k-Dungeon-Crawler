@@ -1,0 +1,47 @@
+#!/bin/bash
+# Use this script to compile your .cc files in dependency order.
+# Assumes existence of syslibs.txt contains a list of any system
+# libraries imported.
+
+# Arguments:
+#   $1 = name of file containing list of .cc files
+#   $2 = name of the output file (defaults to a.out if not specified)
+#   $3 = linker options e.g. "-lX11"
+
+cxx="g++"
+cxxflags="-std=c++20 -fmodules-ts -Wall -g"
+gcmsyspath="gcm.cache/**/*.gcm"
+
+if [ $# -lt 1 ]; then
+  echo "Usage:  $0 list-filename [output-name [linkage flags]]" 1>&2
+  exit 1
+fi
+
+if [ -e "syslibs.txt" ]; then
+  # shellcheck disable=SC2013,SC2086
+  files=$(echo $gcmsyspath | tr ' ' '\n' | sed -E 's/.*\/(.*)\.gcm/\1/' | sort -u)
+  for x in $(cat "syslibs.txt"); do
+    if ! [[ $files =~ $x ]]; then
+      echo $cxx $cxxflags -x c++-system-header -c $x
+      $cxx $cxxflags -x c++-system-header -c $x
+    fi
+  done
+fi
+
+if [ $# -eq 2 ]; then
+  name="-o $2"
+  link=""
+elif [ $# -eq 3 ]; then
+  name="-o $2"
+  link="$3"
+fi
+
+for x in $(cat "$1"); do
+  echo $cxx $cxxflags -c $x
+  $cxx $cxxflags -c $x
+done
+
+echo $cxx ./*.o $name $link
+$cxx ./*.o $name $link
+
+rm ./*.o
