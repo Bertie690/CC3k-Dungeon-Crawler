@@ -3,7 +3,7 @@
 .DS_Store
 .vs
 
-.vscode
+.vscode/*
 !.vscode/extensions.json
 **/gcm.cache
 *.out
