@@ -4,6 +4,7 @@
 .vs
 
 .vscode
+!.vscode/extensions.json
 **/gcm.cache
 *.out
 *.exe
