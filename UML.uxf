@@ -224,13 +224,14 @@ Chamber
 Hallway</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>924</x><y>812</y><w>252</w><h>112</h></coordinates><panel_attributes>Chamber
 --
 +is</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1750</x><y>1484</y><w>294</w><h>98</h></coordinates><panel_attributes>Staircase
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1358</x><y>1246</y><w>574</w><h>266</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;140;390;140;390;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2184</x><y>1512</y><w>266</w><h>70</h></coordinates><panel_attributes>/ItemFactory/
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1358</x><y>1246</y><w>574</w><h>266</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;140;390;140;390;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2184</x><y>1498</y><w>252</w><h>98</h></coordinates><panel_attributes>/ItemFactory/
 --
-/+createItem(): unique_ptr&lt;Item&gt;/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2002</x><y>1694</y><w>280</w><h>70</h></coordinates><panel_attributes>TreasureFactory
++createItems(Floor f): void
+/#getItem(): Item/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2002</x><y>1694</y><w>280</w><h>70</h></coordinates><panel_attributes>TreasureFactory
 --
-+createItem(): unique_ptr&lt;Item&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2366</x><y>1694</y><w>266</w><h>70</h></coordinates><panel_attributes>PotionFactory
+/#getItem(): Item/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2366</x><y>1694</y><w>266</w><h>70</h></coordinates><panel_attributes>PotionFactory
 --
-+createItem(): unique_ptr&lt;Item&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2114</x><y>1568</y><w>182</w><h>154</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>110;10;110;60;10;60;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>2352</x><y>1568</y><w>182</w><h>154</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60;110;60;110;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>994</x><y>1022</y><w>140</w><h>154</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+/#getItem(): Item/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2114</x><y>1582</y><w>182</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>110;10;110;50;10;50;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>2352</x><y>1582</y><w>182</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;110;50;110;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>994</x><y>1022</y><w>140</w><h>154</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
 TileType
 --
 Floor
