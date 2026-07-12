@@ -28,7 +28,7 @@ class Observer {
 
 template <typename... Events>
   requires(std::is_class_v<Events> && ...)
-class MultiObserver : (public Observer<Events>)... {};
+class MultiObserver : public Observer<Events>... {};
 
 // Class representing a subject that can be observed for 1 or more event types.
 export template <typename Event>

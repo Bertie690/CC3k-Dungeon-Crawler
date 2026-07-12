@@ -2,4 +2,4 @@ BasedOnStyle: Google
 IndentWidth: 2
 ReflowComments: IndentOnly
 ColumnLimit: 100
-EmptyLineAfterAccessModifierStyle: Never
+EmptyLineAfterAccessModifier: Never

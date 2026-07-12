@@ -134,9 +134,10 @@ m2=0..1</panel_attributes><additional_attributes>10;130;10;10</additional_attrib
 --
 +setSeed(uint seed)
 +intRange(int range, int start): int
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1960</x><y>294</y><w>210</w><h>84</h></coordinates><panel_attributes>/FloorGenerator/
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1960</x><y>294</y><w>308</w><h>98</h></coordinates><panel_attributes>/FloorGenerator/
 --
-+generateFloor(): Floor
++generateRandomFloor(): Floor
++generateFloor(FloorData): Floor
 /-generateChamber()/
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2072</x><y>126</y><w>266</w><h>84</h></coordinates><panel_attributes>Scoreboard
 --
@@ -237,4 +238,25 @@ TileType
 Floor
 Wall
 Door
-Passage</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+Passage</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2212</x><y>420</y><w>308</w><h>140</h></coordinates><panel_attributes>FloorData
+--
++HEIGHT: int
++WIDTH: int
++terrain: vector&lt;string&gt;
++spawns: vector&lt;SpawnData&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2212</x><y>700</y><w>308</w><h>126</h></coordinates><panel_attributes>SpawnData
+--
++kind: SpawnKind
++spawnCode: char
++position: Position</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2534</x><y>504</y><w>154</w><h>182</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+SpawnKind
+--
+Player
+Staircase
+Potion
+Gold
+Enemy</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2352</x><y>546</y><w>70</w><h>182</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..*
+m1pos=5,0</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>1708</x><y>812</y><w>686</w><h>238</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2=1
+m1=
+m1pos=5,0</panel_attributes><additional_attributes>470;10;470;140;10;140</additional_attributes></element></diagram>
