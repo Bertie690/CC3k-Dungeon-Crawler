@@ -8,7 +8,7 @@ export module floordata;
 import <iostream>;
 import <string>;
 import <vector>;
-#endif
+#endif  // __INTELLISENSE__
 
 using namespace std;
 

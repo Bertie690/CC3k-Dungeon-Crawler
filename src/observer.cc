@@ -8,7 +8,7 @@ export module observer;
 import <type_traits>;
 import <typeinfo>;
 import <list>;
-#endif
+#endif  // __INTELLISENSE__
 
 export template <typename Event>
   requires std::is_class_v<Event>

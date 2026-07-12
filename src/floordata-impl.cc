@@ -6,7 +6,7 @@ module floordata;
 #include <vector>
 
 #include "floordata.cc"
-#endif
+#endif  // __INTELLISENSE__
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #include <iostream>
 #else
 import <iostream>;
-#endif
+#endif  // __INTELLISENSE__
 
 using namespace std;
 
