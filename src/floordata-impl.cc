@@ -10,7 +10,7 @@ module floordata;
 
 using namespace std;
 
-// [LD] Assumes valid input, can add invalid handling if we decide on framework
+// LD: Assumes valid input, can add invalid handling if we decide on framework
 
 bool isTerrain(char c) {
   switch (c) {
@@ -61,7 +61,6 @@ FloorData readFloor(const vector<string>& lines, int startLine) {
       if (isTerrain(c)) continue;
       floor.spawns.push_back(SpawnData{getSpawnKind(c), c, Position{row, col}});
       // Spawns are placed on top of '.' floor tiles.
-      // LD: are there instances where they're not? in halls?
       floor.terrain[row][col] = '.';
     }
   }
