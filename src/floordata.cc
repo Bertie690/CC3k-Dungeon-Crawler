@@ -4,19 +4,16 @@ export module floordata;
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "position.cc"
 #else
 import <iostream>;
 import <string>;
 import <vector>;
+import position;
 #endif  // __INTELLISENSE__
 
 using namespace std;
-
-// LD: should this be its own position module?
-export struct Position {
-  int row;
-  int col;
-};
 
 export enum class SpawnKind { Player, Staircase, Potion, Gold, Enemy };
 
