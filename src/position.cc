@@ -1,6 +1,6 @@
 export module position;
 
 export struct Position {
-  int row;
-  int col;
+  int x;
+  int y;
 };
