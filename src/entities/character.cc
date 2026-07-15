@@ -35,16 +35,16 @@ export class Character : public Entity {
   virtual double getAttackDamageMultiplier(Character& defender) const;
   virtual double getGoldMultiplier() const;
   virtual double getPotionEffectMultiplier(PotionType p) const;
-  virtual double getDrainMulti(Character& attacker, unsigned int damage) const;
+  virtual double getDrainMulti(Character& attacker) const;
 
-  virtual void onHit(Character& defender, int damage);
-  virtual void onDeath();
+  virtual void onHit(Character& defender, unsigned int damage);
+  virtual void onBeingAttacked(Character& attacker, unsigned int damage);
 
   virtual Action getNextMove(Floor& f) = 0;
 
  public:
   virtual ~Character() = default;
-  void act(Floor& f, Position pos);
+  void act(Floor& f);
   void damage(int amt, bool lethal = true);
   void heal(int amt);
 };
