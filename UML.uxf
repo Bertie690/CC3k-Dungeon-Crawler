@@ -1,42 +1,131 @@
-<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><help_text>TODO:
+<?xml version="1.0"?>
+<diagram program="umletino" version="15.1">
+  <zoom_level>9</zoom_level>
+  <help_text>TODO:
 - add necessary hooks to prevent enemies from leaving enclosing chamber
 - finish factories
 - iron out subject/observer relationships
-- Add race selection</help_text><element><id>UMLClass</id><coordinates><x>855</x><y>1053</y><w>90</w><h>72</h></coordinates><panel_attributes>Stats
+- Add race selection</help_text>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>855</x>
+      <y>1053</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Stats
 --
 +maxHp: uint
 +atk: uint
 +def: uint
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1791</x><y>324</y><w>108</w><h>81</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1791</x>
+      <y>324</y>
+      <w>108</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
 Action
 --
 Pass
 Move(Position)
 Attack(Position)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>657</y><w>54</w><h>54</h></coordinates><panel_attributes>Position
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>657</y>
+      <w>54</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>Position
 --
 +x: int
 +y: int
 ----
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>81</x><y>144</y><w>126</w><h>72</h></coordinates><panel_attributes>template=Event
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>81</x>
+      <y>144</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>template=Event
 /Observer/
 --
 /-onNotify(Event)/
 
-group=group-0</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>63</x><y>360</y><w>171</w><h>90</h></coordinates><panel_attributes>template=Event
+group=group-0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>63</x>
+      <y>360</y>
+      <w>171</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>template=Event
 Subject
 --
 +attach(Observer&lt;Event&gt;)
 +detach(Observer&lt;Event&gt;)
 +notify(Event)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>144</x><y>207</y><w>72</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>144</x>
+      <y>207</y>
+      <w>72</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=0..n
 m2pos=10,-5
 cbase=ru
-observers</panel_attributes><additional_attributes>10;180;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>792</x><y>828</y><w>135</w><h>45</h></coordinates><panel_attributes>/Entity/
+observers</panel_attributes>
+    <additional_attributes>10;180;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>792</x>
+      <y>828</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>/Entity/
 --
-/#onOverlap(Entity e): bool/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>954</y><w>297</w><h>234</h></coordinates><panel_attributes>/Character/
+/#onOverlap(Entity e): bool/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>450</x>
+      <y>954</y>
+      <w>297</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>/Character/
 --
 -hp: int
 --
@@ -53,16 +142,49 @@ observers</panel_attributes><additional_attributes>10;180;10;10</additional_attr
 /-getPotionEffectMultiplier(Potion p): double/
 /-onHit(Character defender, int damage)/
 /-getDrainMulti(Character attacker, uint damage): double /
-/-onDeath()/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>171</x><y>1188</y><w>180</w><h>72</h></coordinates><panel_attributes>Player
+/-onDeath()/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>171</x>
+      <y>1188</y>
+      <w>180</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Player
 --
 /-getNextMove(Floor): Action/
 /-onNotify(PlayerCommandEvent)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>639</x><y>1215</y><w>162</w><h>63</h></coordinates><panel_attributes>Enemy
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>639</x>
+      <y>1215</y>
+      <w>162</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>Enemy
 --
 _-frozen: bool_
 --
 /-getNextMove(Floor): Action/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>405</x><y>1287</y><w>288</w><h>189</h></coordinates><panel_attributes>/CharacterDecorator/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>405</x>
+      <y>1287</y>
+      <w>288</w>
+      <h>189</h>
+    </coordinates>
+    <panel_attributes>/CharacterDecorator/
 --
 #unlink()
 /-getAttacksPerTurn(): uint/
@@ -76,135 +198,817 @@ _-frozen: bool_
 /-onHit(Character defender, int damage)/
 /-getDrainMulti(Character attacker, int damage): double /
 /-onDeath()/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>171</x><y>1305</y><w>144</w><h>54</h></coordinates><panel_attributes>/TempCharacterDecorator/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>171</x>
+      <y>1305</y>
+      <w>144</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>/TempCharacterDecorator/
 --
-/-onNotify(NewFloorEvent)/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1026</x><y>1170</y><w>153</w><h>72</h></coordinates><panel_attributes>/Item/
+/-onNotify(NewFloorEvent)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1026</x>
+      <y>1170</y>
+      <w>153</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>/Item/
 --
 /#onOverlap(Entity e): bool/
 /-canPickup(Character c): bool/
 /-applyEffect(Character c)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>954</x><y>1314</y><w>135</w><h>63</h></coordinates><panel_attributes>GoldPile
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>954</x>
+      <y>1314</y>
+      <w>135</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>GoldPile
 --
 -int: size
 --
-/-applyEffect(Character c)/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1098</x><y>1314</y><w>162</w><h>63</h></coordinates><panel_attributes>/Potion/
+/-applyEffect(Character c)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1098</x>
+      <y>1314</y>
+      <w>162</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>/Potion/
 --
 /+applyEffect(Character c): bool/
-/-canPickup(Character c): bool/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>594</x><y>1179</y><w>27</w><h>126</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>10;10;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>342</x><y>1179</y><w>144</w><h>63</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>140;10;140;50;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>711</x><y>1179</y><w>27</w><h>54</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>306</x><y>1314</y><w>117</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>110;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>171</y><w>99</w><h>1044</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>90;11;10;11;10;1140</additional_attributes></element><element><id>Relation</id><coordinates><x>648</x><y>702</y><w>180</w><h>54</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+/-canPickup(Character c): bool/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>594</x>
+      <y>1179</y>
+      <w>27</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;10;10;120</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>342</x>
+      <y>1179</y>
+      <w>144</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>140;10;140;50;10;50</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>711</x>
+      <y>1179</y>
+      <w>27</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;40</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>306</x>
+      <y>1314</y>
+      <w>117</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>110;20;10;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>171</y>
+      <w>99</w>
+      <h>1044</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>90;11;10;11;10;1140</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>648</x>
+      <y>702</y>
+      <w>180</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
-position</panel_attributes><additional_attributes>180;40;10;40;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>738</x><y>1080</y><w>135</w><h>45</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+position</panel_attributes>
+    <additional_attributes>180;40;10;40;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>738</x>
+      <y>1080</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
-baseStats</panel_attributes><additional_attributes>10;20;130;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1026</x><y>1233</y><w>27</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1161</x><y>1233</y><w>27</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>549</x><y>1179</y><w>45</w><h>126</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+baseStats</panel_attributes>
+    <additional_attributes>10;20;130;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1026</x>
+      <y>1233</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;90</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1161</x>
+      <y>1233</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;90</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>549</x>
+      <y>1179</y>
+      <w>45</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 next
-m2=0..1</panel_attributes><additional_attributes>10;120;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>864</y><w>135</w><h>108</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>130;10;130;80;10;80;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1116</x><y>1449</y><w>135</w><h>45</h></coordinates><panel_attributes>/PotionDecorator/
+m2=0..1</panel_attributes>
+    <additional_attributes>10;120;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>864</y>
+      <w>135</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>130;10;130;80;10;80;10;100</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1116</x>
+      <y>1449</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>/PotionDecorator/
 --
 /-applyEffect(Character c)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>855</x><y>864</y><w>270</w><h>324</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;180;280;180;280;340</additional_attributes></element><element><id>UMLClass</id><coordinates><x>882</x><y>1440</y><w>189</w><h>72</h></coordinates><panel_attributes>DragonHoard
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>855</x>
+      <y>864</y>
+      <w>270</w>
+      <h>324</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;180;280;180;280;340</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>882</x>
+      <y>1440</y>
+      <w>189</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>DragonHoard
 --
 /-canPickup(): bool/
-/-onNotify(CharacterChangeEvent)/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>999</x><y>1368</y><w>27</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>1197</x><y>1368</y><w>27</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1134</x><y>1368</y><w>45</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+/-onNotify(CharacterChangeEvent)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>999</x>
+      <y>1368</y>
+      <w>27</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;80</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1197</x>
+      <y>1368</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;90</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1134</x>
+      <y>1368</y>
+      <w>45</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 next
-m2=0..1</panel_attributes><additional_attributes>10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1314</y><w>189</w><h>45</h></coordinates><panel_attributes>lt=-
+m2=0..1</panel_attributes>
+    <additional_attributes>10;90;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>1314</y>
+      <w>189</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=-
 &lt;NewFloorEvent&gt;
-</panel_attributes><additional_attributes>10;21;190;20</additional_attributes></element><element><id>Relation</id><coordinates><x>504</x><y>1179</y><w>45</w><h>126</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;21;190;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>504</x>
+      <y>1179</y>
+      <w>45</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 prev
-m2=0..1</panel_attributes><additional_attributes>10;120;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>144</x><y>1404</y><w>207</w><h>54</h></coordinates><panel_attributes>TempStatChangeCharacterDecorator
+m2=0..1</panel_attributes>
+    <additional_attributes>10;120;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>144</x>
+      <y>1404</y>
+      <w>207</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>TempStatChangeCharacterDecorator
 --
-/-getStats(): Stats/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>234</x><y>1350</y><w>27</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>738</x><y>189</y><w>171</w><h>63</h></coordinates><panel_attributes>/Renderer/
+/-getStats(): Stats/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>234</x>
+      <y>1350</y>
+      <w>27</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;10;10;60</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>738</x>
+      <y>189</y>
+      <w>171</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>/Renderer/
 --
 /-render()/
-#clearBoard()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>738</x><y>288</y><w>171</w><h>90</h></coordinates><panel_attributes>TuiRenderer
+#clearBoard()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>738</x>
+      <y>288</y>
+      <w>171</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>TuiRenderer
 --
 /-render()/
 /-onNotify(EntityDeathEvent)/
 /-onNotify(CharacterMoveEvent)/
 /-onNotify(NewFloorEvent)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>945</x><y>252</y><w>162</w><h>54</h></coordinates><panel_attributes>/InputHandler/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>945</x>
+      <y>252</y>
+      <w>162</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>/InputHandler/
 --
 +processInput()
-/-readCommand() Command/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>945</x><y>369</y><w>162</w><h>45</h></coordinates><panel_attributes>StdinInputHandler
+/-readCommand() Command/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>945</x>
+      <y>369</y>
+      <w>162</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>StdinInputHandler
 --
 /-readCommand() Command/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1044</x><y>81</y><w>189</w><h>54</h></coordinates><panel_attributes>Game
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1044</x>
+      <y>81</y>
+      <w>189</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>Game
 --
 +run()
 /-onNotify(NewFloorEvent)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1161</x><y>342</y><w>216</w><h>54</h></coordinates><panel_attributes>RNG
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1161</x>
+      <y>342</y>
+      <w>216</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>RNG
 --
 +setSeed(uint seed)
 +intRange(int range, int start): int
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1440</x><y>486</y><w>135</w><h>45</h></coordinates><panel_attributes>/FloorGenerator/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1440</x>
+      <y>486</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>/FloorGenerator/
 --
 /-generateFloor(): Floor/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1332</x><y>162</y><w>171</w><h>72</h></coordinates><panel_attributes>Scoreboard
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1332</x>
+      <y>162</y>
+      <w>171</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Scoreboard
 --
 +getScore(PlayerData): int
 /-onNotify(NewFloorEvent)/
 /-onNotify(EnemyDeathEvent)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1098</x><y>459</y><w>171</w><h>54</h></coordinates><panel_attributes>Floor
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1098</x>
+      <y>459</y>
+      <w>171</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>Floor
 --
 +runTurn()
-+getRoomAt(Position p): Room</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>972</x><y>567</y><w>162</w><h>90</h></coordinates><panel_attributes>/Room/
++getRoomAt(Position p): Room</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>972</x>
+      <y>567</y>
+      <w>162</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>/Room/
 --
 /+type(): RoomType/
 +isInBounds(Position p): bool
 +isOccupied(Position p): bool
 +add(Entity e)
-+remove(Entity e)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>729</x><y>1404</y><w>126</w><h>36</h></coordinates><panel_attributes>Doubly-linked list
++remove(Entity e)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>729</x>
+      <y>1404</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Doubly-linked list
 allows timed removal
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>684</x><y>1404</y><w>63</w><h>36</h></coordinates><panel_attributes>lt=&lt;-
-</panel_attributes><additional_attributes>10;20;50;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>711</y><w>108</w><h>63</h></coordinates><panel_attributes>Cell
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>684</x>
+      <y>1404</y>
+      <w>63</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>10;20;50;20</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>810</x>
+      <y>711</y>
+      <w>108</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>Cell
 --
 +isWalkable(): bool
-+add(Entity e)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1224</x><y>99</y><w>126</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
++add(Entity e)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1224</x>
+      <y>99</y>
+      <w>126</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
 cbase=r
-scoreboard</panel_attributes><additional_attributes>10;10;40;10;40;100;120;100</additional_attributes></element><element><id>Relation</id><coordinates><x>1161</x><y>126</y><w>45</w><h>234</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+scoreboard</panel_attributes>
+    <additional_attributes>10;10;40;10;40;100;120;100</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1161</x>
+      <y>126</y>
+      <w>45</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
-rng</panel_attributes><additional_attributes>10;10;10;240</additional_attributes></element><element><id>Relation</id><coordinates><x>1017</x><y>297</y><w>27</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>864</x><y>126</y><w>216</w><h>81</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+rng</panel_attributes>
+    <additional_attributes>10;10;10;240</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1017</x>
+      <y>297</y>
+      <w>27</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;10;10;80</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>864</x>
+      <y>126</y>
+      <w>216</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 cbase=r
 
 renderer
 m2=1
-m2pos=-13,1</panel_attributes><additional_attributes>220;10;220;50;10;50;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>1206</x><y>126</y><w>342</w><h>378</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2pos=-13,1</panel_attributes>
+    <additional_attributes>220;10;220;50;10;50;10;70</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1206</x>
+      <y>126</y>
+      <w>342</w>
+      <h>378</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1..n
-floorGenerators</panel_attributes><additional_attributes>10;10;10;190;340;190;340;400</additional_attributes></element><element><id>Relation</id><coordinates><x>909</x><y>648</y><w>162</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+floorGenerators</panel_attributes>
+    <additional_attributes>10;10;10;190;340;190;340;400</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>909</x>
+      <y>648</y>
+      <w>162</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1..n
 m2pos=0,-20
 cells
-cbase=l</panel_attributes><additional_attributes>160;10;160;90;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>909</x><y>648</y><w>198</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+cbase=l</panel_attributes>
+    <additional_attributes>160;10;160;90;10;90</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>909</x>
+      <y>648</y>
+      <w>198</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=1
 room
-cbase=</panel_attributes><additional_attributes>10;110;190;110;190;10</additional_attributes></element><element><id>Relation</id><coordinates><x>810</x><y>243</y><w>27</w><h>63</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>1017</x><y>126</y><w>99</w><h>144</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+cbase=</panel_attributes>
+    <additional_attributes>10;110;190;110;190;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>810</x>
+      <y>243</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;10;10;50</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1017</x>
+      <y>126</y>
+      <w>99</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 cbase=l
 inputs
-m2=1</panel_attributes><additional_attributes>90;10;90;90;10;90;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1188</y><w>27</w><h>333</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;10;10;350</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1206</y><w>189</w><h>45</h></coordinates><panel_attributes>lt=-
+m2=1</panel_attributes>
+    <additional_attributes>90;10;90;90;10;90;10;140</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>1188</y>
+      <w>27</w>
+      <h>333</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10;10;10;350</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>1206</y>
+      <w>189</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=-
 &lt;PlayerCommandEvent&gt;
-</panel_attributes><additional_attributes>10;20;190;20</additional_attributes></element><element><id>Relation</id><coordinates><x>0</x><y>1485</y><w>738</w><h>36</h></coordinates><panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10;20;190;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>0</x>
+      <y>1485</y>
+      <w>738</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
 
-group=group-1</panel_attributes><additional_attributes>10;20;800;20</additional_attributes></element><element><id>Relation</id><coordinates><x>711</x><y>1485</y><w>189</w><h>36</h></coordinates><panel_attributes>lt=-
+group=group-1</panel_attributes>
+    <additional_attributes>10;20;800;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>711</x>
+      <y>1485</y>
+      <w>189</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
 &lt;EntityDeathEvent&gt;
-group=group-1</panel_attributes><additional_attributes>10;20;190;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1161</x><y>387</y><w>45</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+group=group-1</panel_attributes>
+    <additional_attributes>10;20;190;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1161</x>
+      <y>387</y>
+      <w>45</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=rng
 m2=1
 m1pos=5,0
-m2pos=0,-5</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1125</x><y>126</y><w>54</w><h>351</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
-floor</panel_attributes><additional_attributes>10;10;10;370</additional_attributes></element><element><id>Relation</id><coordinates><x>171</x><y>171</y><w>459</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;490;10</additional_attributes></element><element><id>Relation</id><coordinates><x>603</x><y>108</y><w>27</w><h>279</h></coordinates><panel_attributes>lt=-
-</panel_attributes><additional_attributes>10;291;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>603</x><y>324</y><w>153</w><h>36</h></coordinates><panel_attributes>lt=-
-&lt;NewFloorEvent&gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>Relation</id><coordinates><x>603</x><y>297</y><w>153</w><h>36</h></coordinates><panel_attributes>lt=-
-&lt;EntityMoveEvent&gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>Relation</id><coordinates><x>873</x><y>765</y><w>63</w><h>81</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2pos=0,-5</panel_attributes>
+    <additional_attributes>10;80;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1125</x>
+      <y>126</y>
+      <w>54</w>
+      <h>351</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+floor</panel_attributes>
+    <additional_attributes>10;10;10;370</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>171</x>
+      <y>171</y>
+      <w>459</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;490;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>108</y>
+      <w>27</w>
+      <h>279</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10;291;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>324</y>
+      <w>153</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;NewFloorEvent&gt;</panel_attributes>
+    <additional_attributes>10;20;150;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>297</y>
+      <w>153</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;EntityMoveEvent&gt;</panel_attributes>
+    <additional_attributes>10;20;150;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>873</x>
+      <y>765</y>
+      <w>63</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 entities
 m2=0..n
-m2pos=0,10</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>198</x><y>405</y><w>630</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;680;10</additional_attributes></element><element><id>Relation</id><coordinates><x>603</x><y>351</y><w>153</w><h>36</h></coordinates><panel_attributes>lt=-
-&lt;EntityDeathEvent&gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>Relation</id><coordinates><x>792</x><y>270</y><w>171</w><h>162</h></coordinates><panel_attributes>lt=-
+m2pos=0,10</panel_attributes>
+    <additional_attributes>10;10;10;70</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>198</x>
+      <y>405</y>
+      <w>630</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;680;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>351</y>
+      <w>153</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;EntityDeathEvent&gt;</panel_attributes>
+    <additional_attributes>10;20;150;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>270</y>
+      <w>171</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>lt=-
 cbase=l
-&lt;PlayerCommandEvent&gt;</panel_attributes><additional_attributes>20;160;150;160;150;10;170;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1782</x><y>144</y><w>117</w><h>135</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+&lt;PlayerCommandEvent&gt;</panel_attributes>
+    <additional_attributes>20;160;150;160;150;10;170;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1782</x>
+      <y>144</y>
+      <w>117</w>
+      <h>135</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
 PlayerAction
 --
 Pass
@@ -214,112 +1018,709 @@ SelectRace(RaceType)
 Restart
 FreezeEnemies
 Quit
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1197</x><y>1530</y><w>135</w><h>45</h></coordinates><panel_attributes>StatPotionDecorator
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1197</x>
+      <y>1530</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>StatPotionDecorator
 --
 /-applyEffect(Character c)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1035</x><y>1530</y><w>135</w><h>45</h></coordinates><panel_attributes>HealingPotionDecorator
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1035</x>
+      <y>1530</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>HealingPotionDecorator
 --
 /-applyEffect(Character c)/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1134</x><y>1485</y><w>27</w><h>63</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>1215</x><y>1485</y><w>27</w><h>63</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>UMLNote</id><coordinates><x>477</x><y>1530</y><w>126</w><h>36</h></coordinates><panel_attributes>Decorators for each
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1134</x>
+      <y>1485</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;50</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1215</x>
+      <y>1485</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;50</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>477</x>
+      <y>1530</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Decorators for each
 individual race effect...
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>531</x><y>1467</y><w>27</w><h>81</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>1836</x><y>270</y><w>27</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;-
-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>531</x><y>837</y><w>135</w><h>45</h></coordinates><panel_attributes>Staircase
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>531</x>
+      <y>1467</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;10;10;70</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1836</x>
+      <y>270</y>
+      <w>27</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10;10;10;60</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>531</x>
+      <y>837</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>Staircase
 --
-/#onOverlap(Entity e): bool/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>657</x><y>855</y><w>153</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>150;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>999</x><y>810</y><w>90</w><h>99</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+/#onOverlap(Entity e): bool/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>657</x>
+      <y>855</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>150;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>999</x>
+      <y>810</y>
+      <w>90</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
 TileType
 --
 Floor
 Wall
 Door
-Passage</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1989</x><y>459</y><w>270</w><h>126</h></coordinates><panel_attributes>FloorData
+Passage</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1989</x>
+      <y>459</y>
+      <w>270</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>FloorData
 --
 _+HEIGHT: int_
 _+WIDTH: int_
 +terrain: vector&lt;string&gt;
-+spawns: vector&lt;SpawnData&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2070</x><y>675</y><w>117</w><h>72</h></coordinates><panel_attributes>SpawnData
++spawns: vector&lt;SpawnData&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2070</x>
+      <y>675</y>
+      <w>117</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>SpawnData
 --
 +kind: SpawnKind
 +spawnCode: char
-+position: Position</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2277</x><y>531</y><w>135</w><h>162</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
++position: Position</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2277</x>
+      <y>531</y>
+      <w>135</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
 SpawnKind
 --
 Player
 Staircase
 Potion
 Gold
-Enemy</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2115</x><y>576</y><w>45</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+Enemy</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2115</x>
+      <y>576</y>
+      <w>45</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m1=0..*
-m1pos=5,0</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>1305</y><w>153</w><h>63</h></coordinates><panel_attributes>Merchant
+m1pos=5,0</panel_attributes>
+    <additional_attributes>10;10;10;110</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>720</x>
+      <y>1305</y>
+      <w>153</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>Merchant
 --
 _-hostile: bool_
 --
-/-getNextMove(Floor f): Action/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>756</x><y>1269</y><w>27</w><h>54</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>1332</x><y>387</y><w>45</w><h>189</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+/-getNextMove(Floor f): Action/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>756</x>
+      <y>1269</y>
+      <w>27</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;40</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1332</x>
+      <y>387</y>
+      <w>45</w>
+      <h>189</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=1
 m1=rng
-m1pos=5,0</panel_attributes><additional_attributes>10;190;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1305</x><y>558</y><w>162</w><h>54</h></coordinates><panel_attributes>/RandomFloorGenerator/
+m1pos=5,0</panel_attributes>
+    <additional_attributes>10;190;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1305</x>
+      <y>558</y>
+      <w>162</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>/RandomFloorGenerator/
 --
 /-generateChamber()/
 +queueSpawn(Entity, Position)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1458</x><y>522</y><w>45</w><h>72</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>30;10;30;60;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1521</x><y>558</y><w>153</w><h>45</h></coordinates><panel_attributes>PresetFloorGenerator
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1458</x>
+      <y>522</y>
+      <w>45</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;10;30;60;10;60</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1521</x>
+      <y>558</y>
+      <w>153</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>PresetFloorGenerator
 --
-/+generateFloor(): Floor/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1530</x><y>522</y><w>27</w><h>54</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>414</x><y>846</y><w>135</w><h>36</h></coordinates><panel_attributes>lt=-
-&lt;NewFloorEvent&gt;</panel_attributes><additional_attributes>10;20;130;20</additional_attributes></element><element><id>Relation</id><coordinates><x>414</x><y>405</y><w>27</w><h>477</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;511;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>414</x><y>486</y><w>576</w><h>27</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;10;620;10</additional_attributes></element><element><id>Relation</id><coordinates><x>909</x><y>99</y><w>153</w><h>36</h></coordinates><panel_attributes>lt=-
-&lt;NewFloorEvent&gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>Relation</id><coordinates><x>603</x><y>108</y><w>333</w><h>27</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;10;350;10</additional_attributes></element><element><id>Relation</id><coordinates><x>963</x><y>477</y><w>153</w><h>36</h></coordinates><panel_attributes>lt=-
-&lt;NewFloorEvent&gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>Relation</id><coordinates><x>45</x><y>207</y><w>81</w><h>180</h></coordinates><panel_attributes>lt=&lt;-
+/+generateFloor(): Floor/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1530</x>
+      <y>522</y>
+      <w>27</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;10;40</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>414</x>
+      <y>846</y>
+      <w>135</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;NewFloorEvent&gt;</panel_attributes>
+    <additional_attributes>10;20;130;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>414</x>
+      <y>405</y>
+      <w>27</w>
+      <h>477</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10;511;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>414</x>
+      <y>486</y>
+      <w>576</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10;10;620;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>909</x>
+      <y>99</y>
+      <w>153</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;NewFloorEvent&gt;</panel_attributes>
+    <additional_attributes>10;20;150;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>108</y>
+      <w>333</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10;10;350;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>963</x>
+      <y>477</y>
+      <w>153</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;NewFloorEvent&gt;</panel_attributes>
+    <additional_attributes>10;20;150;20</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>45</x>
+      <y>207</y>
+      <w>81</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
 friend class
-cbase=l</panel_attributes><additional_attributes>70;180;70;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1278</x><y>387</y><w>54</w><h>342</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+cbase=l</panel_attributes>
+    <additional_attributes>70;180;70;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1278</x>
+      <y>387</y>
+      <w>54</w>
+      <h>342</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=1
 m1=rng
-m1pos=5,5</panel_attributes><additional_attributes>40;350;10;350;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1314</x><y>666</y><w>243</w><h>90</h></coordinates><panel_attributes>template=T: Entity
+m1pos=5,5</panel_attributes>
+    <additional_attributes>40;350;10;350;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1314</x>
+      <y>666</y>
+      <w>243</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>template=T: Entity
 /FactoryBase/
 --
 +run(Chamber c)
 /-getValidCells(Chamber, T): Cell[]/
-/-create(Position): T/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1440</x><y>747</y><w>72</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-
+/-create(Position): T/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1440</x>
+      <y>747</y>
+      <w>72</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
 &lt;Enemy&gt;
-cbase=rd</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>414</x><y>747</y><w>306</w><h>27</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;10;320;10</additional_attributes></element><element><id>Relation</id><coordinates><x>693</x><y>747</y><w>135</w><h>36</h></coordinates><panel_attributes>lt=-
+cbase=rd</panel_attributes>
+    <additional_attributes>10;10;10;90</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>414</x>
+      <y>747</y>
+      <w>306</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10;10;320;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>693</x>
+      <y>747</y>
+      <w>135</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
 &lt;NewFloorEvent&gt;
-cbase=d</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1125</x><y>504</y><w>117</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+cbase=d</panel_attributes>
+    <additional_attributes>10;10;130;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1125</x>
+      <y>504</y>
+      <w>117</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1..n
 rooms
-cbase=l</panel_attributes><additional_attributes>110;10;110;100;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>747</x><y>612</y><w>117</w><h>45</h></coordinates><panel_attributes>Chamber
+cbase=l</panel_attributes>
+    <additional_attributes>110;10;110;100;10;100</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>747</x>
+      <y>612</y>
+      <w>117</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>Chamber
 --
 /+type(): RoomType/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>855</x><y>576</y><w>135</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>130;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>747</x><y>549</y><w>117</w><h>45</h></coordinates><panel_attributes>Passage
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>855</x>
+      <y>576</y>
+      <w>135</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>130;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>747</x>
+      <y>549</y>
+      <w>117</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>Passage
 --
 /+type(): RoomType/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>855</x><y>630</y><w>135</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>130;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1368</x><y>603</y><w>72</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>855</x>
+      <y>630</y>
+      <w>135</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>130;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1368</x>
+      <y>603</y>
+      <w>72</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1..n
 factories
-cbase=ur</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1422</x><y>828</y><w>126</w><h>45</h></coordinates><panel_attributes>/EnemyFactory/
+cbase=ur</panel_attributes>
+    <additional_attributes>10;10;10;80</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1422</x>
+      <y>828</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>/EnemyFactory/
 --
-/-create(Position): Enemy/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1557</x><y>828</y><w>126</w><h>45</h></coordinates><panel_attributes>/PlayerFactory/
+/-create(Position): Enemy/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1557</x>
+      <y>828</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>/PlayerFactory/
 --
-/-create(Position): Player/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1485</x><y>747</y><w>117</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-
-&lt;Player&gt;</panel_attributes><additional_attributes>10;10;10;40;110;40;110;90</additional_attributes></element><element><id>Relation</id><coordinates><x>909</x><y>747</y><w>162</w><h>81</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+/-create(Position): Player/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1485</x>
+      <y>747</y>
+      <w>117</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+&lt;Player&gt;</panel_attributes>
+    <additional_attributes>10;10;10;40;110;40;110;90</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>909</x>
+      <y>747</y>
+      <w>162</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 type
 m2=1
-</panel_attributes><additional_attributes>10;20;150;20;150;70</additional_attributes></element><element><id>UMLNote</id><coordinates><x>189</x><y>1071</y><w>126</w><h>54</h></coordinates><panel_attributes>Jointly owned by Game
+</panel_attributes>
+    <additional_attributes>10;20;150;20;150;70</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>189</x>
+      <y>1071</y>
+      <w>126</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>Jointly owned by Game
 to be preserved across
 floors
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>243</x><y>1116</y><w>27</w><h>90</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1269</x><y>891</y><w>198</w><h>54</h></coordinates><panel_attributes>/GoldFactory/
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>243</x>
+      <y>1116</y>
+      <w>27</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10;80;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1269</x>
+      <y>891</y>
+      <w>198</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>/GoldFactory/
 --
 /-getValidCells(Chamber, GoldPile): Cell[]/
 /-create(Position): GoldPile/
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1269</x><y>747</y><w>72</w><h>108</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1269</x>
+      <y>747</y>
+      <w>72</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
 &lt;Potion&gt;
-cbase=l</panel_attributes><additional_attributes>60;10;60;100;40;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1179</x><y>819</y><w>126</w><h>45</h></coordinates><panel_attributes>/PotionFactory/
+cbase=l</panel_attributes>
+    <additional_attributes>60;10;60;100;40;100</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1179</x>
+      <y>819</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>/PotionFactory/
 --
-/-create(Position): Potion/</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1341</x><y>747</y><w>81</w><h>162</h></coordinates><panel_attributes>lt=&lt;&lt;-
+/-create(Position): Potion/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1341</x>
+      <y>747</y>
+      <w>81</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
 &lt;GoldPile&gt;
-cbase=lu</panel_attributes><additional_attributes>70;10;70;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>558</y><w>90</w><h>72</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
+cbase=lu</panel_attributes>
+    <additional_attributes>70;10;70;160</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>558</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
 RoomType
 --
 Chamber
-Passage</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>675</x><y>765</y><w>198</w><h>207</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+Passage</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>675</x>
+      <y>765</y>
+      <w>198</w>
+      <h>207</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=cell
 m2=0..1
-m1pos=-28,-5</panel_attributes><additional_attributes>30;210;30;40;180;40;180;10</additional_attributes></element><element><id>Relation</id><coordinates><x>603</x><y>36</y><w>882</w><h>99</h></coordinates><panel_attributes>lt=-</panel_attributes><additional_attributes>10;90;10;10;960;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1458</x><y>36</y><w>135</w><h>144</h></coordinates><panel_attributes>lt=-
-&lt;EnemyDeathEvent&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>1341</x><y>36</y><w>117</w><h>144</h></coordinates><panel_attributes>lt=-
-&lt;NewFloorEvent&gt;</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element></diagram>
+m1pos=-28,-5</panel_attributes>
+    <additional_attributes>30;210;30;40;180;40;180;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>36</y>
+      <w>882</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10;90;10;10;960;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1458</x>
+      <y>36</y>
+      <w>135</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;EnemyDeathEvent&gt;</panel_attributes>
+    <additional_attributes>10;10;10;140</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1341</x>
+      <y>36</y>
+      <w>117</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;NewFloorEvent&gt;</panel_attributes>
+    <additional_attributes>10;10;10;140</additional_attributes>
+  </element>
+</diagram>

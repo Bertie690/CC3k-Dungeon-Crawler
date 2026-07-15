@@ -1,7 +1,7 @@
 export module defaultfloor;
 
 #ifdef __INTELLISENSE__
-#include "floordata.cc"
+#include "floor-data.cc"
 #else
 import floordata;
 #endif  // __INTELLISENSE__
