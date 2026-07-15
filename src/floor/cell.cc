@@ -27,5 +27,5 @@ class Cell {
   Floor& getFloor() const;
 
   // Get a reference to the Character located at the current Cell, if one exists.
-  const Character* const getCharacter() const;
+  Character* const getCharacter() const;
 };

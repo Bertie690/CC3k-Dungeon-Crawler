@@ -34,6 +34,9 @@ export class RNG {
   // Generate a uniformly chosen integer in the interval [start, start + range).
   int intRange(int range, int start = 0);
 
+  // Return a uniformly chosen real number in the interval [0, 1).
+  double randDouble();
+
   // Pick a uniformly chosen element from the given container.
   // Must have a known size and support random access.
   template <typename Container>

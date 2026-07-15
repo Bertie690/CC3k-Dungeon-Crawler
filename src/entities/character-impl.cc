@@ -1,7 +1,7 @@
 module character;
 
 #ifdef __INTELLISENSE__
-#include <algorithm>
+#include <cmath>
 #include <stdexcept>
 
 #include "../enums/action.cc"
@@ -13,6 +13,7 @@ module character;
 #include "stats.cc"
 #endif  // __INTELLISENSE__
 
+#pragma region Getters/Hooks
 Character::Character(Stats baseStats, RaceType raceType)
     : Entity{}, baseStats(baseStats), raceType(raceType){};
 
@@ -41,7 +42,11 @@ GoldSize Character::getGoldDrop() const { return GoldSize::None; }
 double Character::getDrainMulti(Character& attacker) const { return 1.0; }
 void Character::onHit(Character& defender, unsigned int damage) {}
 void Character::onBeingAttacked(Character& attacker, unsigned int damage) {}
+
 double Character::getPotionEffectMultiplier() const { return 1.0; }
+double Character::getScoreMulti() const { return 1.0; }
+
+#pragma endregion  // Getters/Hooks
 
 void Character::drain(Character& defender, int amt) {
   defender.damage(amt);
@@ -55,6 +60,7 @@ void Character::drain(Character& defender, int amt) {
   }
 }
 
+#pragma region Actions
 void Character::act() {
   Action nextMove = this->getNextMove();
 
@@ -73,7 +79,29 @@ void Character::act() {
     throw std::invalid_argument("No character to attack in the given direction.");
   }
 
-  // TODO: finish
+  this->attack(*character);
+}
+
+void Character::attack(Character& defender) {
+  const unsigned int attacks = this->getAttacksPerTurn();
+  for (unsigned int i = 0; i < attacks; i++) {
+    const double accuracy = this->getAccuracy(defender);
+    const double evasion = defender.getEvasion(*this);
+
+    if (this->getFloor().rng.randDouble() > accuracy * evasion) {
+      // miss
+      // TODO: Add a UI event
+      continue;
+    }
+
+    const double damageMultiplier = this->getAttackDamageMultiplier(defender);
+    // ceiling((100/(100 + Def (Defender))) * Atk(Attacker))
+    const unsigned int damage =
+        std::ceil(100.0 / (100.0 + defender.def()) * this->atk() * damageMultiplier);
+    defender.damage(damage);
+    this->onHit(defender, damage);
+    defender.onBeingAttacked(*this, damage);
+  }
 }
 
 void Character::damage(unsigned int amt, bool lethal) {

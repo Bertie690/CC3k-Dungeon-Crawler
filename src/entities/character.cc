@@ -3,7 +3,7 @@ export module character;
 #pragma once
 
 #ifdef __INTELLISENSE__
-#include <algorithm>
+#include <cmath>
 #include <stdexcept>
 
 #include "../enums/action.cc"
@@ -20,7 +20,7 @@ import floor;
 import entity;
 import stats;
 import <stdexcept>;
-import <algorithm>;
+import <cmath>;
 #endif  // __INTELLISENSE__
 
 // A Character represents an Entity that can move and partake in combat.
@@ -45,6 +45,8 @@ export class Character : public Entity {
   // Return whether this Character is dead.
   bool isDead() const;
 
+  void attack(Character& defender);
+
  protected:
   // Get this Character's current position.
   const Position& pos() const;
@@ -68,9 +70,6 @@ export class Character : public Entity {
   // Return the multiplier this Character places on opposing HP-draining effects.
   // Negative amounts will result in the attacker taking damage instead of healing.
   virtual double getDrainMulti(Character& attacker) const;
-  // Return the multiplier for the potency of this Character's potions.
-  // TODO: Do we need to make this public?
-  virtual double getPotionEffectMultiplier() const;
   // Trigger effects when this Character lands a hit on another Character.
   virtual void onHit(Character& defender, unsigned int damage);
   // Trigger effects when this Character takes a hit from another Character.
@@ -91,4 +90,9 @@ export class Character : public Entity {
   void damage(unsigned int amt, bool lethal = true);
   // Heal this Character up to its maximum HP.
   void heal(unsigned int amt);
+
+  // Return the multiplier for the potency of this Character's potions.
+  virtual double getPotionEffectMultiplier() const;
+  // Return the multiplier for this Character's score. Unused for enemies (for now...)
+  virtual double getScoreMulti() const;
 };

@@ -15,6 +15,11 @@ int RNG::intRange(int range, int start) {
   return dist(twister);
 }
 
+double RNG::randDouble() {
+  std::uniform_real_distribution dist(0.0, 1.0);
+  return dist(twister);
+}
+
 template <typename Container>
   requires IsContainer<Container>
 typename Container::value_type& RNG::pick(Container& c) {
@@ -30,11 +35,4 @@ template <typename T>
 typename std::remove_extent_t<T>& RNG::pick(T& arr) {
   std::uniform_int_distribution dist(0, std::extent_v<T> - 1);
   return arr[dist(twister)];
-}
-
-int main() {
-  RNG rng;
-  int arr[5] = {1, 2, 3, 4, 5};
-  int randomElement = rng.pick(arr);
-  return 0;
 }
