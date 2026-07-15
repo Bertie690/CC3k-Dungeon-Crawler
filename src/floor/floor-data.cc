@@ -1,5 +1,7 @@
 export module floordata;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include <iostream>
 #include <string>

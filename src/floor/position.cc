@@ -1,5 +1,7 @@
 export module position;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include "../enums/direction.cc"
 #else

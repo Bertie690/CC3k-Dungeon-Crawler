@@ -1,5 +1,7 @@
 export module action;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include <variant>
 

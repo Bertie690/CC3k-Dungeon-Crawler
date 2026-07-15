@@ -1,5 +1,7 @@
 export module character;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include <algorithm>
 #include <stdexcept>

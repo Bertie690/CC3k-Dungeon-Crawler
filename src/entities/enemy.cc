@@ -1,5 +1,7 @@
 export module enemy;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include "character.cc"
 #else

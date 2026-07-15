@@ -1,5 +1,7 @@
 export module rng;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include <chrono>
 #include <random>

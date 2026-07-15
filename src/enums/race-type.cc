@@ -1,5 +1,7 @@
 export module racetype;
 
+#pragma once
+
 export enum class RaceType {
   // players
   Shade,

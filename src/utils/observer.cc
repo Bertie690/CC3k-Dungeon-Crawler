@@ -1,5 +1,7 @@
 export module observer;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include <list>
 #include <type_traits>

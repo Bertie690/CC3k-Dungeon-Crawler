@@ -1,5 +1,7 @@
 export module cell;
 
+#pragma once
+
 #ifdef __INTELLISENSE__
 #include <memory>
 #include <vector>

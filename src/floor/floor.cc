@@ -1,5 +1,7 @@
 export module floor;
 
+#pragma once
+
 // TODO: implement
 export struct Floor {
   // Get a cell by its absolute position.
