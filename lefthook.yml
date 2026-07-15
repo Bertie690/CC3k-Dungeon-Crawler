@@ -6,3 +6,6 @@ pre-commit:
     clang-format:
       run: git clang-format
       stage_fixed: true
+    format-uml:
+      run: xmllint -format UML.uxf -o UML.uxf
+      stage_fixed: true
