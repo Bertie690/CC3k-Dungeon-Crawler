@@ -3,3 +3,5 @@ IndentWidth: 2
 ReflowComments: IndentOnly
 ColumnLimit: 100
 EmptyLineAfterAccessModifier: Never
+NamespaceIndentation: All
+FixNamespaceComments: true
