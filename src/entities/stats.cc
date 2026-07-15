@@ -1,7 +1,7 @@
 export module stats;
 
 export struct Stats {
-  int maxHp;
-  int atk;
-  int def;
+  unsigned int maxHp;
+  unsigned int atk;
+  unsigned int def;
 };

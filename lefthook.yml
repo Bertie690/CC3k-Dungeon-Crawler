@@ -4,7 +4,8 @@ pre-commit:
     - rebase
   commands:
     clang-format:
-      run: git clang-format
+      # fsr clang format returns 1 if things get formatted, thereby aborting the commit
+      run: git clang-format || true
       stage_fixed: true
     format-uml:
       run: xmllint -format UML.uxf -o UML.uxf

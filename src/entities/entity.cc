@@ -1,6 +1,9 @@
 export module entity;
 
 class Entity {
-  public:
-    virtual ~Entity() = 0;
+  // The (possibly-nonexistent) cell this Entity is currently occupying.
+  Cell* cell;
+
+ public:
+  virtual ~Entity() = 0;
 };

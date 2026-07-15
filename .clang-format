@@ -1,6 +1,6 @@
 BasedOnStyle: Google
 IndentWidth: 2
-ReflowComments: IndentOnly
+ReflowComments: false
 ColumnLimit: 100
 EmptyLineAfterAccessModifier: Never
 NamespaceIndentation: All

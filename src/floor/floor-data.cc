@@ -5,7 +5,7 @@ export module floordata;
 #include <string>
 #include <vector>
 
-#include "../position.cc"
+#include "position.cc"
 #else
 import <iostream>;
 import <string>;

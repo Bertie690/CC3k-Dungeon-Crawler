@@ -1,50 +1,92 @@
 export module character;
 
 #ifdef __INTELLISENSE__
+#include <algorithm>
+#include <stdexcept>
+
 #include "../enums/action.cc"
-#include "../enums/potion-type.cc"
+#include "../enums/gold-size.cc"
 #include "../floor/cell.cc"
 #include "../floor/floor.cc"
 #include "entity.cc"
 #include "stats.cc"
 #else
 import action;
-import potiontype;
+import goldsize;
 import cell;
 import floor;
 import entity;
 import stats;
+import <stdexcept>;
+import <algorithm>;
 #endif  // __INTELLISENSE__
 
 // A Character represents an Entity that can move and partake in combat.
 export class Character : public Entity {
+  // This Character's current HP.
   int hp;
-  Cell cell;
-  const RaceType race;
+  // The race this character belongs to, for identification purposes.
+  const RaceType raceType;
+  // The character's base stats.
+  const Stats baseStats;
 
+  // Return the next move this Character will take.
+  virtual Action getNextMove() = 0;
+
+  // Return this Character's maximum HP.
+  unsigned int maxHp() const;
+  // Return this Character's attack stat.
+  unsigned int atk() const;
+  // Return this Character's defense stat.
+  unsigned int def() const;
+
+  // Return whether this Character is dead.
+  bool isDead() const;
+
+ protected:
   // Get this Character's current position.
-  Position pos() const;
+  const Position& pos() const;
 
-  // Get this Character's current stats.
+  // Return a reference to the current floor.
+  const Floor& getFloor() const;
+
+  // Return this Character's current stats.
   virtual Stats getStats() const;
-  // Get this Character's current accuracy against the given defender.
+  // Return this Character's current accuracy multiplier against the given defender.
   virtual double getAccuracy(Character& defender) const;
-  // Get this Character's current evasion against the given attacker.
+  // Return this Character's current evasion multiplier against the given attacker.
   virtual double getEvasion(Character& attacker) const;
+  // Return the number of attacks this Character can make per action taken.
+  // (They will all strike the same target.)
   virtual unsigned int getAttacksPerTurn() const;
+  // Return the damage multiplier this Character has against the given defender.
   virtual double getAttackDamageMultiplier(Character& defender) const;
-  virtual double getGoldMultiplier() const;
-  virtual double getPotionEffectMultiplier(PotionType p) const;
+  // Return the amount of gold this Character will drop when killed.
+  virtual GoldSize getGoldDrop() const;
+  // Return the multiplier this Character places on opposing HP-draining effects.
+  // Negative amounts will result in the attacker taking damage instead of healing.
   virtual double getDrainMulti(Character& attacker) const;
-
+  // Return the multiplier for the potency of this Character's potions.
+  // TODO: Do we need to make this public?
+  virtual double getPotionEffectMultiplier() const;
+  // Trigger effects when this Character lands a hit on another Character.
   virtual void onHit(Character& defender, unsigned int damage);
+  // Trigger effects when this Character takes a hit from another Character.
   virtual void onBeingAttacked(Character& attacker, unsigned int damage);
 
-  virtual Action getNextMove(Floor& f) = 0;
+  // Attempt to drain the given amount of HP from the defender.
+  void drain(Character& defender, int amt);
 
  public:
+  Character(Stats baseStats, RaceType raceType);
+
   virtual ~Character() = default;
-  void act(Floor& f);
-  void damage(int amt, bool lethal = true);
-  void heal(int amt);
+
+  // Perform an action for the turn.
+  void act();
+  // Deal the given amount of damage to this Character.
+  // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
+  void damage(unsigned int amt, bool lethal = true);
+  // Heal this Character up to its maximum HP.
+  void heal(unsigned int amt);
 };
