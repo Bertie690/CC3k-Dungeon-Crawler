@@ -1,16 +1,16 @@
-export module tui_render;
+export module tui_renderer;
 
 #pragma once
 
 #ifdef __INTELLISENSE__
 #include <vector>
 #include <string>
-#include <render.cc>
+#include <renderer.cc>
 #include "observer.cc"
 #include "game_events.cc"
 #include "floor.cc"
 #else
-import render;
+import renderer;
 import observer;
 imprt game_events;
 import floor;
@@ -20,15 +20,16 @@ import <string>;
 
 using namespace std;
 
-export class TUIRender : public Render, public Observer<EntityDeathEvent, MoveEvent, NewFloorEvent> {
+export class TUIRenderer : public Renderer, public Observer<EntityDeathEvent, MoveEvent, NewFloorEvent> {
     const Floor* currentFloor;
     vector<string> displayGrid;
 
     char determineSymbol(const Cell& cell) const;
+    char getEntitySymbol(const Entity& entity) const;
     void rebuildGrid();
 
     public:
-     TuiRender();
+     TUIRenderer();
      void draw override;
      void OnNotify(const EntityDeathEvent& event) override;
      void OnNotify(const MoveEvent& event) override;
