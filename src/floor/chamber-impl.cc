@@ -1,0 +1,8 @@
+module chamber;
+
+#ifdef __INTELLISENSE__
+#include "chamber.cc"
+#endif  // __INTELLISENSE__
+
+Chamber::Chamber(const vector<Cell*>& cells) : Room{cells} {}
+RoomType Chamber::type() const { return RoomType::Chamber; }
