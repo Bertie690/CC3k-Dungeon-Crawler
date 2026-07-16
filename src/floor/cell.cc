@@ -24,6 +24,7 @@ using namespace std;
 export class Cell {
   Position position;
   TileType tileType;
+  // Shared so Game can preserve the player while cell stores it
   vector<shared_ptr<Entity>> entities;
 
  public:
