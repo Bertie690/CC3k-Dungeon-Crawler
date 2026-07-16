@@ -1718,8 +1718,8 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>344</x>
-      <y>240</y>
+      <x>1792</x>
+      <y>512</y>
       <w>112</w>
       <h>24</h>
     </coordinates>
@@ -1729,8 +1729,8 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>584</x>
-      <y>272</y>
+      <x>1792</x>
+      <y>544</y>
       <w>128</w>
       <h>24</h>
     </coordinates>
@@ -1740,8 +1740,8 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>344</x>
-      <y>208</y>
+      <x>1792</x>
+      <y>480</y>
       <w>112</w>
       <h>24</h>
     </coordinates>
@@ -1751,8 +1751,8 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>272</y>
+      <x>1672</x>
+      <y>576</y>
       <w>112</w>
       <h>24</h>
     </coordinates>
@@ -1762,8 +1762,8 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>240</y>
+      <x>1672</x>
+      <y>544</y>
       <w>112</w>
       <h>24</h>
     </coordinates>
@@ -1773,8 +1773,8 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>344</x>
-      <y>272</y>
+      <x>1672</x>
+      <y>480</y>
       <w>112</w>
       <h>24</h>
     </coordinates>
@@ -1784,12 +1784,34 @@ cbase=l</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>208</y>
+      <x>1672</x>
+      <y>512</y>
       <w>112</w>
       <h>24</h>
     </coordinates>
     <panel_attributes>GameQuitEvent</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>88</x>
+      <y>16</y>
+      <w>112</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>EntityDeathEvent</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>88</x>
+      <y>16</y>
+      <w>112</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>EntityDeathEvent</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
