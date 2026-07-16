@@ -33,4 +33,4 @@ export struct Quit {};
 export using PlayerAction =
     std::variant<Pass, Move, Attack, UsePotion, RaceSelect, FreezeEnemies, Quit>;
 // An action any character can take.
-export using Action = std::variant<Pass, Move, Attack>;
+export using Action = std::variant<Pass, Move, Attack, UsePotion>;
