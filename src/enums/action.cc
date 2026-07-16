@@ -11,7 +11,7 @@ export module action;
 import <variant>;
 import direction;
 import racetype;
-#endif;  // __INTELLISENSE__
+#endif  // __INTELLISENSE__
 
 export struct Pass {};
 export struct Move {

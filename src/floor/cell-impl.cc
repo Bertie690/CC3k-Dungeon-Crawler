@@ -14,7 +14,9 @@ Cell::Cell(Position position, TileType tileType) : position{position}, tileType{
 const Position& Cell::getPosition() const { return position; }
 TileType Cell::getTileType() const { return tileType; }
 const vector<shared_ptr<Entity>>& Cell::getEntities() const { return entities; }
-bool Cell::isWalkable() const { return tileType != TileType::Wall; }
+bool Cell::isWalkable() const {
+  return tileType != TileType::VerticalWall && tileType != TileType::HorizontalWall;
+}
 bool Cell::isOccupied() const { return !entities.empty(); }
 
 void Cell::add(shared_ptr<Entity> entity) {

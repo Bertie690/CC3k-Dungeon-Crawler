@@ -4,7 +4,8 @@ export module tiletype;
 
 export enum class TileType {
   Floor,
-  Wall,
+  VerticalWall,
+  HorizontalWall,
   Door,
   Passage,
 };

@@ -3,6 +3,7 @@ module character;
 #ifdef __INTELLISENSE__
 #include <cmath>
 #include <stdexcept>
+#include <variant>
 
 #include "../enums/action.cc"
 #include "../enums/gold-size.cc"
@@ -11,6 +12,8 @@ module character;
 #include "character.cc"
 #include "entity.cc"
 #include "stats.cc"
+#else
+import <variant>;
 #endif  // __INTELLISENSE__
 
 #pragma region Getters/Hooks

@@ -8,6 +8,8 @@ export module character;
 
 #include "../enums/action.cc"
 #include "../enums/gold-size.cc"
+#include "../enums/race-type.cc"
+#include "../floor/position.cc"
 #include "../floor/cell.cc"
 #include "../floor/floor.cc"
 #include "entity.cc"
@@ -19,6 +21,8 @@ import cell;
 import floor;
 import entity;
 import stats;
+import racetype;
+import position;
 import <stdexcept>;
 import <cmath>;
 #endif  // __INTELLISENSE__
