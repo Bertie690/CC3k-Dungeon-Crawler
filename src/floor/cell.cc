@@ -7,25 +7,35 @@ export module cell;
 #include <vector>
 
 #include "../entities/entity.cc"
-#include "floor.cc"
+#include "../enums/tile-type.cc"
 #include "position.cc"
 #else
 import position;
 import entity;
-import floor;
 import <vector>;
 import <memory>;
+import tiletype;
 #endif  // __INTELLISENSE__
+
+using namespace std;
 
 // A Cell represents a single cell on the Floor grid.
 // It owns all Entities it contains (sharing ownership with Game for players).
-// TODO @ShauryaSuri: Implement methods and such
-class Cell {
- public:
-  Position pos;
-  // Get a reference to the Floor this Cell is on.
-  Floor& getFloor() const;
+export class Cell {
+  Position position;
+  TileType tileType;
+  vector<shared_ptr<Entity>> entities;
 
-  // Get a reference to the Character located at the current Cell, if one exists.
-  Character* const getCharacter() const;
+ public:
+  Cell(Position position, TileType tileType);
+
+  const Position& getPosition() const;
+  TileType getTileType() const;
+  const vector<shared_ptr<Entity>>& getEntities() const;
+
+  bool isWalkable() const;
+  bool isOccupied() const;
+
+  void add(shared_ptr<Entity> entity);
+  void remove(Entity& entity);
 };

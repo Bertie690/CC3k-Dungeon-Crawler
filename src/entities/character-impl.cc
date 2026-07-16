@@ -73,8 +73,15 @@ void Character::act() {
 
   Attack attack = std::get<Attack>(nextMove);
 
-  const Cell c = this->getFloor().getCell(this->pos() + attack.dir);
-  const auto& character = c.getCharacter();
+  const Cell& c = this->getFloor().getCell(this->pos() + attack.dir);
+  Character* character = nullptr;
+  for (const auto& entity : c.getEntities()) {
+    character = dynamic_cast<Character*>(entity.get());
+    if (character) {
+      break;
+    }
+  }
+
   if (!character) {
     throw std::invalid_argument("No character to attack in the given direction.");
   }
