@@ -3,8 +3,8 @@ export module room;
 #pragma once
 
 #ifdef __INTELLISENSE__
+#include <map>
 #include <memory>
-#include <vector>
 
 #include "../entities/entity.cc"
 #include "../enums/room-type.cc"
@@ -12,7 +12,7 @@ export module room;
 #include "position.cc"
 #else
 import <memory>;
-import <vector>;
+import <map>;
 import entity;
 import roomtype;
 import cell;
@@ -21,23 +21,30 @@ import position;
 
 using namespace std;
 
-// Rooms group Cells belonging to the same Chamber or Passage
+// A Room groups a number of Cells in the same area.
 // TODO: random available cell selection?
+// TODO @liamdty: These operations take O(n) time access and also go against the UML
 export class Room {
-  // Floor owns the Cells
-  vector<Cell*> cells;
-  Cell& getCell(const Position& position);
-  const Cell& getCell(const Position& position) const;
+  // The underlying backing storage for the cells, sorted in row-major order.
+  map<Position, unique_ptr<Cell>> cells;
 
  public:
   Room(const vector<Cell*>& cells);
   const vector<Cell*>& getCells() const;
 
+  // Return the type of this Room.
   virtual RoomType type() const = 0;
+
+  // Return whether the given position is within this Room.
   bool isInBounds(const Position& position) const;
+
+  // Return whether the given position is occupied (by an Entity or unwalkable tile).
   bool isOccupied(const Position& position) const;
-  void add(shared_ptr<Entity> entity, const Position& position);
-  void remove(Entity& entity, const Position& position);
+
+  // Obtain a reference to the Cell at the given position.
+  Cell& operator[](const Position& position);
+  // Obtain a reference to the Cell at the given position.
+  const Cell& operator[](const Position& position) const;
 
   virtual ~Room() = default;
 };

@@ -12,58 +12,30 @@ import <utility>;
 
 using namespace std;
 
-Floor::Floor(RNG& rng) : rng{rng} {
-  // sets all cells[HEIGHT][WIDTH] = nullptr
-  cells.resize(HEIGHT);
-  for (vector<unique_ptr<Cell>>& row : cells) {
-    row.resize(WIDTH);
-  }
-}
+Floor::Floor(RNG& rng) : rng{rng}, rooms() {}
 
-bool Floor::isValidPosition(const Position& position) const {
+bool Floor::isInBounds(const Position& position) const {
   return position.x >= 0 && position.y >= 0 && position.x < WIDTH && position.y < HEIGHT;
 }
 
-Cell& Floor::addCell(Position position, TileType tileType) {
-  if (!isValidPosition(position)) throw out_of_range{"Invalid cell position"};
-  if (hasCell(position)) throw invalid_argument{"Floor position already has cell"};
+void Floor::addRoom(Room& room) { rooms.push_back(std::make_unique<Room>(room)); }
 
-  unique_ptr<Cell>& cell = cells[position.y][position.x];
-  cell = make_unique<Cell>(position, tileType);
-  return *cell;
-}
-
-Room& Floor::addRoom(unique_ptr<Room> room) {
-  // Transfers Room ownership to Floor
-  rooms.push_back(std::move(room));
-  return *rooms[rooms.size() - 1];
-}
-
-bool Floor::hasCell(const Position& position) const {
-  if (!isValidPosition(position)) return false;
-  return cells[position.y][position.x] != nullptr;
-}
-
-Cell& Floor::getCell(const Position& position) {
-  if (!hasCell(position)) throw out_of_range{"No cell at this position"};
-  return *cells[position.y][position.x];
-}
+Cell& Floor::getCell(const Position& position) { return this->getRoomAt(position)[position]; }
 const Cell& Floor::getCell(const Position& position) const {
-  if (!hasCell(position)) throw out_of_range{"No cell at this position"};
-  return *cells[position.y][position.x];
+  return this->getRoomAt(position)[position];
 }
 
 Room& Floor::getRoomAt(const Position& position) {
   for (const unique_ptr<Room>& room : rooms) {
     if (room->isInBounds(position)) return *room;
   }
-  throw out_of_range{"No room at this postiion"};
+  throw out_of_range{"No room at this position"};
 }
 const Room& Floor::getRoomAt(const Position& position) const {
   for (const unique_ptr<Room>& room : rooms) {
     if (room->isInBounds(position)) return *room;
   }
-  throw out_of_range{"No room at this postiion"};
+  throw out_of_range{"No room at this position"};
 }
 
 void Floor::runTurn() {

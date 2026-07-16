@@ -24,7 +24,8 @@ using namespace std;
 export class Cell {
   Position position;
   TileType tileType;
-  // Shared so Game can preserve the player while cell stores it
+  // The underlying backing storage for the entities in this Cell.
+  // Uses shared pointers to allow for shared ownership between the Cell and the Game (for players).
   vector<shared_ptr<Entity>> entities;
 
  public:
@@ -37,6 +38,6 @@ export class Cell {
   bool isWalkable() const;
   bool isOccupied() const;
 
-  void add(shared_ptr<Entity> entity);
+  void add(Entity& entity);
   void remove(Entity& entity);
 };
