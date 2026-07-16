@@ -24,27 +24,30 @@ import room;
 using namespace std;
 
 export class Floor {
-  vector<vector<unique_ptr<Cell>>> cells;
   vector<unique_ptr<Room>> rooms;
 
-  // Check out of bounds helper
-  bool isValidPosition(const Position& position) const;
+  // Return whether the given position is valid on this Floor.
+  bool isInBounds(const Position& position) const;
 
  public:
-  static const int HEIGHT = 25;
-  static const int WIDTH = 79;
+  static inline const int HEIGHT = 25;
+  static inline const int WIDTH = 79;
 
   // A reference to the global game RNG, for use by Cells and Characters on this Floor.
   RNG& rng;
 
   Floor(RNG& rng);
-  Cell& addCell(Position position, TileType tileType);
-  Room& addRoom(unique_ptr<Room> room);
-  bool hasCell(const Position& position) const;
+
+  // Add a Room to the floor.
+  void addRoom(Room& room);
+
   // Get a cell by its absolute position.
   const Cell& getCell(const Position& position) const;
   Cell& getCell(const Position& position);
+
   Room& getRoomAt(const Position& position);
+  // Get the Room at the given position, throwing an exception if there is none.
   const Room& getRoomAt(const Position& position) const;
+
   void runTurn();
 };

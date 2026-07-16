@@ -15,10 +15,14 @@ export struct Position {
   // The Y coordinate. Positive is down, negative is up.
   int y;
 
-  // TODO: Add more overloads if we need em
-
-  bool operator==(const Position& other) const;
-  bool operator!=(const Position& other) const;
+  // Compare 2 Positions by their coordinates (row-major order).
+  std::strong_ordering operator<=>(const Position& other) const = default;
+  bool operator==(const Position& other) const = default;
+  bool operator!=(const Position& other) const = default;
+  bool operator<(const Position& other) const = default;
+  bool operator>(const Position& other) const = default;
+  bool operator<=(const Position& other) const = default;
+  bool operator>=(const Position& other) const = default;
 
   Position operator+(const Position& other) const;
   Position operator-(const Position& other) const;

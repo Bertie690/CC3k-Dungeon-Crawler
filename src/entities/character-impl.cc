@@ -20,17 +20,6 @@ import <variant>;
 Character::Character(Stats baseStats, RaceType raceType)
     : Entity{}, baseStats(baseStats), raceType(raceType){};
 
-const Position& Character::pos() const {
-  // TODO @ShauryaSuri: implement alongside floor stuff
-  static Position p{0, 0};
-  return p;
-};
-
-const Floor& Character::getFloor() const {
-  // TODO @ShauryaSuri: implement alongside floor stuff
-  throw 1;
-};
-
 unsigned int Character::atk() const { return this->getStats().atk; }
 unsigned int Character::def() const { return this->getStats().def; }
 unsigned int Character::maxHp() const { return this->getStats().maxHp; }
@@ -64,12 +53,13 @@ void Character::drain(Character& defender, int amt) {
 }
 
 #pragma region Actions
-void Character::act() {
+void Character::act(Floor& floor) {
   Action nextMove = this->getNextMove();
 
   if (Pass* pass = std::get_if<Pass>(&nextMove)) {
     return;
   }
+
   if (Move* move = std::get_if<Move>(&nextMove)) {
     // TODO implement movement
   }

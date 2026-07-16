@@ -10,36 +10,30 @@ import <stdexcept>;
 
 using namespace std;
 
-Room::Room(const vector<Cell*>& cells) : cells{cells} {
-  if (this->cells.empty()) {
+Room::Room(const vector<Cell*>& cells) {
+  if (cells.empty()) {
     throw invalid_argument{"A Room requires at least 1 Cell"};
   }
-}
-
-Cell& Room::getCell(const Position& position) {
   for (Cell* cell : cells) {
-    if (cell->getPosition() == position) return *cell;
+    this->cells.emplace(cell->getPosition(), unique_ptr<Cell>{cell});
   }
-  throw out_of_range{"Position not in Room"};
-}
-
-const Cell& Room::getCell(const Position& position) const {
-  for (const Cell* cell : cells) {
-    if (cell->getPosition() == position) return *cell;
-  }
-  throw out_of_range{"Position not in Room"};
 }
 
 bool Room::isInBounds(const Position& position) const {
-  for (const Cell* cell : cells) {
-    if (cell->getPosition() == position) return true;
-  }
-  return false;
+  return cells.find(position) != cells.end();
 }
 
-const vector<Cell*>& Room::getCells() const { return cells; }
-bool Room::isOccupied(const Position& position) const { return getCell(position).isOccupied(); }
-void Room::add(shared_ptr<Entity> entity, const Position& position) {
-  getCell(position).add(entity);
+const vector<Cell*>& Room::getCells() const {
+  vector<Cell*> cellPtrs;
+  for (const auto& [_, cell] : cells) {
+    cellPtrs.push_back(cell.get());
+  }
+  return cellPtrs;
 }
-void Room::remove(Entity& entity, const Position& position) { getCell(position).remove(entity); }
+bool Room::isOccupied(const Position& position) const {
+  const Cell& cell = (*this)[position];
+  return cell.isOccupied() || !cell.isWalkable();
+}
+
+const Cell& Room::operator[](const Position& position) const { return *cells.at(position); }
+Cell& Room::operator[](const Position& position) { return *cells.at(position); }

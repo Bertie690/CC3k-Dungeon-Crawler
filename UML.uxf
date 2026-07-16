@@ -114,7 +114,8 @@ observers</panel_attributes>
     </coordinates>
     <panel_attributes>/Entity/
 --
-/#onOverlap(Entity e): bool/</panel_attributes>
+/#onOverlap(Entity e): bool/
+/+hasCollision(): bool/</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -433,6 +434,7 @@ m2=0..1</panel_attributes>
     <panel_attributes>DragonHoard
 --
 /-canPickup(): bool/
+/+hasCollision(): bool/
 /-onNotify(EntityDeathEvent)/</panel_attributes>
     <additional_attributes/>
   </element>
@@ -866,7 +868,7 @@ m2pos=0,-5</panel_attributes>
     <coordinates>
       <x>1000</x>
       <y>80</y>
-      <w>48</w>
+      <w>40</w>
       <h>312</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
@@ -1368,16 +1370,16 @@ cbase=l</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1176</x>
+      <x>1184</x>
       <y>504</y>
-      <w>80</w>
+      <w>72</w>
       <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1..n
 factories
 cbase=l</panel_attributes>
-    <additional_attributes>60;10;60;70</additional_attributes>
+    <additional_attributes>50;10;50;70</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>

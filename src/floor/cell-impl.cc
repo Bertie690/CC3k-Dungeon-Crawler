@@ -17,18 +17,24 @@ const vector<shared_ptr<Entity>>& Cell::getEntities() const { return entities; }
 bool Cell::isWalkable() const {
   return tileType != TileType::VerticalWall && tileType != TileType::HorizontalWall;
 }
-bool Cell::isOccupied() const { return !entities.empty(); }
 
-void Cell::add(shared_ptr<Entity> entity) {
-  if (!entity) {
-    throw invalid_argument{"Can't add invalid entity"};
+bool Cell::isOccupied() const {
+  for (const auto& entity : entities) {
+    if (entity->hasCollision()) {
+      return true;
+    }
   }
+  return false;
+}
+
+void Cell::add(Entity& entity) {
+  // TODO: do we even need bounds checking?
   for (const shared_ptr<Entity>& cur : entities) {
-    if (cur == entity) {
+    if (cur.get() == &entity) {
       throw invalid_argument{"Entity is already in Cell"};
     }
   }
-  entities.push_back(entity);
+  entities.push_back(make_shared<Entity>(entity));
 }
 
 void Cell::remove(Entity& entity) {

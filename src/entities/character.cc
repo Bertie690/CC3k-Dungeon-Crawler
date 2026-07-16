@@ -49,6 +49,7 @@ export class Character : public Entity {
   // Return whether this Character is dead.
   bool isDead() const;
 
+  // Attempt to attack another Character.
   void attack(Character& defender);
 
  protected:
@@ -88,7 +89,7 @@ export class Character : public Entity {
   virtual ~Character() = default;
 
   // Perform an action for the turn.
-  void act();
+  void act(Floor& floor);
   // Deal the given amount of damage to this Character.
   // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
   void damage(unsigned int amt, bool lethal = true);
