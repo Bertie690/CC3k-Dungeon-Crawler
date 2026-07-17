@@ -6,15 +6,19 @@ export module tuirenderer;
 #include <string>
 #include <vector>
 
+#include "../entities/entity.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
+#include "../floor/cell.cc"
 #include "../floor/floor.cc"
 #include "renderer.cc"
 #else
 import renderer;
 import observer;
 import gameevents;
+import entity;
 import floor;
+import cell;
 import <vector>;
 import <string>;
 #endif

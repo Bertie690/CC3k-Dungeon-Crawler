@@ -84,7 +84,7 @@ export class Character : public Entity {
   void drain(Character& defender, int amt);
 
  public:
-  Character(Stats baseStats, RaceType raceType);
+  Character(Position position, Stats baseStats, RaceType raceType);
 
   virtual ~Character() = default;
 

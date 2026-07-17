@@ -37,3 +37,26 @@ Position Position::operator+(const Direction dir) const { return *this + fromDir
 Position Position::operator-(const Direction dir) const { return *this - fromDirection(dir); }
 Position& Position::operator+=(const Direction dir) { return *this += fromDirection(dir); }
 Position& Position::operator-=(const Direction dir) { return *this -= fromDirection(dir); }
+
+Position Position::fromDirection(const Direction dir) {
+  switch (dir) {
+    case Direction::North:
+      return Position{0, -1};
+    case Direction::South:
+      return Position{0, 1};
+    case Direction::East:
+      return Position{1, 0};
+    case Direction::West:
+      return Position{-1, 0};
+    case Direction::NorthEast:
+      return Position{1, -1};
+    case Direction::SouthEast:
+      return Position{1, 1};
+    case Direction::SouthWest:
+      return Position{-1, 1};
+    case Direction::NorthWest:
+      return Position{-1, -1};
+  }
+  //should be unreachable
+  return Position{0, 0};
+}

@@ -17,6 +17,7 @@ import <memory>;
 import <map>;
 import <vector>;
 import entity;
+import direction;
 import roomtype;
 import cell;
 import position;

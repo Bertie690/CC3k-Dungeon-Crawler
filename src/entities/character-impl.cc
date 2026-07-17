@@ -17,8 +17,8 @@ import <variant>;
 #endif  // __INTELLISENSE__
 
 #pragma region Getters/Hooks
-Character::Character(Stats baseStats, RaceType raceType)
-    : Entity{}, baseStats(baseStats), raceType(raceType){};
+Character::Character(Position position, Stats baseStats, RaceType raceType)
+    : Entity{position}, baseStats(baseStats), raceType(raceType) {};
 
 unsigned int Character::atk() const { return this->getStats().atk; }
 unsigned int Character::def() const { return this->getStats().def; }

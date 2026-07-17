@@ -8,6 +8,7 @@ export module gameevents;
 #include "../entities/entity.cc"
 #include "../enums/action.cc"
 #include "../enums/race-type.cc"
+#include "../floor/floor.cc"
 #include "../floor/position.cc"
 #else
 import <string>;
@@ -15,6 +16,7 @@ import position;
 import entity;
 import racetype;
 import action;
+import floor;
 #endif  // __INTELLISENSE__
 
 export struct EntityDeathEvent {
