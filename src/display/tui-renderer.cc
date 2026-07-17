@@ -37,8 +37,8 @@ export class TUIRenderer : public Renderer,
 
  public:
   TUIRenderer();
-  void draw() override;
-  void onNotify(const EntityDeathEvent& event) override;
-  void onNotify(const EntityMoveEvent& event) override;
-  void onNotify(const NewFloorEvent& event) override;
+  virtual void draw() override;
+  virtual void onNotify(const EntityDeathEvent& event) override;
+  virtual void onNotify(const EntityMoveEvent& event) override;
+  virtual void onNotify(const NewFloorEvent& event) override;
 };

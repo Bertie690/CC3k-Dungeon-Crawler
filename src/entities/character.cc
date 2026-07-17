@@ -51,12 +51,6 @@ export class Character : public Entity {
   void attack(Character& defender);
 
  protected:
-  // Get this Character's current position.
-  const Position& pos() const;
-
-  // Return a reference to the current floor.
-  const Floor& getFloor() const;
-
   // Return this Character's current stats.
   virtual Stats getStats() const;
   // Return this Character's current accuracy multiplier against the given defender.
