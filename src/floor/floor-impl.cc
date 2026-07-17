@@ -20,6 +20,10 @@ bool Floor::isInBounds(const Position& position) const {
 
 void Floor::addRoom(unique_ptr<Room> room) { rooms.push_back(std::move(room)); }
 
+bool Floor::hasCell(const Position& position) const noexcept {
+  return this->getRoomAt(position).isInBounds(position);
+}
+
 Cell& Floor::getCell(const Position& position) { return this->getRoomAt(position)[position]; }
 const Cell& Floor::getCell(const Position& position) const {
   return this->getRoomAt(position)[position];

@@ -13,3 +13,9 @@ export enum class Direction {
   SouthWest,
   NorthWest,
 };
+
+// An array containing all cardinal directions in clockwise order.
+export const Direction allDirections[8] = {
+    Direction::North,     Direction::East,      Direction::South,     Direction::West,
+    Direction::NorthEast, Direction::SouthEast, Direction::SouthWest, Direction::NorthWest,
+};

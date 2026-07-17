@@ -31,8 +31,24 @@ const vector<Cell*>& Room::getCells() const {
   return cellPtrs;
 }
 bool Room::isOccupied(const Position& position) const {
+  if (!isInBounds(position)) return false;
   const Cell& cell = (*this)[position];
   return cell.isOccupied() || !cell.isWalkable();
+}
+
+const vector<Direction>& Room::getAdjacentCells(const Position& position,
+                                                const bool walkableOnly) const {
+  static vector<Direction> adjacentDirections;
+
+  adjacentDirections.clear();
+  for (const Direction dir : allDirections) {
+    const Position adjacentPos = position + dir;
+    if (isInBounds(adjacentPos) && (!walkableOnly || !(*this)[adjacentPos].isOccupied() &&
+                                                         (*this)[adjacentPos].isWalkable())) {
+      adjacentDirections.push_back(dir);
+    }
+  }
+  return adjacentDirections;
 }
 
 const Cell& Room::operator[](const Position& position) const { return *cells.at(position); }

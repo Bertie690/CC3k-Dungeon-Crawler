@@ -90,7 +90,7 @@ void Character::attack(Character& defender) {
 
     if (this->getFloor().rng.randDouble() > accuracy * evasion) {
       // miss
-      // TODO: Add a UI event
+      // TODO: Add a UI event?
       continue;
     }
 

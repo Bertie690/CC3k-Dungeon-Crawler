@@ -7,6 +7,7 @@ export module room;
 #include <memory>
 
 #include "../entities/entity.cc"
+#include "../enums/direction.cc"
 #include "../enums/room-type.cc"
 #include "cell.cc"
 #include "position.cc"
@@ -35,13 +36,18 @@ export class Room {
   // Return whether the given position is within this Room.
   bool isInBounds(const Position& position) const;
 
-  // Return whether the given position is occupied (by an Entity or unwalkable tile).
+  // Return whether the given position is occupied (by an Entity and/or unwalkable tile).
   bool isOccupied(const Position& position) const;
 
   // Obtain a reference to the Cell at the given position.
   Cell& operator[](const Position& position);
   // Obtain a reference to the Cell at the given position.
   const Cell& operator[](const Position& position) const;
+
+  // Return all directions that contain adjacent Cells in this Room.
+  // If walkableOnly is true, only return directions that contain unoccupied and traversable Cells.
+  const std::vector<Direction>& getAdjacentCells(const Position& position,
+                                                 const bool walkableOnly = false) const;
 
   virtual ~Room() = default;
 };

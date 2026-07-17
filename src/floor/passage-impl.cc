@@ -4,6 +4,4 @@ module passage;
 #include "passage.cc"
 #endif  // __INTELLISENSE__
 
-using namespace std;
-
 RoomType Passage::type() const { return RoomType::Passage; }

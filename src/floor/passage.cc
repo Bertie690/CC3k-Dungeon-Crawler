@@ -6,12 +6,10 @@ export module passage;
 #include <vector>
 
 #include "../enums/room-type.cc"
-#include "cell.cc"
 #include "room.cc"
 #else
 import <vector>;
 import roomtype;
-import cell;
 import room;
 #endif  // __INTELLISENSE__
 

@@ -39,6 +39,10 @@ export class Floor {
   // Add a Room to the floor.
   void addRoom(std::unique_ptr<Room> room);
 
+  // Return whether the given position is within a Room on this Floor.
+  // If includeOccupied is false, also check that the cell is unoccupied.
+  bool hasCell(const Position& position) const noexcept;
+
   // Get a cell by its absolute position.
   Cell& getCell(const Position& position);
   // Get a cell by its absolute position.
