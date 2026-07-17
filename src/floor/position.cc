@@ -3,8 +3,11 @@ export module position;
 #pragma once
 
 #ifdef __INTELLISENSE__
+#include <compare>
+
 #include "../enums/direction.cc"
 #else
+import <compare>;
 import direction;
 #endif  // __INTELLISENSE__
 
@@ -16,7 +19,7 @@ export struct Position {
   int y;
 
   // Compare 2 Positions by their coordinates (row-major order).
-  std::strong_ordering operator<=>(const Position& other) const = default;
+  std::strong_ordering operator<=>(const Position& other) const;
   bool operator==(const Position& other) const = default;
   bool operator!=(const Position& other) const = default;
   bool operator<(const Position& other) const = default;

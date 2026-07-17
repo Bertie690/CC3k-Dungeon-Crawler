@@ -5,6 +5,9 @@ module position;
 
 #include "../enums/direction.cc"
 #include "position.cc"
+#else
+import <compare>;
+import direction;
 #endif  // __INTELLISENSE__
 
 std::strong_ordering Position::operator<=>(const Position& other) const {

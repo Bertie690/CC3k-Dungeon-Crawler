@@ -5,6 +5,7 @@ export module room;
 #ifdef __INTELLISENSE__
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "../entities/entity.cc"
 #include "../enums/direction.cc"
@@ -14,6 +15,7 @@ export module room;
 #else
 import <memory>;
 import <map>;
+import <vector>;
 import entity;
 import roomtype;
 import cell;
@@ -26,9 +28,8 @@ export class Room {
   std::map<Position, std::unique_ptr<Cell>> cells;
 
  public:
-  // TODO: Should this take unique ptrs?
-  Room(const std::vector<Cell*>& cells);
-  const std::vector<Cell*>& getCells() const;
+  Room(std::vector<std::unique_ptr<Cell>> cells);
+  std::vector<Cell*> getCells() const;
 
   // Return the type of this Room.
   virtual RoomType type() const = 0;

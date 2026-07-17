@@ -1,11 +1,17 @@
 module cell;
 
 #ifdef __INTELLISENSE__
+#include <memory>
 #include <stdexcept>
+#include <utility>
+#include <vector>
 
 #include "cell.cc"
 #else
+import <memory>;
 import <stdexcept>;
+import <utility>;
+import <vector>;
 #endif  // __INTELLISENSE__
 
 using namespace std;
