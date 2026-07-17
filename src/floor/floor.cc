@@ -28,7 +28,9 @@ export class Floor {
   bool isInBounds(const Position& position) const;
 
  public:
+  // The height of a single Floor grid.
   static inline const int HEIGHT = 25;
+  // The width of a single Floor grid.
   static inline const int WIDTH = 79;
 
   // A reference to the global game RNG, for use by Cells and Characters on this Floor.
@@ -41,7 +43,7 @@ export class Floor {
 
   // Return whether the given position is within a Room on this Floor.
   // If includeOccupied is false, also check that the cell is unoccupied.
-  bool hasCell(const Position& position) const noexcept;
+  bool hasCell(const Position& position) const;
 
   // Get a cell by its absolute position.
   Cell& getCell(const Position& position);

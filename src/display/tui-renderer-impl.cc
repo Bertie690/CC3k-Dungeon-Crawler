@@ -8,6 +8,7 @@ module tuirenderer;
 #include "../entities/item.cc"
 #include "../entities/staircase.cc"
 #include "../enums/item-type.cc"
+#include "../enums/race-type.cc"
 #include "tui-renderer.cc"
 #else
 import <iostream>;
@@ -16,20 +17,25 @@ import entity;
 import character;
 import item;
 import itemtype;
+import racetype;
 
 #endif  // __INTELLISENSE__
 
 using namespace std;
 
 namespace Color {
-  const string Reset = "\033[0m";
-  const string Bold = "\033[1m";
-  const string Red = "\033[31m";
-  const string Green = "\033[32m";
-  const string Yellow = "\033[33m";
-  const string Blue = "\033[34m";
-  const string Magenta = "\033[35m";
-  const string Cyan = "\033[36m";
+  const string RESET = "\033[0m";
+  const string BOLD = "\033[1m";
+  const string RED = "\033[31m";
+  const string GREEN = "\033[32m";
+  const string YELLOW = "\033[33m";
+  const string BLUE = "\033[34m";
+  const string MAGENTA = "\033[35m";
+  const string CYAN = "\033[36m";
+
+  constexpr string rgbToAnsi(const int r, const int g, const int b) {
+    return "\033[38;2;" + to_string(r) + ";" + to_string(g) + ";" + to_string(b) + "m";
+  }
 }  // namespace Color
 
 TUIRenderer::TUIRenderer() : currentFloor{nullptr} {}
@@ -47,15 +53,13 @@ void TUIRenderer::rebuildGrid() {
       Position pos{x, y};
 
       if (currentFloor->hasCell(pos)) {
-        displayGrid[y][x] = determineSymbol(currentFloor->getCell(pos));
-      } else {
-        displayGrid[y][x] = " ";
+        displayGrid[y][x] = getCellText(currentFloor->getCell(pos));
       }
     }
   }
 }
 
-string TUIRenderer::determineSymbol(const Cell& cell) const {
+string TUIRenderer::getCellText(const Cell& cell) const {
   if (cell.isOccupied()) {
     // TODO: This doesn't always work? We need some sort of precedence
     return getEntitySymbol(*cell.getEntities().back());
@@ -79,52 +83,58 @@ string TUIRenderer::determineSymbol(const Cell& cell) const {
 
 string TUIRenderer::getEntitySymbol(const Entity& entity) const noexcept {
   if (auto staircase = dynamic_cast<const Staircase*>(&entity)) {
-    return Color::Blue + "\\" + Color::Reset;
+    return Color::BLUE + "\\" + Color::RESET;
   }
+
   if (auto character = dynamic_cast<const Character*>(&entity)) {
-    switch (character->type) {
-      case CharacterType::Player:
-        return Color::Blue + "@" + Color::Reset;
-      case CharacterType::Dragon:
-        return Color::Red + "D" + Color::Reset;
-      case CharacterType::Halfling:
-        return Color::Red + "L" + Color::Reset;
-      case CharacterType::Merchant:
-        return Color::Red + "M" + Color::Reset;
-      case CharacterType::Human:
-        return Color::Red + "H" + Color::Reset;
-      case CharacterType::Dwarf:
-        return Color::Red + "W" + Color::Reset;
-      case CharacterType::Elf:
-        return Color::Red + "E" + Color::Reset;
-      case CharacterType::Orc:
-        return Color::Red + "O" + Color::Reset;
+    switch (character->raceType) {
+      case RaceType::Human:
+        return Color::RED + "H" + Color::RESET;
+      case RaceType::Dwarf:
+        return Color::RED + "W" + Color::RESET;
+      case RaceType::Elf:
+        return Color::RED + "E" + Color::RESET;
+      case RaceType::Orc:
+        return Color::RED + "O" + Color::RESET;
+      case RaceType::Merchant:
+        return Color::RED + "M" + Color::RESET;
+      case RaceType::Dragon:
+        return Color::RED + "D" + Color::RESET;
+      case RaceType::Halfling:
+        return Color::RED + "L" + Color::RESET;
+      case RaceType::Shade:
+      case RaceType::Drow:
+      case RaceType::Vampire:
+      case RaceType::Troll:
+      case RaceType::Goblin:
+        return Color::RED + "@" + Color::RESET;
       default:
-        throw std::runtime_error("Unknown character type");
-    }  // No need to implement player classes since all classes have the symbol @ for PC
+        throw std::runtime_error("Unknown character race type!");
+    }
   }
+
   if (auto item = dynamic_cast<const Item*>(&entity)) {
     switch (item->type) {
       case ItemType::Potion:
-        return Color::Green + "P" + Color::Reset;
-      case ItemType::Gold:
-        return Color::Yellow + "G" + Color::Reset;
+        return Color::GREEN + "P" + Color::RESET;
+      case ItemType::GoldPile:
+        return Color::YELLOW + "G" + Color::RESET;
       default:
         throw std::runtime_error("Unknown item type");
     }
   }
   throw std::runtime_error("Unknown entity class instance!");
-  return '?';
 }
 
 void TUIRenderer::draw() {
   if (!currentFloor) {
-    cout << "No floor loaded" << endl;
+    // TODO: Add race selection screen?
+    cerr << "No floor loaded" << endl;
     return;
   }
 
-  for (const auto& row : displayGrid) {
-    for (const auto& cell : row) {
+  for (const vector<string>& row : displayGrid) {
+    for (const string& cell : row) {
       cout << cell;
     }
     cout << endl;
@@ -135,7 +145,7 @@ void TUIRenderer::onNotify(const EntityDeathEvent& event) {
   if (!currentFloor) return;
   const Position position = event.entity.position;
   const Cell& cell = currentFloor->getCell(position);
-  displayGrid[position.y][position.x] = determineSymbol(cell);
+  displayGrid[position.y][position.x] = getCellText(cell);
 }
 
 void TUIRenderer::onNotify(const EntityMoveEvent& event) {
@@ -144,8 +154,8 @@ void TUIRenderer::onNotify(const EntityMoveEvent& event) {
   const Cell& fromCell = currentFloor->getCell(event.from);
   const Cell& toCell = currentFloor->getCell(event.to);
 
-  displayGrid[event.from.y][event.from.x] = determineSymbol(fromCell);
-  displayGrid[event.to.y][event.to.x] = determineSymbol(toCell);
+  displayGrid[event.from.y][event.from.x] = getCellText(fromCell);
+  displayGrid[event.to.y][event.to.x] = getCellText(toCell);
 }
 
 void TUIRenderer::onNotify(const NewFloorEvent& event) {

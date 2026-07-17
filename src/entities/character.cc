@@ -31,8 +31,6 @@ import <cmath>;
 export class Character : public Entity {
   // This Character's current HP.
   int hp;
-  // The race this character belongs to, for identification purposes.
-  const RaceType raceType;
   // The character's base stats.
   const Stats baseStats;
 
@@ -84,6 +82,9 @@ export class Character : public Entity {
   void drain(Character& defender, int amt);
 
  public:
+  // The race this character belongs to, for identification & display purposes.
+  const RaceType raceType;
+
   Character(Position position, Stats baseStats, RaceType raceType);
   virtual ~Character() = default;
 
