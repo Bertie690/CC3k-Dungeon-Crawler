@@ -64,6 +64,11 @@ void Character::act(Floor& floor) {
     floor.move(*this, this->position + move->dir);
   }
 
+  if (UsePotion* potion = std::get_if<UsePotion>(&nextMove)) {
+    // TODO: Implement potion usage
+    return;
+  }
+
   Attack attack = std::get<Attack>(nextMove);
   const Cell& c = floor.getCell(this->position + attack.dir);
 
