@@ -4,7 +4,7 @@ export module cell;
 
 #ifdef __INTELLISENSE__
 #include <memory>
-#include <type_traits>;
+#include <type_traits>
 #include <vector>
 
 #include "../entities/entity.cc"

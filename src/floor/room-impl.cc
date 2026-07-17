@@ -21,7 +21,7 @@ Room::Room(vector<unique_ptr<Cell>> cells) {
     throw invalid_argument{"A Room requires at least 1 Cell"};
   }
   for (unique_ptr<Cell>& cell : cells) {
-    this->cells.emplace(cell->getPosition(), move(cell));
+    this->cells.emplace(cell->position, move(cell));
   }
 }
 
