@@ -20,9 +20,8 @@ double RNG::randDouble() {
   return dist(twister);
 }
 
-template <typename Container>
-  requires IsContainer<Container>
-typename Container::value_type& RNG::pick(Container& c) {
+template <Container C>
+typename C::value_type& RNG::pick(C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }

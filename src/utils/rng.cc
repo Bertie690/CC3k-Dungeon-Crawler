@@ -14,7 +14,7 @@ import <type_traits>;
 
 // Concept representing a container with size and random access.
 export template <typename T>
-concept IsContainer = requires(T c) {
+concept Container = requires(T c) {
   { c.size() } -> std::convertible_to<std::size_t>;
   { c[c.size() - 1] };
 } && requires { typename T::value_type; };  // Ensure the container has a value_type defined
@@ -39,9 +39,8 @@ export class RNG {
 
   // Pick a uniformly chosen element from the given container.
   // Must have a known size and support random access.
-  template <typename Container>
-    requires IsContainer<Container>
-  typename Container::value_type& pick(Container& c);
+  template <Container C>
+  typename C::value_type& pick(C& c);
 
   // Pick a uniformly chosen element from the given known-size array.
   template <typename T>
