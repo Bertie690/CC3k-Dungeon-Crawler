@@ -42,9 +42,9 @@ void Cell::add(std::shared_ptr<Entity> entity) {
   entities.push_back(std::move(entity));
 }
 
-void Cell::remove(std::shared_ptr<Entity> entity) {
+void Cell::remove(Entity& entity) {
   for (auto it = entities.begin(); it != entities.end(); ++it) {
-    if (it->get() == entity.get()) {
+    if (it->get() == &entity) {
       entities.erase(it);
       return;
     }

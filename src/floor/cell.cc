@@ -37,5 +37,5 @@ export class Cell {
   bool isOccupied() const;
 
   void add(std::shared_ptr<Entity> entity);
-  void remove(std::shared_ptr<Entity> entity);
+  void remove(Entity& entity);
 };
