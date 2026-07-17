@@ -21,10 +21,8 @@ import position;
 import room;
 #endif  // __INTELLISENSE__
 
-using namespace std;
-
 export class Floor {
-  vector<unique_ptr<Room>> rooms;
+  std::vector<std::unique_ptr<Room>> rooms;
 
   // Return whether the given position is valid on this Floor.
   bool isInBounds(const Position& position) const;
@@ -39,12 +37,14 @@ export class Floor {
   Floor(RNG& rng);
 
   // Add a Room to the floor.
-  void addRoom(Room& room);
+  void addRoom(std::unique_ptr<Room> room);
 
   // Get a cell by its absolute position.
-  const Cell& getCell(const Position& position) const;
   Cell& getCell(const Position& position);
+  // Get a cell by its absolute position.
+  const Cell& getCell(const Position& position) const;
 
+  // Get the Room at the given position, throwing an exception if there is none.
   Room& getRoomAt(const Position& position);
   // Get the Room at the given position, throwing an exception if there is none.
   const Room& getRoomAt(const Position& position) const;

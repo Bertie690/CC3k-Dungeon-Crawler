@@ -27,22 +27,21 @@ bool Cell::isOccupied() const {
   return false;
 }
 
-void Cell::add(Entity& entity) {
-  // TODO: do we even need bounds checking?
-  for (const shared_ptr<Entity>& cur : entities) {
-    if (cur.get() == &entity) {
-      throw invalid_argument{"Entity is already in Cell"};
+void Cell::add(std::shared_ptr<Entity> entity) {
+  for (const std::shared_ptr<Entity>& cur : entities) {
+    if (cur.get() == entity.get()) {
+      throw std::invalid_argument{"Entity is already in Cell"};
     }
   }
-  entities.push_back(make_shared<Entity>(entity));
+  entities.push_back(std::move(entity));
 }
 
-void Cell::remove(Entity& entity) {
+void Cell::remove(std::shared_ptr<Entity> entity) {
   for (auto it = entities.begin(); it != entities.end(); ++it) {
-    if (it->get() == &entity) {
+    if (it->get() == entity.get()) {
       entities.erase(it);
       return;
     }
   }
-  throw invalid_argument{"Entity isn't in this Cell"};
+  throw std::invalid_argument{"Entity isn't in this Cell"};
 }

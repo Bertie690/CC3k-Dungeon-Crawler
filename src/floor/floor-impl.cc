@@ -18,7 +18,7 @@ bool Floor::isInBounds(const Position& position) const {
   return position.x >= 0 && position.y >= 0 && position.x < WIDTH && position.y < HEIGHT;
 }
 
-void Floor::addRoom(Room& room) { rooms.push_back(std::make_unique<Room>(room)); }
+void Floor::addRoom(unique_ptr<Room> room) { rooms.push_back(std::move(room)); }
 
 Cell& Floor::getCell(const Position& position) { return this->getRoomAt(position)[position]; }
 const Cell& Floor::getCell(const Position& position) const {

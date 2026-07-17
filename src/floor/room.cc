@@ -19,18 +19,15 @@ import cell;
 import position;
 #endif  // __INTELLISENSE__
 
-using namespace std;
-
 // A Room groups a number of Cells in the same area.
-// TODO: random available cell selection?
-// TODO @liamdty: These operations take O(n) time access and also go against the UML
 export class Room {
   // The underlying backing storage for the cells, sorted in row-major order.
-  map<Position, unique_ptr<Cell>> cells;
+  std::map<Position, std::unique_ptr<Cell>> cells;
 
  public:
-  Room(const vector<Cell*>& cells);
-  const vector<Cell*>& getCells() const;
+  // TODO: Should this take unique ptrs?
+  Room(const std::vector<Cell*>& cells);
+  const std::vector<Cell*>& getCells() const;
 
   // Return the type of this Room.
   virtual RoomType type() const = 0;

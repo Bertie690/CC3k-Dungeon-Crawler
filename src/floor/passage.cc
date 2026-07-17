@@ -15,10 +15,7 @@ import cell;
 import room;
 #endif  // __INTELLISENSE__
 
-using namespace std;
-
 export class Passage final : public Room {
  public:
-  Passage(const vector<Cell*>& cells);
-  RoomType type() const override;
+  virtual RoomType type() const override;
 };

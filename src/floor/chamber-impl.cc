@@ -6,5 +6,4 @@ module chamber;
 
 using namespace std;
 
-Chamber::Chamber(const vector<Cell*>& cells) : Room{cells} {}
 RoomType Chamber::type() const { return RoomType::Chamber; }

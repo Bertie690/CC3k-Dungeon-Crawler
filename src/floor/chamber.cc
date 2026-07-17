@@ -15,10 +15,7 @@ import cell;
 import room;
 #endif  // __INTELLISENSE__
 
-using namespace std;
-
 export class Chamber final : public Room {
  public:
-  Chamber(const vector<Cell*>& cells);
-  RoomType type() const override;
+  virtual RoomType type() const override;
 };
