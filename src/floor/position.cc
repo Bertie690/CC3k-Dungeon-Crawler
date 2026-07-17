@@ -19,26 +19,26 @@ export struct Position {
   int y;
 
   // Compare 2 Positions by their coordinates (row-major order).
-  std::strong_ordering operator<=>(const Position& other) const;
-  bool operator==(const Position& other) const = default;
-  bool operator!=(const Position& other) const = default;
-  bool operator<(const Position& other) const = default;
-  bool operator>(const Position& other) const = default;
-  bool operator<=(const Position& other) const = default;
-  bool operator>=(const Position& other) const = default;
+  std::strong_ordering operator<=>(const Position& other) const noexcept;
+  bool operator==(const Position& other) const noexcept = default;
+  bool operator!=(const Position& other) const noexcept = default;
+  bool operator<(const Position& other) const noexcept = default;
+  bool operator>(const Position& other) const noexcept = default;
+  bool operator<=(const Position& other) const noexcept = default;
+  bool operator>=(const Position& other) const noexcept = default;
 
-  Position operator+(const Position& other) const;
-  Position operator-(const Position& other) const;
-  Position& operator+=(const Position& other);
-  Position& operator-=(const Position& other);
+  Position operator+(const Position& other) const noexcept;
+  Position operator-(const Position& other) const noexcept;
+  Position& operator+=(const Position& other) noexcept;
+  Position& operator-=(const Position& other) noexcept;
 
   // direction related operations
 
-  Position operator+(const Direction dir) const;
-  Position operator-(const Direction dir) const;
-  Position& operator+=(const Direction dir);
-  Position& operator-=(const Direction dir);
+  Position operator+(const Direction dir) const noexcept;
+  Position operator-(const Direction dir) const noexcept;
+  Position& operator+=(const Direction dir) noexcept;
+  Position& operator-=(const Direction dir) noexcept;
 
   // Convert a Direction to a Position offset.
-  static Position fromDirection(const Direction dir);
+  static Position fromDirection(const Direction dir) noexcept;
 };

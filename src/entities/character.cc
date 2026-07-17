@@ -85,7 +85,6 @@ export class Character : public Entity {
 
  public:
   Character(Position position, Stats baseStats, RaceType raceType);
-
   virtual ~Character() = default;
 
   // Perform an action for the turn.

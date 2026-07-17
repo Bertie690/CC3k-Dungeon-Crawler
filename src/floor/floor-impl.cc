@@ -42,6 +42,10 @@ const Room& Floor::getRoomAt(const Position& position) const {
   throw out_of_range{"No room at this position"};
 }
 
+void Floor::move(const Entity& entity, const Position& to) {
+  // TODO: Write as part of Implement methods on Floor task
+}
+
 void Floor::runTurn() {
-  // TODO: as part of Implement methods on Floor task
+  // TODO: Write as part of Implement methods on Floor task
 }

@@ -53,5 +53,9 @@ export class Floor {
   // Get the Room at the given position, throwing an exception if there is none.
   const Room& getRoomAt(const Position& position) const;
 
+  // Attempt to move an Entity from its current position to the given position.
+  // Throws an exception if the move is invalid.
+  void move(const Entity& entity, const Position& to);
+
   void runTurn();
 };

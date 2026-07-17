@@ -33,7 +33,7 @@ export class Room {
   std::vector<Cell*> getCells() const;
 
   // Return the type of this Room.
-  virtual RoomType type() const = 0;
+  virtual RoomType type() const noexcept = 0;
 
   // Return whether the given position is within this Room.
   bool isInBounds(const Position& position) const;

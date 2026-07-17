@@ -16,10 +16,10 @@ module character;
 import <variant>;
 #endif  // __INTELLISENSE__
 
-#pragma region Getters/Hooks
 Character::Character(Position position, Stats baseStats, RaceType raceType)
     : Entity{position}, baseStats(baseStats), raceType(raceType) {};
 
+#pragma region Getters/Hooks
 unsigned int Character::atk() const { return this->getStats().atk; }
 unsigned int Character::def() const { return this->getStats().def; }
 unsigned int Character::maxHp() const { return this->getStats().maxHp; }

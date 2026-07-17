@@ -10,16 +10,16 @@ import <compare>;
 import direction;
 #endif  // __INTELLISENSE__
 
-std::strong_ordering Position::operator<=>(const Position& other) const {
+std::strong_ordering Position::operator<=>(const Position& other) const noexcept {
   if (y != other.y) return y <=> other.y;
   return x <=> other.x;
 }
 
-Position Position::operator+(const Position& other) const {
+Position Position::operator+(const Position& other) const noexcept {
   return Position{this->x + other.x, this->y + other.y};
 }
 
-Position Position::operator-(const Position& other) const {
+Position Position::operator-(const Position& other) const noexcept {
   return Position{this->x - other.x, this->y - other.y};
 }
 
@@ -33,12 +33,16 @@ Position& Position::operator-=(const Position& other) {
   this->y -= other.y;
   return *this;
 }
-Position Position::operator+(const Direction dir) const { return *this + fromDirection(dir); }
-Position Position::operator-(const Direction dir) const { return *this - fromDirection(dir); }
-Position& Position::operator+=(const Direction dir) { return *this += fromDirection(dir); }
-Position& Position::operator-=(const Direction dir) { return *this -= fromDirection(dir); }
+Position Position::operator+(const Direction dir) const noexcept {
+  return *this + fromDirection(dir);
+}
+Position Position::operator-(const Direction dir) const noexcept {
+  return *this - fromDirection(dir);
+}
+Position& Position::operator+=(const Direction dir) noexcept { return *this += fromDirection(dir); }
+Position& Position::operator-=(const Direction dir) noexcept { return *this -= fromDirection(dir); }
 
-Position Position::fromDirection(const Direction dir) {
+Position Position::fromDirection(const Direction dir) noexcept {
   switch (dir) {
     case Direction::North:
       return Position{0, -1};
@@ -57,6 +61,7 @@ Position Position::fromDirection(const Direction dir) {
     case Direction::NorthWest:
       return Position{-1, -1};
   }
-  //should be unreachable
+
+  // unreachable
   return Position{0, 0};
 }
