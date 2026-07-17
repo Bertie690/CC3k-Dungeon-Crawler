@@ -52,7 +52,12 @@ void TUIRenderer::rebuildGrid() {
     for (int x = 0; x < Floor::WIDTH; ++x) {
       Position pos{x, y};
 
-      if (currentFloor->hasCell(pos)) {
+      // Add decorative walls around edges
+      if (x == 0 || x == Floor::WIDTH - 1) {
+        displayGrid[y][x] = "|";  // corners use vertical walls
+      } else if (y == 0 || y == Floor::HEIGHT - 1) {
+        displayGrid[y][x] = "-";
+      } else if (currentFloor->hasCell(pos)) {
         displayGrid[y][x] = getCellText(currentFloor->getCell(pos));
       }
     }
@@ -65,7 +70,7 @@ string TUIRenderer::getCellText(const Cell& cell) const {
     return getEntitySymbol(*cell.getEntities().back());
   }
 
-  switch (cell.getTileType()) {
+  switch (cell.tileType) {
     case TileType::Floor:
       return ".";
     case TileType::VerticalWall:
