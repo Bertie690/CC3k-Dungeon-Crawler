@@ -23,10 +23,10 @@ export class TUIRenderer : public Renderer,
                            public Observer<EntityDeathEvent, EntityMoveEvent, NewFloorEvent> {
   // TODO: unused
   const Floor* currentFloor;
-  std::vector<std::string> displayGrid;
+  std::vector<std::vector<std::string>> displayGrid;
 
   char determineSymbol(const Cell& cell) const;
-  char getEntitySymbol(const Entity& entity) const;
+  char getEntitySymbol(const Entity& entity) const noexcept;
   void rebuildGrid();
 
  public:
