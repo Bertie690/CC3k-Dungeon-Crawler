@@ -16,10 +16,11 @@ import <vector>;
 
 using namespace std;
 
-Cell::Cell(Position position, TileType tileType) : position{position}, tileType{tileType} {}
-const Position& Cell::getPosition() const { return position; }
-TileType Cell::getTileType() const { return tileType; }
+Cell::Cell(const Position& position, const TileType tileType)
+    : position{position}, tileType{tileType} {}
+
 const vector<shared_ptr<Entity>>& Cell::getEntities() const { return entities; }
+
 bool Cell::isWalkable() const {
   return tileType != TileType::VerticalWall && tileType != TileType::HorizontalWall;
 }

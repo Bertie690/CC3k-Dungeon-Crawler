@@ -35,7 +35,7 @@ export class Character : public Entity {
   const Stats baseStats;
 
   // Return the next move this Character will take.
-  virtual Action getNextMove() = 0;
+  virtual Action getNextMove(Floor& floor) = 0;
 
   // Return this Character's maximum HP.
   unsigned int maxHp() const;
@@ -48,7 +48,7 @@ export class Character : public Entity {
   bool isDead() const;
 
   // Attempt to attack another Character.
-  void attack(Character& defender);
+  void attack(Character& defender, Floor& floor);
 
  protected:
   // Return this Character's current stats.
@@ -56,6 +56,7 @@ export class Character : public Entity {
   // Return this Character's current accuracy multiplier against the given defender.
   virtual double getAccuracy(Character& defender) const;
   // Return this Character's current evasion multiplier against the given attacker.
+  // (A value of 2 translates to a 50% decrease to enemy accuracy.)
   virtual double getEvasion(Character& attacker) const;
   // Return the number of attacks this Character can make per action taken.
   // (They will all strike the same target.)

@@ -54,19 +54,19 @@ void Character::drain(Character& defender, int amt) {
 
 #pragma region Actions
 void Character::act(Floor& floor) {
-  Action nextMove = this->getNextMove();
+  Action nextMove = this->getNextMove(floor);
 
   if (Pass* pass = std::get_if<Pass>(&nextMove)) {
     return;
   }
 
   if (Move* move = std::get_if<Move>(&nextMove)) {
-    // TODO implement movement
+    floor.move(*this, this->position + move->dir);
   }
 
   Attack attack = std::get<Attack>(nextMove);
+  const Cell& c = floor.getCell(this->position + attack.dir);
 
-  const Cell& c = this->getFloor().getCell(this->pos() + attack.dir);
   Character* character = nullptr;
   for (const auto& entity : c.getEntities()) {
     character = dynamic_cast<Character*>(entity.get());
@@ -79,16 +79,16 @@ void Character::act(Floor& floor) {
     throw std::invalid_argument("No character to attack in the given direction.");
   }
 
-  this->attack(*character);
+  this->attack(*character, floor);
 }
 
-void Character::attack(Character& defender) {
+void Character::attack(Character& defender, Floor& floor) {
   const unsigned int attacks = this->getAttacksPerTurn();
   for (unsigned int i = 0; i < attacks; i++) {
     const double accuracy = this->getAccuracy(defender);
     const double evasion = defender.getEvasion(*this);
 
-    if (this->getFloor().rng.randDouble() > accuracy * evasion) {
+    if (floor.rng.randDouble() > (accuracy / evasion)) {
       // miss
       // TODO: Add a UI event?
       continue;

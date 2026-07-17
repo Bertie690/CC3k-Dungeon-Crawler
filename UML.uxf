@@ -146,7 +146,7 @@ observers</panel_attributes>
 /#onBeingAttacked(Character, uint)/
 /#onKill()/
 /#onTurnEnd()/
-/-getNextMove(): Action/
+/-getNextMove(Floor): Action/
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -162,7 +162,7 @@ observers</panel_attributes>
 --
 +gold: int
 --
-/-getNextMove(): Action/
+/-getNextMove(Floor): Action/
 /-onNotify(PlayerActionEvent)/
 </panel_attributes>
     <additional_attributes/>
@@ -178,7 +178,7 @@ observers</panel_attributes>
     <panel_attributes>Enemy
 --
 _+setFrozen(bool)_
-/-getNextMove(): Action/
+/-getNextMove(Floor): Action/
 /#getGoldDrop(): GoldSize/</panel_attributes>
     <additional_attributes/>
   </element>
@@ -206,7 +206,7 @@ _+setFrozen(bool)_
 /#onBeingAttacked(Character, uint)/
 /#onKill()/
 /#onTurnEnd()/
-/-getNextMove(): Action/
+/-getNextMove(Floor): Action/
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -1087,7 +1087,7 @@ Passage</panel_attributes>
 --
 _-hostile: bool_
 --
-/-getNextMove(): Action/
+/-getNextMove(Floor): Action/
 /#onBeingAttacked(Character, uint)/
 /#getGoldDrop(): GoldSize/</panel_attributes>
     <additional_attributes/>
