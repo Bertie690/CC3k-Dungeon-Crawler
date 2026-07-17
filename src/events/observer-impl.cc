@@ -9,6 +9,14 @@ module observer;
 
 template <typename Event>
   requires std::is_class_v<Event>
+void Subject<Event>::notify(const Event& event) {
+  for (ObserverFor<Event>* const observer : observers) {
+    observer->onNotify(event);
+  }
+}
+
+template <typename Event>
+  requires std::is_class_v<Event>
 void Subject<Event>::attach(ObserverFor<Event>* observer) {
   observers.push_back(observer);
 }
