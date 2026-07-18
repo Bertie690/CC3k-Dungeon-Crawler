@@ -3,11 +3,13 @@ module floor;
 #ifdef __INTELLISENSE__
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 #include "floor.cc"
 #else
 import <stdexcept>;
 import <utility>;
+import <vector>;
 #endif  // __INTELLISENSE__
 
 using namespace std;
@@ -44,6 +46,15 @@ const Room& Floor::getRoomAt(const Position& position) const {
     if (room->isInBounds(position)) return *room;
   }
   throw out_of_range{"No room at this position"};
+}
+
+vector<const Room*> Floor::getRooms() const {
+  vector<const Room*> roomPtrs;
+
+  for (const unique_ptr<Room>& room : rooms) {
+    roomPtrs.push_back(room.get());
+  }
+  return roomPtrs;
 }
 
 void Floor::move(const Entity& entity, const Position& to) {

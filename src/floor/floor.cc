@@ -36,6 +36,9 @@ export class Floor {
   // A reference to the global game RNG, for use by Cells and Characters on this Floor.
   RNG& rng;
 
+  // The position chosen by FloorGenerator where Game should place the Player on this Floor.
+  Position playerSpawn{0, 0};
+
   Floor(RNG& rng);
 
   // Add a Room to the floor.
@@ -53,6 +56,9 @@ export class Floor {
   Room& getRoomAt(const Position& position);
   // Get the Room at the given position, throwing an exception if there is none.
   const Room& getRoomAt(const Position& position) const;
+
+  // Get list of all Rooms.
+  std::vector<const Room*> getRooms() const;
 
   // Attempt to move an Entity from its current position to the given position.
   // Throws an exception if the move is invalid.

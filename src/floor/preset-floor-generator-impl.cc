@@ -40,7 +40,7 @@ void placePresetEntities(Floor& floor, const vector<string>& floorLines) {
           floor.getCell(position).add(make_shared<Staircase>(position));
           break;
         case '@':
-          // TODO: place player
+          floor.playerSpawn = position;
           break;
         case 'H':
         case 'W':
@@ -76,7 +76,7 @@ Floor PresetFloorGenerator::generateFloor() {
 
   Floor floor = createBaseFloor(rng);
 
-  // TODO: add player and factories to signature
+  // TODO: add factories to signature
   placePresetEntities(floor, floorLines);
   return floor;
 }
