@@ -10,7 +10,7 @@ module observer;
 template <typename Event>
   requires std::is_class_v<Event>
 void Subject<Event>::notify(const Event& event) {
-  for (const ObserverFor<Event>* observer : observers) {
+  for (ObserverFor<Event>* observer : observers) {
     observer->onNotify(event);
   }
 }

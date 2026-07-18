@@ -37,6 +37,10 @@ export struct GameQuitEvent {
   bool showScoreboard;
 };
 
+// Request that Game advances to the next Floor.
+export struct FloorTransitionEvent {};
+
+// Notify that Game created a new Floor.
 export struct NewFloorEvent {
   Floor* newFloor;
 };

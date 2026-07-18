@@ -23,8 +23,7 @@ import <vector>;
 import <string>;
 #endif
 
-export class TUIRenderer : public Renderer,
-                           public Observer<EntityDeathEvent, EntityMoveEvent, NewFloorEvent> {
+export class TUIRenderer : public Renderer, public Observer<EntityDeathEvent, EntityMoveEvent> {
   const Floor* currentFloor;
   // The underlying grid of strings to be displayed, stored in row-major order.
   std::vector<std::vector<std::string>> displayGrid;
