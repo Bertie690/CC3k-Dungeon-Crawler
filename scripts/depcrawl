@@ -236,7 +236,7 @@ output_order() {
       return 0
     fi
 
-    if [[ " ${seen_modules[*]} " =~ $module_name ]]; then
+    if [[ " ${seen_modules[*]} " =~ "^$module_name$" ]]; then
       red "Error: cyclic dependency detected!\n" >&2
 
       # print the cycle in order, starting from the current module
