@@ -31,6 +31,7 @@ export class Cell {
   const TileType tileType;
 
   Cell(const Position& position, const TileType tileType);
+  ~Cell();
 
   // Return a read-only view of all entities in this Cell.
   const std::vector<std::shared_ptr<Entity>>& getEntities() const;

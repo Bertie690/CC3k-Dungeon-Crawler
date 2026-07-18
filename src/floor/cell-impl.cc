@@ -19,6 +19,10 @@ using namespace std;
 Cell::Cell(const Position& position, const TileType tileType)
     : position{position}, tileType{tileType} {}
 
+// Out of line dtor: workaround for a compiler bug from g++-15.2.0
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120499
+Cell::~Cell() = default;
+
 const vector<shared_ptr<Entity>>& Cell::getEntities() const { return entities; }
 
 bool Cell::isWalkable() const {
