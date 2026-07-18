@@ -41,8 +41,7 @@ export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFlo
   virtual void onNotify(const FloorTransitionEvent& event) override;
 
  public:
-  // TODO @matthew should seed be optional?
-  Game(int seed, unique_ptr<Renderer> renderer, const string& floorFile = "");
+  Game(unique_ptr<Renderer> renderer, const string& floorFile = "", const int seed = 0);
   // Initialize a new game
   void newGame();
 

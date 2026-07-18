@@ -18,7 +18,7 @@ import randomfloorgenerator;
 
 using namespace std;
 
-Game::Game(int seed, unique_ptr<Renderer> renderer, const string& floorFile)
+Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
     : rng{seed}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{} {
   if (floorFile.empty())
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
@@ -34,6 +34,7 @@ void Game::newGame() {
   // TODO: create Player on first Floor (PlayerFactory)
   // TODO: Set Player->position = floor->playerSpawn and share with the Cell
   notify(NewFloorEvent{floor.get()});
+  renderer->draw();
   // TODO: start turns
 }
 
@@ -42,5 +43,6 @@ void Game::onNotify(const FloorTransitionEvent&) {
 
   // TODO:Set Player->position = floor->playerSpawn and share with the Cell
   notify(NewFloorEvent{floor.get()});
+  renderer->draw();
   // TODO: start turns on new Floor
 }
