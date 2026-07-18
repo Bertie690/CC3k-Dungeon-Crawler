@@ -3,19 +3,23 @@ module randomfloorgenerator;
 #ifdef __INTELLISENSE__
 #include <vector>
 
+#include "../enums/room-type.cc"
 #include "../enums/tile-type.cc"
 #include "cell.cc"
 #include "chamber.cc"
 #include "floor.cc"
 #include "position.cc"
 #include "random-floor-generator.cc"
+#include "room.cc"
 #else
 import <vector>;
 import tiletype;
+import roomtype;
 import cell;
 import floor;
 import chamber;
 import position;
+import room;
 #endif  // __INTELLISENSE__
 
 using namespace std;

@@ -2,16 +2,20 @@ module presetfloorgenerator;
 
 #ifdef __INTELLISENSE__
 #include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "../entities/staircase.cc"
 #include "floor.cc"
+#include "position.cc"
 #include "preset-floor-generator.cc"
 #else
 import <fstream>;
 import <string>;
 import <vector>;
+import <memory>;
+import position;
 import floor;
 import staircase;
 #endif  // __INTELLISENSE__

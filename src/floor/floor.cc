@@ -6,6 +6,7 @@ export module floor;
 #include <memory>
 #include <vector>
 
+#include "../entities/entity.cc"
 #include "../enums/tile-type.cc"
 #include "../utils/rng.cc"
 #include "cell.cc"
@@ -19,6 +20,7 @@ import rng;
 import cell;
 import position;
 import room;
+import entity;
 #endif  // __INTELLISENSE__
 
 export class Floor {

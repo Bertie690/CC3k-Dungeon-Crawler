@@ -18,7 +18,7 @@ export class Entity {
 
   // Return whether this Entity can collide with other Entities and block their movement.
   // Only 1 Entity with collision can occupy a Cell at a time.
-  virtual bool hasCollision() const {};
+  virtual bool hasCollision() const;
 };
 
 Entity::~Entity() = default;

@@ -9,6 +9,8 @@ module tuirenderer;
 #include "../entities/staircase.cc"
 #include "../enums/item-type.cc"
 #include "../enums/race-type.cc"
+#include "../enums/tile-type.cc"
+#include "../floor/position.cc"
 #include "tui-renderer.cc"
 #else
 import <iostream>;
@@ -18,7 +20,8 @@ import character;
 import item;
 import itemtype;
 import racetype;
-
+import tiletype;
+import position;
 #endif  // __INTELLISENSE__
 
 using namespace std;

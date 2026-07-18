@@ -13,5 +13,5 @@ import room;
 export class Passage final : public Room {
  public:
   using Room::Room;
-  virtual RoomType type() const override { return RoomType::Passage; }
+  virtual RoomType type() const noexcept override { return RoomType::Passage; }
 };

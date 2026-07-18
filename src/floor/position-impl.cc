@@ -23,12 +23,12 @@ Position Position::operator-(const Position& other) const noexcept {
   return Position{this->x - other.x, this->y - other.y};
 }
 
-Position& Position::operator+=(const Position& other) {
+Position& Position::operator+=(const Position& other) noexcept {
   this->x += other.x;
   this->y += other.y;
   return *this;
 }
-Position& Position::operator-=(const Position& other) {
+Position& Position::operator-=(const Position& other) noexcept {
   this->x -= other.x;
   this->y -= other.y;
   return *this;
