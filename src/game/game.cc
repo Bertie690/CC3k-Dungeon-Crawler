@@ -48,6 +48,8 @@ export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFlo
   Game(unique_ptr<Renderer> renderer, const string& floorFile = "", const int seed = 0);
   // Initialize a new game
   void newGame();
+  // Run one turn for every Enemy currently on the Floor.
+  void runEnemyTurn();
 
   // TODO: add InputHandler
 };

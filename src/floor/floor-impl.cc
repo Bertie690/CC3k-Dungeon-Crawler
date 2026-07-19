@@ -87,7 +87,3 @@ void Floor::move(Entity& entity, const Position& to) {
   Subject<EntityMoveEvent>::notify(EntityMoveEvent{entity, fromPosition});
   // TODO: if Player attempts to move to a staircase Cell, emit FloorTransitionEvent
 }
-
-void Floor::runTurn() {
-  // TODO: Can't manage Enemy turns here without cyclic dependency through Enemy -> Character -> Floor -> Enemy
-}

@@ -69,6 +69,4 @@ export class Floor : public Subject<EntityMoveEvent>, public Subject<FloorTransi
   // Attempt to move an Entity from its current position to the given position.
   // Throws an exception if the move is invalid.
   void move(Entity& entity, const Position& to);
-
-  void runTurn();
 };
