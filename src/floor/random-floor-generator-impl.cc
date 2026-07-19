@@ -1,8 +1,13 @@
 module randomfloorgenerator;
 
 #ifdef __INTELLISENSE__
+#include <memory>
 #include <vector>
 
+#include "../entities/enemy.cc"
+#include "../entities/staircase.cc"
+#include "../entities/stats.cc"
+#include "../enums/race-type.cc"
 #include "../enums/room-type.cc"
 #include "../enums/tile-type.cc"
 #include "cell.cc"
@@ -12,7 +17,12 @@ module randomfloorgenerator;
 #include "random-floor-generator.cc"
 #include "room.cc"
 #else
+import <memory>;
 import <vector>;
+import enemy;
+import stats;
+import staircase;
+import racetype;
 import tiletype;
 import roomtype;
 import cell;
@@ -60,7 +70,23 @@ Floor RandomFloorGenerator::generateFloor() {
   int playerChamber = rng.intRange(static_cast<int>(chambers.size()));
   floor.playerSpawn = takeRandomAvailableFloorTile(availableTiles[playerChamber], rng);
 
+  // TEMP Demo: Spawn 10 Human enemies until enemy factories are made
+  // TODO remove
+  for (int i = 0; i < 20; ++i) {
+    int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
+    Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
+    floor.getCell(position).add(make_shared<Enemy>(position, Stats{140, 20, 20}, RaceType::Human));
+  }
+
   // TODO: randomly place enemies, potions, gold, stairs
+
+  // Staircase must be in a different chamber than the player
+  int staircaseChamber = rng.intRange(static_cast<int>(chambers.size()));
+  while (staircaseChamber == playerChamber) {
+    staircaseChamber = rng.intRange(static_cast<int>(chambers.size()));
+  }
+  Position staircasePosition = takeRandomAvailableFloorTile(availableTiles[staircaseChamber], rng);
+  floor.getCell(staircasePosition).add(make_shared<Staircase>(staircasePosition));
   // Select stairs chamber from non playerChambers
   return floor;
 }

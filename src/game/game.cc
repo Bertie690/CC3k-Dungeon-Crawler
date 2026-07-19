@@ -45,6 +45,8 @@ export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFlo
   virtual void onNotify(const FloorTransitionEvent& event) override;
 
  public:
+  // TODO: uses the 0 seed everytime, may want to make overload for with and without provided seed
+  // so it can default to the RNG default seed
   Game(unique_ptr<Renderer> renderer, const string& floorFile = "", const int seed = 0);
   // Initialize a new game
   void newGame();
