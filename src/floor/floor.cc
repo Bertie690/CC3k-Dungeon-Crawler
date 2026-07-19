@@ -8,6 +8,8 @@ export module floor;
 
 #include "../entities/entity.cc"
 #include "../enums/tile-type.cc"
+#include "../events/floor-events.cc"
+#include "../events/observer.cc"
 #include "../utils/rng.cc"
 #include "cell.cc"
 #include "position.cc"
@@ -21,9 +23,11 @@ import cell;
 import position;
 import room;
 import entity;
+import observer;
+import floorevents;
 #endif  // __INTELLISENSE__
 
-export class Floor {
+export class Floor : public Subject<EntityMoveEvent>, public Subject<FloorTransitionEvent> {
   std::vector<std::unique_ptr<Room>> rooms;
 
   // Return whether the given position is valid on this Floor.
@@ -64,7 +68,7 @@ export class Floor {
 
   // Attempt to move an Entity from its current position to the given position.
   // Throws an exception if the move is invalid.
-  void move(const Entity& entity, const Position& to);
+  void move(Entity& entity, const Position& to);
 
   void runTurn();
 };

@@ -30,6 +30,8 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
 
 void Game::newGame() {
   floor = make_unique<Floor>(floorGenerator->generateFloor());
+  floor->Subject<EntityMoveEvent>::attach(renderer.get());
+  floor->Subject<FloorTransitionEvent>::attach(this);
 
   // TODO: create Player on first Floor (PlayerFactory)
   // TODO: Set Player->position = floor->playerSpawn and share with the Cell
@@ -39,10 +41,6 @@ void Game::newGame() {
 }
 
 void Game::onNotify(const FloorTransitionEvent&) {
-  floor = make_unique<Floor>(floorGenerator->generateFloor());
-
-  // TODO:Set Player->position = floor->playerSpawn and share with the Cell
-  notify(NewFloorEvent{floor.get()});
-  renderer->draw();
-  // TODO: start turns on new Floor
+  floorTransitionRequested = true;
+  // Flag used to know to generate the next Floor instead of running enemy turns
 }

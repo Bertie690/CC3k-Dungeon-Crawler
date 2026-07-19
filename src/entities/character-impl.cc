@@ -62,6 +62,7 @@ void Character::act(Floor& floor) {
 
   if (Move* move = std::get_if<Move>(&nextMove)) {
     floor.move(*this, this->position + move->dir);
+    return;
   }
 
   if (UsePotion* potion = std::get_if<UsePotion>(&nextMove)) {

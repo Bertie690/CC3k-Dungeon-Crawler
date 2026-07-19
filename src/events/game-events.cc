@@ -9,10 +9,8 @@ export module gameevents;
 #include "../enums/action.cc"
 #include "../enums/race-type.cc"
 #include "../floor/floor.cc"
-#include "../floor/position.cc"
 #else
 import <string>;
-import position;
 import entity;
 import racetype;
 import action;
@@ -24,21 +22,9 @@ export struct EntityDeathEvent {
   const Entity& entity;
 };
 
-export struct EntityMoveEvent {
-  // The entity that has moved.
-  const Entity& entity;
-  // The position the entity had moved from.
-  const Position from;
-  // The position the entity has moved to.
-  const Position& to = entity.position;
-};
-
 export struct GameQuitEvent {
   bool showScoreboard;
 };
-
-// Request that Game advances to the next Floor.
-export struct FloorTransitionEvent {};
 
 // Notify that Game created a new Floor.
 export struct NewFloorEvent {

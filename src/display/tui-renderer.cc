@@ -7,6 +7,7 @@ export module tuirenderer;
 #include <vector>
 
 #include "../entities/entity.cc"
+#include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
 #include "../floor/cell.cc"
@@ -15,6 +16,7 @@ export module tuirenderer;
 #else
 import renderer;
 import observer;
+import floorevents;
 import gameevents;
 import entity;
 import floor;
@@ -23,7 +25,7 @@ import <vector>;
 import <string>;
 #endif
 
-export class TUIRenderer : public Renderer, public Observer<EntityDeathEvent, EntityMoveEvent> {
+export class TUIRenderer : public Renderer {
   const Floor* currentFloor;
   // The underlying grid of strings to be displayed, stored in row-major order.
   std::vector<std::vector<std::string>> displayGrid;

@@ -7,6 +7,7 @@ export module game;
 #include <string>
 
 #include "../display/renderer.cc"
+#include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
 #include "../floor/floor-generator.cc"
@@ -17,6 +18,7 @@ export module game;
 import <memory>;
 import <string>;
 import renderer;
+import floorevents;
 import gameevents;
 import observer;
 import floorgenerator;
@@ -34,6 +36,8 @@ export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFlo
   unique_ptr<Renderer> renderer;
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;
+  // Flag used to know to generate the next Floor instead of running enemy turns.
+  bool floorTransitionRequested = false;
 
   // TODO: shared_ptr<Player>
 

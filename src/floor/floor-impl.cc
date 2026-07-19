@@ -1,15 +1,21 @@
 module floor;
 
 #ifdef __INTELLISENSE__
+#include <memory>
 #include <stdexcept>
 #include <utility>
 #include <vector>
 
+#include "../events/floor-events.cc"
+#include "../events/observer.cc"
 #include "floor.cc"
 #else
+import <memory>;
 import <stdexcept>;
 import <utility>;
 import <vector>;
+import floorevents;
+import observer;
 #endif  // __INTELLISENSE__
 
 using namespace std;
@@ -57,10 +63,31 @@ vector<const Room*> Floor::getRooms() const {
   return roomPtrs;
 }
 
-void Floor::move(const Entity& entity, const Position& to) {
-  // TODO: Write as part of Implement methods on Floor task
+void Floor::move(Entity& entity, const Position& to) {
+  if (!hasCell(to)) throw out_of_range{"Position doesn't exist"};
+  Position fromPosition = entity.position;
+  Cell& fromCell = getCell(fromPosition);
+  Cell& toCell = getCell(to);
+
+  if (!toCell.isWalkable()) throw invalid_argument{"Position is not walkable"};
+  if (toCell.isOccupied()) throw invalid_argument{"Position is occupied"};
+
+  shared_ptr<Entity> movingEntity;
+  for (const shared_ptr<Entity>& currentEntity : fromCell.getEntities()) {
+    if (currentEntity.get() == &entity) {
+      movingEntity = currentEntity;
+      break;
+    }
+  }
+  if (!movingEntity) throw invalid_argument{"Entity isn't on the Floor"};
+  fromCell.remove(entity);
+  entity.position = to;
+  toCell.add(movingEntity);
+
+  Subject<EntityMoveEvent>::notify(EntityMoveEvent{entity, fromPosition});
+  // TODO: if Player attempts to move to a staircase Cell, emit FloorTransitionEvent
 }
 
 void Floor::runTurn() {
-  // TODO: Write as part of Implement methods on Floor task
+  // TODO: Can't manage Enemy turns here without cyclic dependency through Enemy -> Character -> Floor -> Enemy
 }
