@@ -64,7 +64,9 @@ vector<const Room*> Floor::getRooms() const {
 }
 
 void Floor::move(Entity& entity, const Position& to) {
-  if (!hasCell(to)) throw out_of_range{"Position doesn't exist"};
+  if (!hasCell(to)) {
+    throw out_of_range{"Position doesn't exist"};
+  }
   Position fromPosition = entity.position;
   Cell& fromCell = getCell(fromPosition);
   Cell& toCell = getCell(to);
@@ -84,6 +86,6 @@ void Floor::move(Entity& entity, const Position& to) {
   entity.position = to;
   toCell.add(movingEntity);
 
-  Subject<EntityMoveEvent>::notify(EntityMoveEvent{entity, fromPosition});
+  notify(EntityMoveEvent{entity, fromPosition});
   // TODO: if Player attempts to move to a staircase Cell, emit FloorTransitionEvent
 }

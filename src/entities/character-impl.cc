@@ -16,9 +16,25 @@ module character;
 import <variant>;
 #endif  // __INTELLISENSE__
 
+// Helper function to instantiate a movement strategy based on the corresponding enum value.
+std::unique_ptr<CharacterMoveStrategy> buildStrategy(CharacterMoveStrategyType type) {
+  switch (type) {
+    case CharacterMoveStrategyType::PlayerInput:
+      return std::make_unique<PlayerInputMoveStrategy>();
+    case CharacterMoveStrategyType::Random:
+      return std::make_unique<RandomMoveStrategy>();
+    case CharacterMoveStrategyType::Static:
+      return std::make_unique<StaticMoveStrategy>();
+  }
+  throw std::invalid_argument("Invalid CharacterMoveStrategyType");
+}
+
 Character::Character(Position position, Stats baseStats, RaceType raceType,
                      CharacterMoveStrategyType strategyType)
-    : Entity{position}, baseStats(baseStats), raceType(raceType), moveStrategy(){};
+    : Entity{position},
+      baseStats(baseStats),
+      raceType(raceType),
+      moveStrategy(buildStrategy(strategyType)) {};
 
 #pragma region Getters/Hooks
 unsigned int Character::atk() const { return this->getStats().atk; }

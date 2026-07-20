@@ -63,7 +63,14 @@ class SubjectFor {
 export template <typename... Events>
   requires(std::is_class_v<Events> && ...) && (sizeof...(Events) > 0)
 class Subject : public SubjectFor<Events>... {
-  virtual ~Subject() = default;
+  // Pull all relevant methods out from the base classes to avoid unqualified name lookup causing compiler errors
+  // when multiple base classes share the same method names (even if those methods would be unambiguous during actual overload resolution).
+  protected:
+    using SubjectFor<Events>::notify...;
+  public:
+    virtual ~Subject() = default;
+    using SubjectFor<Events>::attach...;
+    using SubjectFor<Events>::detach...;
 };
 
 template <typename Event>

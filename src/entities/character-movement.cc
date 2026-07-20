@@ -53,18 +53,3 @@ export class StaticMoveStrategy final : public CharacterMoveStrategy {
  private:
   virtual Action getNextMove(Floor& floor, Character& character);
 };
-
-export namespace AllCharacterMoveStrategies {
-  // Return a freshly allocated movement strategy of the given type.
-  static std::unique_ptr<CharacterMoveStrategy> getStrategy(CharacterMoveStrategyType type) {
-    switch (type) {
-      case CharacterMoveStrategyType::PlayerInput:
-        return std::make_unique<PlayerInputMoveStrategy>();
-      case CharacterMoveStrategyType::Random:
-        return std::make_unique<RandomMoveStrategy>();
-      case CharacterMoveStrategyType::Static:
-        return std::make_unique<StaticMoveStrategy>();
-    }
-    throw std::invalid_argument("Invalid CharacterMoveStrategyType");
-  }
-};  // namespace AllCharacterMoveStrategies

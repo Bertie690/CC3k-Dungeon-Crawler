@@ -27,7 +27,7 @@ import observer;
 import floorevents;
 #endif  // __INTELLISENSE__
 
-export class Floor : public Subject<EntityMoveEvent>, public Subject<FloorTransitionEvent> {
+export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent> {
   std::vector<std::unique_ptr<Room>> rooms;
 
   // Return whether the given position is valid on this Floor.

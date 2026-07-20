@@ -66,21 +66,21 @@ void Game::newGame() {
   floorTransitionRequested = false;
   // (0,0) position outside of Chambers until we place Player on the first Floor
   player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade);
-  Subject<PlayerActionEvent>::attach(player.get());
+  attach(player.get());
   loadNextFloor();
   // TODO: start turns
 }
 
 void Game::loadNextFloor() {
   floor = make_unique<Floor>(floorGenerator->generateFloor());
-  floor->Subject<EntityMoveEvent>::attach(renderer.get());
-  floor->Subject<FloorTransitionEvent>::attach(this);
+  floor->attach(renderer.get());
+  floor->attach(this);
 
   // Player is added outside of FloorGenerator to share Ownership with the Game
   player->position = floor->playerSpawn;
   floor->getCell(player->position).add(player);
 
-  Subject<NewFloorEvent>::notify(NewFloorEvent{floor.get()});
+  notify(NewFloorEvent{floor.get()});
   renderer->draw();
 }
 
