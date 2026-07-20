@@ -41,13 +41,25 @@ import room;
 using namespace std;
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
-    : rng{seed}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{}, player{} {
+    : rng{seed}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{} {
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
     floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile);
   }
-  Subject<NewFloorEvent>::attach(this->renderer.get());
+
+  attach(this->renderer.get());
+}
+
+Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
+    : rng{}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{} {
+  if (floorFile.empty()) {
+    floorGenerator = make_unique<RandomFloorGenerator>(rng);
+  } else {
+    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile);
+  }
+
+  attach(this->renderer.get());
 }
 
 void Game::newGame() {
@@ -75,7 +87,7 @@ void Game::loadNextFloor() {
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
 
 void Game::runPlayerTurn(const PlayerAction& action) {
-  Subject<PlayerActionEvent>::notify(PlayerActionEvent{action});
+  notify(PlayerActionEvent{action});
   player->act(*floor);
 
   // Player reached staircase, enemy turn is skipped and next floor is loaded

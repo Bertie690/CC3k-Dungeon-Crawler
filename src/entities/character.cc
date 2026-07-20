@@ -4,14 +4,16 @@ export module character;
 
 #ifdef __INTELLISENSE__
 #include <cmath>
+#include <memory>
 #include <stdexcept>
 
 #include "../enums/action.cc"
 #include "../enums/gold-size.cc"
 #include "../enums/race-type.cc"
-#include "../floor/position.cc"
 #include "../floor/cell.cc"
 #include "../floor/floor.cc"
+#include "../floor/position.cc"
+#include "character-movement.cc"
 #include "entity.cc"
 #include "stats.cc"
 #else
@@ -23,9 +25,13 @@ import entity;
 import stats;
 import racetype;
 import position;
+import character:movement;
 import <stdexcept>;
 import <cmath>;
+import <memory>;
 #endif  // __INTELLISENSE__
+
+export CharacterMoveStrategyType;
 
 // A Character represents an Entity that can move and partake in combat.
 export class Character : public Entity {
@@ -34,8 +40,8 @@ export class Character : public Entity {
   // The character's base stats.
   const Stats baseStats;
 
-  // Return the next move this Character will take.
-  virtual Action getNextMove(Floor& floor) = 0;
+  // The type of movement strategy this Character employs.
+  std::unique_ptr<CharacterMoveStrategy> moveStrategy;
 
   // Return this Character's maximum HP.
   unsigned int maxHp() const;
@@ -80,7 +86,8 @@ export class Character : public Entity {
   // The race this character belongs to, for identification & display purposes.
   const RaceType raceType;
 
-  Character(Position position, Stats baseStats, RaceType raceType);
+  Character(Position position, Stats baseStats, RaceType raceType,
+            CharacterMoveStrategyType strategyType);
   virtual ~Character() = default;
 
   // Perform an action for the turn.
@@ -95,4 +102,8 @@ export class Character : public Entity {
   virtual double getPotionEffectMultiplier() const;
   // Return the multiplier for this Character's score. Unused for enemies (for now...)
   virtual double getScoreMulti() const;
+
+  // Return whether this Character can attack a defender of the given type.
+  // Intended to be hooked into during command selection, and is entirely unused for player-controlled characters.
+  virtual bool canAttack(const RaceType& defender) const;
 };

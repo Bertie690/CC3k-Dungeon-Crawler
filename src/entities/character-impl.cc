@@ -16,8 +16,9 @@ module character;
 import <variant>;
 #endif  // __INTELLISENSE__
 
-Character::Character(Position position, Stats baseStats, RaceType raceType)
-    : Entity{position}, baseStats(baseStats), raceType(raceType) {};
+Character::Character(Position position, Stats baseStats, RaceType raceType,
+                     CharacterMoveStrategyType strategyType)
+    : Entity{position}, baseStats(baseStats), raceType(raceType), moveStrategy(){};
 
 #pragma region Getters/Hooks
 unsigned int Character::atk() const { return this->getStats().atk; }
@@ -37,6 +38,9 @@ void Character::onBeingAttacked(Character& attacker, unsigned int damage) {}
 
 double Character::getPotionEffectMultiplier() const { return 1.0; }
 double Character::getScoreMulti() const { return 1.0; }
+bool Character::canAttack(const RaceType& defenderType) const {
+  return isPlayer(this->raceType) != isPlayer(defenderType);
+}
 
 #pragma endregion  // Getters/Hooks
 
@@ -54,7 +58,7 @@ void Character::drain(Character& defender, int amt) {
 
 #pragma region Actions
 void Character::act(Floor& floor) {
-  Action nextMove = this->getNextMove(floor);
+  Action nextMove = this->moveStrategy->getNextMove(floor, *this);
 
   if (Pass* pass = std::get_if<Pass>(&nextMove)) {
     return;

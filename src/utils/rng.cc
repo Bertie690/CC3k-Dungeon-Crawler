@@ -38,12 +38,19 @@ export class RNG {
   double randDouble();
 
   // Pick a uniformly chosen element from the given container.
-  // Must have a known size and support random access.
+  // Must have a known size and support random access, and throws `std::out_of_range` if the container is empty.
   template <Container C>
-  typename C::value_type& pick(C& c);
+  typename C::value_type& pick(const C& c);
+
+  // Pick a uniformly chosen element from the given container.
+  // Must have a known size and support random access, and returns the specified default value if the array is empty
+  // (all other errors will still propagate upwards).
+  template <Container C>
+  typename C::value_type& pick(const C& c, const typename C::value_type& defaultValue);
 
   // Pick a uniformly chosen element from the given known-size array.
+  // Throws `std::out_of_range` if the array is empty.
   template <typename T>
     requires std::is_bounded_array_v<T>
-  typename std::remove_extent_t<T>& pick(T& arr);
+  typename std::remove_extent_t<T>& pick(const T& arr);
 };

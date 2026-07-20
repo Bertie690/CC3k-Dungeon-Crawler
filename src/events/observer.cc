@@ -14,13 +14,13 @@ import <list>;
 
 export template <typename Event>
   requires std::is_class_v<Event>
-class Subject;
+class SubjectFor;
 
 // Interface representing an observer that tracks a single event type.
 template <typename Event>
   requires std::is_class_v<Event>
 class ObserverFor {
-  friend class Subject<Event>;
+  friend class SubjectFor<Event>;
   // Trigger effects upon an event of the given type being emitted.
   virtual void onNotify(const Event& event) = 0;
 
@@ -37,9 +37,9 @@ class Observer : public ObserverFor<Event>... {
 };
 
 // Class representing a subject that can emit a single event type.
-export template <typename Event>
+template <typename Event>
   requires std::is_class_v<Event>
-class Subject {
+class SubjectFor {
   // The backing list of observers.
   std::list<ObserverFor<Event>*> observers;
 
@@ -56,12 +56,19 @@ class Subject {
   // Detach an observer from this Subject, which will no longer be notified upon a corresponding event being emitted.
   void detach(ObserverFor<Event>* observer);
 
+  virtual ~SubjectFor() = default;
+};
+
+// Class representing a subject that can emit multiple event types.
+export template <typename... Events>
+  requires(std::is_class_v<Events> && ...) && (sizeof...(Events) > 0)
+class Subject : public SubjectFor<Events>... {
   virtual ~Subject() = default;
 };
 
 template <typename Event>
   requires std::is_class_v<Event>
-void Subject<Event>::notify(const Event& event) {
+void SubjectFor<Event>::notify(const Event& event) {
   for (ObserverFor<Event>* observer : observers) {
     observer->onNotify(event);
   }
@@ -69,12 +76,12 @@ void Subject<Event>::notify(const Event& event) {
 
 template <typename Event>
   requires std::is_class_v<Event>
-void Subject<Event>::attach(ObserverFor<Event>* observer) {
+void SubjectFor<Event>::attach(ObserverFor<Event>* observer) {
   observers.push_back(observer);
 }
 
 template <typename Event>
   requires std::is_class_v<Event>
-void Subject<Event>::detach(ObserverFor<Event>* observer) {
+void SubjectFor<Event>::detach(ObserverFor<Event>* observer) {
   observers.remove(observer);
 }

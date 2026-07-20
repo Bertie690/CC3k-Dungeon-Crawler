@@ -35,14 +35,13 @@ using namespace std;
 
 // Game owns and manages the main game objects
 export class Game : public Observer<FloorTransitionEvent>,
-                    public Subject<NewFloorEvent>,
-                    public Subject<PlayerActionEvent> {
+                    public Subject<NewFloorEvent, PlayerActionEvent> {
   RNG rng;
   Scoreboard scoreboard;
   unique_ptr<Renderer> renderer;
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;
-  shared_ptr<Player> player;
+  shared_ptr<Player> player = {};
   // Flag used to know to generate the next Floor instead of running enemy turns.
   bool floorTransitionRequested = false;
 
@@ -53,10 +52,12 @@ export class Game : public Observer<FloorTransitionEvent>,
   virtual void onNotify(const FloorTransitionEvent& event) override;
 
  public:
-  // TODO: uses the 0 seed everytime, may want to make overload for with and without provided seed
-  // so it can default to the RNG default seed
-  Game(unique_ptr<Renderer> renderer, const string& floorFile = "", const int seed = 0);
-  // Initialize a new game
+  // Create a new Game with the given Renderer, floor file, and RNG seed.
+  Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed);
+  // Create a new Game with the given Renderer, floor file, and the default RNG seed.
+  Game(unique_ptr<Renderer> renderer, const string& floorFile = "");
+
+  // Initialize a new game.
   void newGame();
   // Run turn for the Player.
   void runPlayerTurn(const PlayerAction& action);

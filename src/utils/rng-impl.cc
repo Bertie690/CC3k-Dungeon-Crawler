@@ -21,12 +21,20 @@ double RNG::randDouble() {
 }
 
 template <Container C>
-typename C::value_type& RNG::pick(C& c) {
+typename C::value_type& RNG::pick(const C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }
   std::uniform_int_distribution dist(0, c.size() - 1);
   return c[dist(twister)];
+}
+template <Container C>
+typename C::value_type& RNG::pick(const C& c, const typename C::value_type& defaultValue) {
+  try {
+    return this->pick(c);
+  } catch (const std::out_of_range&) {
+    return defaultValue;
+  }
 }
 
 template <typename T>
