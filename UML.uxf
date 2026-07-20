@@ -2,7 +2,7 @@
 <diagram program="umletino" version="15.1">
   <zoom_level>8</zoom_level>
   <help_text>TODO:
-- Add necessary new events, classes, etc etc.</help_text>
+- Add necessary new events, classes, etc etc.con</help_text>
   <element>
     <id>UMLClass</id>
     <coordinates>
@@ -2038,12 +2038,13 @@ group=group-2</panel_attributes>
     <coordinates>
       <x>352</x>
       <y>216</y>
-      <w>128</w>
+      <w>152</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>Wrapper template classes
-omitted for simplicity (and
-due to lack of consensus	)
+omitted for simplicity (all
+they do is multiple-inheritance
+method forwarding)
 bg=blue</panel_attributes>
     <additional_attributes/>
   </element>
