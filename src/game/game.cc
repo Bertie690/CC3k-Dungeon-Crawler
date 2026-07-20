@@ -8,6 +8,7 @@ export module game;
 
 #include "../display/renderer.cc"
 #include "../entities/player.cc"
+#include "../enums/action.cc"
 #include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
@@ -23,6 +24,7 @@ import player;
 import floorevents;
 import gameevents;
 import observer;
+import action;
 import floorgenerator;
 import floor;
 import rng;
@@ -32,7 +34,9 @@ import scoreboard;
 using namespace std;
 
 // Game owns and manages the main game objects
-export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFloorEvent> {
+export class Game : public Observer<FloorTransitionEvent>,
+                    public Subject<NewFloorEvent>,
+                    public Subject<PlayerActionEvent> {
   RNG rng;
   Scoreboard scoreboard;
   unique_ptr<Renderer> renderer;
@@ -54,6 +58,8 @@ export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFlo
   Game(unique_ptr<Renderer> renderer, const string& floorFile = "", const int seed = 0);
   // Initialize a new game
   void newGame();
+  // Run turn for the Player.
+  void runPlayerTurn(const PlayerAction& action);
   // Run one turn for every Enemy currently on the Floor.
   void runEnemyTurn();
 

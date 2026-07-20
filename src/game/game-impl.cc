@@ -47,13 +47,14 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
   } else {
     floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile);
   }
-  attach(this->renderer.get());
+  Subject<NewFloorEvent>::attach(this->renderer.get());
 }
 
 void Game::newGame() {
   floorTransitionRequested = false;
   // (0,0) position outside of Chambers until we place Player on the first Floor
   player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade);
+  Subject<PlayerActionEvent>::attach(player.get());
   loadNextFloor();
   // TODO: start turns
 }
@@ -67,20 +68,26 @@ void Game::loadNextFloor() {
   player->position = floor->playerSpawn;
   floor->getCell(player->position).add(player);
 
-  notify(NewFloorEvent{floor.get()});
+  Subject<NewFloorEvent>::notify(NewFloorEvent{floor.get()});
   renderer->draw();
 }
 
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
 
-void Game::runEnemyTurn() {
+void Game::runPlayerTurn(const PlayerAction& action) {
+  Subject<PlayerActionEvent>::notify(PlayerActionEvent{action});
+  player->act(*floor);
+
   // Player reached staircase, enemy turn is skipped and next floor is loaded
   if (floorTransitionRequested) {
     floorTransitionRequested = false;
     loadNextFloor();
     return;
   }
+  runEnemyTurn();
+}
 
+void Game::runEnemyTurn() {
   vector<shared_ptr<Enemy>> enemies;
 
   // Add all Enemies in Chambers to the enemies vector
