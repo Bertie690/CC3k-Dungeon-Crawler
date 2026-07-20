@@ -7,6 +7,7 @@ export module game;
 #include <string>
 
 #include "../display/renderer.cc"
+#include "../entities/player.cc"
 #include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
@@ -18,6 +19,7 @@ export module game;
 import <memory>;
 import <string>;
 import renderer;
+import player;
 import floorevents;
 import gameevents;
 import observer;
@@ -36,10 +38,12 @@ export class Game : public Observer<FloorTransitionEvent>, public Subject<NewFlo
   unique_ptr<Renderer> renderer;
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;
+  shared_ptr<Player> player;
   // Flag used to know to generate the next Floor instead of running enemy turns.
   bool floorTransitionRequested = false;
 
-  // TODO: shared_ptr<Player>
+  // Generate a Floor and move the Player to its determined spawn position.
+  void loadNextFloor();
 
   // Create the next Floor when a floor transition is requested.
   virtual void onNotify(const FloorTransitionEvent& event) override;
