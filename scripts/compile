@@ -8,8 +8,12 @@
 #   $2 = name of the output file (defaults to a.out if not specified)
 #   $3 = linker options e.g. "-lX11"
 
+shopt -s nullglob globstar
+
 cxx="g++"
-cxxflags="-std=c++20 -fmodules-ts -Wall -g"
+# - disable warnings about #pragma once in non-header files, since we have to import .cc files for IDE support
+# - turn unhandled switch clauses into errors
+cxxflags="-std=c++20 -fmodules-ts -Wall -g -Wno-pragma-once-outside-header -Werror=switch"
 gcmsyspath="gcm.cache/**/*.gcm"
 
 if [ $# -lt 1 ]; then

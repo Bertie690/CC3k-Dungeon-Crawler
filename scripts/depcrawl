@@ -175,8 +175,9 @@ trawl_dependencies() {
   local -A seen_interfaces
 
   for file in $files; do
-    module_line=$(grep -P "^(?:export\s+)?module\s+.*?;$" "$file")
+    module_line=$(grep -P -m1 "^(?:export\s+)?module\s+.*?;$" "$file")
     module_name="$(echo "$module_line" | sed -E 's/.*module\s+(.*?);/\1/')"
+    parent_module_name="$(echo "$module_name" | sed -E 's/^(.*):.*/\1/')"
 
     if [ -z "$module_line" ]; then
       # no module declaration presumably means this is the entrypoint with main()
@@ -185,10 +186,10 @@ trawl_dependencies() {
     fi
 
     # grep to obtain all import statements, disallowing angle braces to avoid system libraries
-    deps="$(grep -oE "^.*import\s+([^<>]+);$" "$file" |
-      sed -E 's/export import/import/' | # remove partition re-exports
-      sed -E "s/\s+:(.*;)/ $module_name:\1/" | # Add module name to partitions if not there
-      sed -E 's/^\s*import\s+(.*);/\1/' | # Remove import keyword and trailing semicolon
+    deps="$(grep -oE "^.*import\s+([^<>]+);$" "$file" | \
+      sed -E "s/\s:(.+;)/ $parent_module_name:\1/" |  # Add module name to partitions if not there
+      sed -E 's/export import/import/' |       # remove partition re-exports
+      sed -E 's/^\s*import\s+(.*);/\1/' |      # Remove import keyword and trailing semicolon
       sort -u |
       paste -d ' ' -s)"
 
@@ -252,7 +253,6 @@ output_order() {
       done
 
       local cycle=("${seen_modules[@]:i}")
-      cycle+=("${seen_modules[@]:0:i}")
 
       output="${cycle[0]}"
       for ((j = 1; j < ${#cycle[@]}; j++)); do

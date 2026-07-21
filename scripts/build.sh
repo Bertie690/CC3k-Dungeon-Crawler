@@ -10,5 +10,4 @@ root_dir="$(realpath "$scripts_dir/..")"
 cd "$root_dir"
 
 "$scripts_dir/depcrawl"
-"$scripts_dir/compile" "$root_dir/order.txt" "$root_dir/$prog_name"
-rm syslibs.txt order.txt > /dev/null 2>&1 || true
+"$scripts_dir/compile" "$root_dir/order.txt" "$root_dir/$prog_name" && (rm syslibs.txt order.txt > /dev/null 2>&1 || true)
