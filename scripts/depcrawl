@@ -177,7 +177,7 @@ trawl_dependencies() {
   for file in $files; do
     module_line=$(grep -P -m1 "^(?:export\s+)?module\s+.*?;$" "$file")
     module_name="$(echo "$module_line" | sed -E 's/.*module\s+(.*?);/\1/')"
-    parent_module_name="$(echo "$module_name" | sed -E 's/^(.*):.*/\1/')"
+    parent_module_name="$(echo "$module_name" | sed -E 's/^(.*):(.*)/\1/')"
 
     if [ -z "$module_line" ]; then
       # no module declaration presumably means this is the entrypoint with main()
@@ -186,10 +186,10 @@ trawl_dependencies() {
     fi
 
     # grep to obtain all import statements, disallowing angle braces to avoid system libraries
-    deps="$(grep -oE "^.*import\s+([^<>]+);$" "$file" | \
-      sed -E "s/\s:(.+;)/ $parent_module_name:\1/" |  # Add module name to partitions if not there
-      sed -E 's/export import/import/' |       # remove partition re-exports
-      sed -E 's/^\s*import\s+(.*);/\1/' |      # Remove import keyword and trailing semicolon
+    deps="$(grep -oE "^.*import\s+([^<>]+);$" "$file" |
+      sed -E "s/\s:(.+;)/ $parent_module_name:\1/" | # Add module name to partitions if not there
+      sed -E 's/export import/import/' |             # remove partition re-exports
+      sed -E 's/^\s*import\s+(.*);/\1/' |            # Remove import keyword and trailing semicolon
       sort -u |
       paste -d ' ' -s)"
 
@@ -205,6 +205,11 @@ trawl_dependencies() {
         module_files["$module_name"]="${module_files["$module_name"]} $file"
       else
         module_files["$module_name"]="$file"
+      fi
+      # hackjob - ignore implementation files that import their own declarations - requrired for module partitions to function
+      if [[ " $deps " =~ [[:space:]]${module_name}[[:space:]] ]]; then
+        [ "$verbose" ] && blue "Ignoring self-import of module '$module_name' in file '$file'...\n" || true
+        deps_graph["$module_name"]="${deps_graph["$module_name"]//$module_name/}"
       fi
     else
       # interface files must be unique within each translation unit
@@ -243,7 +248,7 @@ output_order() {
       return 0
     fi
 
-    if [[ " ${seen_modules[*]}" =~ [[:space:]]$module_name ]]; then
+    if [[ " ${seen_modules[*]} " =~ [[:space:]]${module_name}[[:space:]] ]]; then
       red "Error: cyclic dependency detected!\n" >&2
 
       # print the cycle in order, starting from the current module
@@ -274,11 +279,11 @@ output_order() {
     # add files for this module to the ordered list
     seen_modules=("${seen_modules[@]::${#seen_modules[@]}-1}")
     processed["$module_name"]=1
-    if ! [[ -v "module_files[$module_name]" ]]; then
+    if ! [[ -v "module_files[${module_name}]" ]]; then
       # find all modules that depend on this module and print them
       deps=""
       for mod in "${!deps_graph[@]}"; do
-        if [[ " ${deps_graph["$mod"]} " =~ $module_name ]]; then
+        if [[ " ${deps_graph["$mod"]} " =~ [[:space:]]${module_name}[[:space:]] ]]; then
           deps+="$mod, "
         fi
       done
