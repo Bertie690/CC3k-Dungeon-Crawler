@@ -1,14 +1,28 @@
-module character:movement;
+module character;
 
 #ifdef __INTELLISENSE__
 #include <memory>
 #include <vector>
 
+#include "../enums/action.cc"
+#include "../enums/direction.cc"
+#include "../enums/tile-type.cc"
+#include "../floor/cell.cc"
+#include "../floor/floor.cc"
+#include "../floor/room.cc"
 #include "character-movement.cc"
 #else
-import <vector>;
 import <memory>;
+import <vector>;
+import action;
+import direction;
+import tiletype;
+import cell;
+import floor;
+import room;
 #endif  // __INTELLISENSE__
+
+void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent&) {}
 
 Action PlayerInputMoveStrategy::getNextMove(Floor& floor, Character& character) {
   // TODO: Implement player input move strategy
@@ -50,7 +64,7 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
     return Pass{};
   }
 
-  int randomIndex = floor.rng.intRange(static_cast<int>(availableAdjacentCells.size() - 1));
+  int randomIndex = floor.rng.intRange(static_cast<int>(availableAdjacentCells.size()));
   return Move{availableAdjacentCells[randomIndex]};
 };
 

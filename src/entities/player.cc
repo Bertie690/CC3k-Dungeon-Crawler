@@ -20,7 +20,7 @@ export class Player : public Character, public Observer<PlayerActionEvent> {
   Action nextAction{Pass{}};
 
   // Return the input handler's determined next action.
-  virtual Action getNextMove(Floor& floor) override;
+  Action getNextMove(Floor& floor);
   // Receives and stores the Players action for the upcoming turn.
   virtual void onNotify(const PlayerActionEvent& event) override;
 

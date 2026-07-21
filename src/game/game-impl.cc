@@ -9,6 +9,7 @@ module game;
 
 #include "../entities/enemy.cc"
 #include "../entities/entity.cc"
+#include "../entities/character.cc"
 #include "../entities/player.cc"
 #include "../entities/stats.cc"
 #include "../enums/race-type.cc"
@@ -27,6 +28,7 @@ import <utility>;
 import <vector>;
 import enemy;
 import entity;
+import character;
 import player;
 import stats;
 import racetype;
@@ -65,7 +67,8 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
 void Game::newGame() {
   floorTransitionRequested = false;
   // (0,0) position outside of Chambers until we place Player on the first Floor
-  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade);
+  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade,
+                               CharacterMoveStrategyType::PlayerInput);
   attach(player.get());
   loadNextFloor();
   // TODO: start turns

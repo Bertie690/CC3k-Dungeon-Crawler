@@ -5,6 +5,7 @@ module randomfloorgenerator;
 #include <vector>
 
 #include "../entities/enemy.cc"
+#include "../entities/character.cc"
 #include "../entities/staircase.cc"
 #include "../entities/stats.cc"
 #include "../enums/race-type.cc"
@@ -20,6 +21,7 @@ module randomfloorgenerator;
 import <memory>;
 import <vector>;
 import enemy;
+import character;
 import stats;
 import staircase;
 import racetype;
@@ -75,7 +77,8 @@ Floor RandomFloorGenerator::generateFloor() {
   for (int i = 0; i < 20; ++i) {
     int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
     Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
-    floor.getCell(position).add(make_shared<Enemy>(position, Stats{140, 20, 20}, RaceType::Human));
+    floor.getCell(position).add(make_shared<Enemy>(position, Stats{140, 20, 20}, RaceType::Human,
+                                                   CharacterMoveStrategyType::Random));
   }
 
   // TODO: randomly place enemies, potions, gold, stairs

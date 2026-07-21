@@ -25,13 +25,12 @@ import entity;
 import stats;
 import racetype;
 import position;
-import character:movement;
 import <stdexcept>;
 import <cmath>;
 import <memory>;
+export import :movement;
 #endif  // __INTELLISENSE__
 
-export CharacterMoveStrategyType;
 
 // A Character represents an Entity that can move and partake in combat.
 export class Character : public Entity {

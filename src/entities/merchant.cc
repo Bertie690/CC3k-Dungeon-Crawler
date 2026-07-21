@@ -1,13 +1,15 @@
 export module merchant;
 
 #ifdef __INTELLISENSE__
+#include "../enums/race-type.cc"
 #include "enemy.cc"
 #else
+import racetype;
 import enemy;
 #endif  // __INTELLISENSE__
 
 export class Merchant : public Enemy {
-  static bool hostile;
+  inline static bool hostile = false;
 
   virtual bool canAttack(const RaceType& defenderType) const override {
     return hostile && Enemy::canAttack(defenderType);

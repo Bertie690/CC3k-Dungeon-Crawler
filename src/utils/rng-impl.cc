@@ -39,7 +39,7 @@ typename C::value_type& RNG::pick(const C& c, const typename C::value_type& defa
 
 template <typename T>
   requires std::is_bounded_array_v<T>
-typename std::remove_extent_t<T>& RNG::pick(T& arr) {
+typename std::remove_extent_t<T>& RNG::pick(const T& arr) {
   std::uniform_int_distribution dist(0, std::extent_v<T> - 1);
   return arr[dist(twister)];
 }
