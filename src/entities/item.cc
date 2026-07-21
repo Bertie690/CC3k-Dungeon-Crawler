@@ -14,13 +14,13 @@ import itemtype;
 
 // An Item represents an Entity that can be picked up by a Character.
 // TODO: Add functionality
-export class Item : public Entity {
+export class Item : public ConcreteEntity {
  public:
   // The type of this item.
   const ItemType type;
 
   // Construct a new Item with the given type.
-  Item(Position position, ItemType type) noexcept : Entity{position}, type(type) {}
+  Item(Position position, ItemType type) noexcept : ConcreteEntity{position}, type(type) {}
   virtual ~Item() = 0;
 };
 

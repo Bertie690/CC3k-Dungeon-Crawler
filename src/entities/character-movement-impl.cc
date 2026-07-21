@@ -4,22 +4,19 @@ module character;
 #include <memory>
 #include <vector>
 
-#include "../enums/action.cc"
-#include "../enums/direction.cc"
-#include "../enums/tile-type.cc"
-#include "../floor/cell.cc"
-#include "../floor/floor.cc"
-#include "../floor/room.cc"
 #include "character-movement.cc"
 #else
 import <memory>;
 import <vector>;
 import action;
-import direction;
-import tiletype;
-import cell;
 import floor;
+import observer;
+import gameevents;
+import direction;
 import room;
+import <memory>;
+import :movement;
+import :movestrategytype;
 #endif  // __INTELLISENSE__
 
 void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent&) {}
@@ -30,13 +27,13 @@ Action PlayerInputMoveStrategy::getNextMove(Floor& floor, Character& character) 
 };
 
 Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
-  const Room& room = floor.getRoomAt(character.position);
+  const Room& room = floor.getRoomAt(character.position());
 
   std::vector<Direction> availableAdjacentCells;
   availableAdjacentCells.reserve(8);
 
-  for (const Direction direction : room.getAdjacentCells(character.position)) {
-    const Cell& destination = floor.getCell(character.position + direction);
+  for (const Direction direction : room.getAdjacentCells(character.position())) {
+    const Cell& destination = floor.getCell(character.position() + direction);
 
     // unwalkable cells (walls, doors, etc.) can be discarded entirely
     if (!destination.isWalkable()) {
@@ -47,7 +44,7 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
     if (destination.isOccupied()) {
       for (const auto& entity : destination.getEntities()) {
         const Character* target = dynamic_cast<const Character*>(entity.get());
-        if (target && character.canAttack(target->raceType)) {
+        if (target && character.canAttack(target->raceType())) {
           // found someone to smack
           return Attack{direction};
         }
@@ -69,16 +66,16 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
 };
 
 Action StaticMoveStrategy::getNextMove(Floor& floor, Character& character) {
-  const Room& room = floor.getRoomAt(character.position);
+  const Room& room = floor.getRoomAt(character.position());
 
-  for (const Direction direction : room.getAdjacentCells(character.position)) {
-    const Cell& destination = floor.getCell(character.position + direction);
+  for (const Direction direction : room.getAdjacentCells(character.position())) {
+    const Cell& destination = floor.getCell(character.position() + direction);
     if (!destination.isOccupied()) {
       continue;
     }
     for (const auto& entity : destination.getEntities()) {
       const Character* target = dynamic_cast<const Character*>(entity.get());
-      if (target && character.canAttack(target->raceType)) {
+      if (target && character.canAttack(target->raceType())) {
         // found someone to smack
         return Attack{direction};
       }

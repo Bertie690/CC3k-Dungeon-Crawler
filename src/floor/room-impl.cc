@@ -49,8 +49,8 @@ const vector<Direction>& Room::getAdjacentCells(const Position& position,
   adjacentDirections.clear();
   for (const Direction dir : allDirections) {
     const Position adjacentPos = position + dir;
-    if (isInBounds(adjacentPos) && (!walkableOnly || !(*this)[adjacentPos].isOccupied() &&
-                                                         (*this)[adjacentPos].isWalkable())) {
+    if (isInBounds(adjacentPos) && (!walkableOnly || (!(*this)[adjacentPos].isOccupied() &&
+                                                         (*this)[adjacentPos].isWalkable()))) {
       adjacentDirections.push_back(dir);
     }
   }

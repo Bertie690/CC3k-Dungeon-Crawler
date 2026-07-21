@@ -2,9 +2,11 @@ export module merchant;
 
 #ifdef __INTELLISENSE__
 #include "../enums/race-type.cc"
+#include "../enums/gold-size.cc"
 #include "enemy.cc"
 #else
 import racetype;
+import goldsize;
 import enemy;
 #endif  // __INTELLISENSE__
 
@@ -16,6 +18,7 @@ export class Merchant : public Enemy {
   }
 
   virtual void onBeingAttacked(Character&, unsigned int) override { hostile = true; }
+  virtual GoldSize getGoldDrop() const override { return GoldSize::MerchantHoard; }
 
  public:
   using Enemy::Enemy;

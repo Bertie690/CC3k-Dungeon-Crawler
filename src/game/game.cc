@@ -48,8 +48,8 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent>,
   // Generate a Floor and move the Player to its determined spawn position.
   void loadNextFloor();
 
-  // Create the next Floor when a floor transition is requested.
   virtual void onNotify(const FloorTransitionEvent& event) override;
+  virtual void onNotify(const GameQuitEvent& event) override {};
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.

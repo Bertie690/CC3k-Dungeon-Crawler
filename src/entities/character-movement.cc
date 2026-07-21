@@ -9,28 +9,23 @@ export module character:movement;
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
 #include "../floor/floor.cc"
-#include "character.cc"
+#include "character-character.cc"
+#include "character-move-strategy-type.cc"
 #else
 import action;
 import floor;
 import observer;
 import gameevents;
 import <memory>;
+import :character;
+import :movestrategytype;
 #endif  // __INTELLISENSE__
 
-export class Character;
-
-// Enum class representing the different strategies a Character can use to determine its next move.
-// Used to allow sharing different strategies across multiple instances.
-export enum class CharacterMoveStrategyType {
-  PlayerInput,
-  Random,
-  Static,
-};
+export class BaseCharacter;  // forward declare for friendship; no need to import 
 
 // A CharacterMoveStrategy defines how a Character will choose its next move.
-export class CharacterMoveStrategy {
-  friend class Character;
+class CharacterMoveStrategy {
+  friend class BaseCharacter;
 
   // Return the next Action this Character should take, given the current state of the Floor.
   virtual Action getNextMove(Floor& floor, Character& character) = 0;
@@ -39,19 +34,19 @@ export class CharacterMoveStrategy {
   virtual ~CharacterMoveStrategy() = default;
 };
 
-export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
-                                             public Observer<PlayerActionEvent> {
+class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
+                                      public Observer<PlayerActionEvent> {
   // TODO: Implement player input move strategy
   virtual void onNotify(const PlayerActionEvent& event) override;
   virtual Action getNextMove(Floor& floor, Character& character);
 };
 
-export class RandomMoveStrategy final : public CharacterMoveStrategy {
+class RandomMoveStrategy final : public CharacterMoveStrategy {
  private:
   virtual Action getNextMove(Floor& floor, Character& character);
 };
 
-export class StaticMoveStrategy final : public CharacterMoveStrategy {
+class StaticMoveStrategy final : public CharacterMoveStrategy {
  private:
   virtual Action getNextMove(Floor& floor, Character& character);
 };

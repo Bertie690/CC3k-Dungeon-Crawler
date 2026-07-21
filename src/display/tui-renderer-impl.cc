@@ -35,10 +35,6 @@ namespace Color {
   const string BLUE = "\033[34m";
   const string MAGENTA = "\033[35m";
   const string CYAN = "\033[36m";
-
-  constexpr string rgbToAnsi(const int r, const int g, const int b) {
-    return "\033[38;2;" + to_string(r) + ";" + to_string(g) + ";" + to_string(b) + "m";
-  }
 }  // namespace Color
 
 TUIRenderer::TUIRenderer() : currentFloor{nullptr} {}
@@ -95,7 +91,7 @@ string TUIRenderer::getEntitySymbol(const Entity& entity) const noexcept {
   }
 
   if (auto character = dynamic_cast<const Character*>(&entity)) {
-    switch (character->raceType) {
+    switch (character->raceType()) {
       case RaceType::Human:
         return Color::RED + "H" + Color::RESET;
       case RaceType::Dwarf:
@@ -151,7 +147,7 @@ void TUIRenderer::draw() {
 
 void TUIRenderer::onNotify(const EntityDeathEvent& event) {
   if (!currentFloor) return;
-  const Position position = event.entity.position;
+  const Position position = event.entity.position();
   const Cell& cell = currentFloor->getCell(position);
   displayGrid[position.y][position.x] = getCellText(cell);
 }

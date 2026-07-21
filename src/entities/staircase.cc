@@ -9,7 +9,8 @@ import entity;
 #endif  // __INTELLISENSE__
 
 // A Staircase represents an Entity that allows players to move between floors.
-export class Staircase final : public Entity {
+// TODO: Implement floor transitions
+export class Staircase final : public ConcreteEntity {
  public:
-  using Entity::Entity;
+  using ConcreteEntity::ConcreteEntity;
 };

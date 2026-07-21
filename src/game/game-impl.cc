@@ -79,9 +79,9 @@ void Game::loadNextFloor() {
   floor->attach(renderer.get());
   floor->attach(this);
 
-  // Player is added outside of FloorGenerator to share Ownership with the Game
-  player->position = floor->playerSpawn;
-  floor->getCell(player->position).add(player);
+  // Player is added outside of FloorGenerator to share ownership with the Game
+  player->position() = floor->playerSpawn;
+  floor->getCell(player->position()).add(player);
 
   notify(NewFloorEvent{floor.get()});
   renderer->draw();
@@ -119,7 +119,7 @@ void Game::runEnemyTurn() {
 
   // TODO: could possibly be optimized
   sort(enemies.begin(), enemies.end(), [](const shared_ptr<Enemy>& a, const shared_ptr<Enemy>& b) {
-    return a->position < b->position;
+    return a->position() < b->position();
   });
 
   // Run each Enemy's turn
@@ -127,4 +127,9 @@ void Game::runEnemyTurn() {
     enemy->act(*floor);
   }
   renderer->draw();
+}
+
+void Game::onNotify(const GameQuitEvent& event) {
+  if (event.showScoreboard) {
+
 }

@@ -16,15 +16,10 @@ import floor;
 import character;
 #endif  // __INTELLISENSE__
 
-export class Player : public Character, public Observer<PlayerActionEvent> {
+export class Player : public BaseCharacter, public Observer<PlayerActionEvent> {
   Action nextAction{Pass{}};
 
-  // Return the input handler's determined next action.
-  Action getNextMove(Floor& floor);
-  // Receives and stores the Players action for the upcoming turn.
-  virtual void onNotify(const PlayerActionEvent& event) override;
-
  public:
-  using Character::Character;
+  using BaseCharacter::BaseCharacter;
   int gold = 0;
 };

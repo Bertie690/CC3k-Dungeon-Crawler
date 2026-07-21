@@ -206,11 +206,6 @@ trawl_dependencies() {
       else
         module_files["$module_name"]="$file"
       fi
-      # hackjob - ignore implementation files that import their own declarations - requrired for module partitions to function
-      if [[ " $deps " =~ [[:space:]]${module_name}[[:space:]] ]]; then
-        [ "$verbose" ] && blue "Ignoring self-import of module '$module_name' in file '$file'...\n" || true
-        deps_graph["$module_name"]="${deps_graph["$module_name"]//$module_name/}"
-      fi
     else
       # interface files must be unique within each translation unit
       if [ -n "${seen_interfaces["$module_name"]:-}" ]; then

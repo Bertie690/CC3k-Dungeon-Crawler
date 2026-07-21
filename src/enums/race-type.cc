@@ -1,6 +1,12 @@
 export module racetype;
 
 #pragma once
+#ifdef __INTELLISENSE__
+#include <stdexcept>
+#else
+import <stdexcept>;
+#endif  // __INTELLISENSE__
+
 
 export enum class RaceType {
   // players
@@ -31,6 +37,14 @@ export bool isPlayer(RaceType race) {
     case RaceType::Troll:
     case RaceType::Goblin:
       return true;
+    case RaceType::Human:
+    case RaceType::Dwarf:
+    case RaceType::Elf:
+    case RaceType::Orc:
+    case RaceType::Merchant:
+    case RaceType::Dragon:
+    case RaceType::Halfling:
+      return false;
   }
-  return false;
+  throw std::invalid_argument("Unknown RaceType");
 }

@@ -51,6 +51,8 @@ Position takeRandomAvailableFloorTile(vector<Position>& availableTiles, RNG& rng
 }
 
 Floor RandomFloorGenerator::generateFloor() {
+  // TODO: Maybe use an unordered_set instead of a vector
+
   Floor floor = createBaseFloor(rng);
   // Get all chambers in the floor
   vector<const Room*> chambers;
@@ -84,10 +86,11 @@ Floor RandomFloorGenerator::generateFloor() {
   // TODO: randomly place enemies, potions, gold, stairs
 
   // Staircase must be in a different chamber than the player
-  int staircaseChamber = rng.intRange(static_cast<int>(chambers.size()));
-  while (staircaseChamber == playerChamber) {
+  int staircaseChamber = 0;
+  do {
     staircaseChamber = rng.intRange(static_cast<int>(chambers.size()));
-  }
+  } while (staircaseChamber == playerChamber);
+
   Position staircasePosition = takeRandomAvailableFloorTile(availableTiles[staircaseChamber], rng);
   floor.getCell(staircasePosition).add(make_shared<Staircase>(staircasePosition));
   // Select stairs chamber from non playerChambers

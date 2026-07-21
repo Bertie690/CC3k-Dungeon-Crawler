@@ -1,0 +1,73 @@
+module character;
+
+#ifdef __INTELLISENSE__
+#include <cmath>
+#include <memory>
+#include <variant>
+#include "character-character.cc"
+#else
+import <cmath>;
+import <memory>;
+import <variant>;
+import :character;
+import floor;
+import cell;
+import action;
+#endif  // __INTELLISENSE__
+
+void Character::attack(Character& defender, Floor& floor) {
+  const unsigned int attacks = this->getAttacksPerTurn();
+  for (unsigned int i = 0; i < attacks; i++) {
+    const double accuracy = this->getAccuracy(defender);
+    const double evasion = defender.getEvasion(*this);
+
+    if (floor.rng.randDouble() > (accuracy / evasion)) {
+      // miss
+      // TODO: Add a UI event?
+      continue;
+    }
+
+    const double damageMultiplier = this->getAttackDamageMultiplier(defender);
+    // ceiling((100/(100 + Def (Defender))) * Atk(Attacker))
+    const unsigned int damage =
+        std::ceil(100.0 / (100.0 + defender.def()) * this->atk() * damageMultiplier);
+    defender.damage(damage);
+    this->onHit(defender, damage);
+    defender.onBeingAttacked(*this, damage);
+  }
+}
+
+void Character::act(Floor& floor) {
+  Action nextMove = this->getNextMove(floor);
+
+  if (Pass* pass = std::get_if<Pass>(&nextMove)) {
+    return;
+  }
+
+  if (Move* move = std::get_if<Move>(&nextMove)) {
+    floor.move(*this, this->position() + move->dir);
+    return;
+  }
+
+  if (UsePotion* potion = std::get_if<UsePotion>(&nextMove)) {
+    // TODO: Implement potion usage
+    return;
+  }
+
+  Attack attack = std::get<Attack>(nextMove);
+  const Cell& c = floor.getCell(this->position() + attack.dir);
+
+  Character* character = nullptr;
+  for (const auto& entity : c.getEntities()) {
+    character = dynamic_cast<Character*>(entity.get());
+    if (character) {
+      break;
+    }
+  }
+
+  if (!character) {
+    throw std::invalid_argument("No character to attack in the given direction.");
+  }
+
+  this->attack(*character, floor);
+}

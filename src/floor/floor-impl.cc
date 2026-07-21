@@ -20,7 +20,7 @@ import observer;
 
 using namespace std;
 
-Floor::Floor(RNG& rng) : rng{rng}, rooms() {}
+Floor::Floor(RNG& rng) : rooms(), rng{rng} {}
 
 bool Floor::isInBounds(const Position& position) const {
   return position.x >= 0 && position.y >= 0 && position.x < WIDTH && position.y < HEIGHT;
@@ -67,7 +67,7 @@ void Floor::move(Entity& entity, const Position& to) {
   if (!hasCell(to)) {
     throw out_of_range{"Position doesn't exist"};
   }
-  Position fromPosition = entity.position;
+  Position fromPosition = entity.position();
   Cell& fromCell = getCell(fromPosition);
   Cell& toCell = getCell(to);
 
@@ -83,7 +83,7 @@ void Floor::move(Entity& entity, const Position& to) {
   }
   if (!movingEntity) throw invalid_argument{"Entity isn't on the Floor"};
   fromCell.remove(entity);
-  entity.position = to;
+  entity.position() = to;
   toCell.add(movingEntity);
 
   notify(EntityMoveEvent{entity, fromPosition});

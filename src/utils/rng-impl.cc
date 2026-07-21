@@ -21,7 +21,7 @@ double RNG::randDouble() {
 }
 
 template <Container C>
-typename C::value_type& RNG::pick(const C& c) {
+decltype(auto) RNG::pick(C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }
@@ -29,7 +29,7 @@ typename C::value_type& RNG::pick(const C& c) {
   return c[dist(twister)];
 }
 template <Container C>
-typename C::value_type& RNG::pick(const C& c, const typename C::value_type& defaultValue) {
+decltype(auto) RNG::pick(C& c, const typename C::value_type& defaultValue) {
   try {
     return this->pick(c);
   } catch (const std::out_of_range&) {
@@ -39,7 +39,7 @@ typename C::value_type& RNG::pick(const C& c, const typename C::value_type& defa
 
 template <typename T>
   requires std::is_bounded_array_v<T>
-typename std::remove_extent_t<T>& RNG::pick(const T& arr) {
+decltype(auto) RNG::pick(T& arr) {
   std::uniform_int_distribution dist(0, std::extent_v<T> - 1);
   return arr[dist(twister)];
 }
