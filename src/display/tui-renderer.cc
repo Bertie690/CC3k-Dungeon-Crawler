@@ -36,10 +36,11 @@ export class TUIRenderer : public Renderer {
   std::string getEntitySymbol(const Entity& entity) const noexcept;
   void rebuildGrid();
 
- public:
-  TUIRenderer();
-  virtual void draw() override;
   virtual void onNotify(const EntityDeathEvent& event) override;
   virtual void onNotify(const EntityMoveEvent& event) override;
   virtual void onNotify(const NewFloorEvent& event) override;
+
+ public:
+  TUIRenderer();
+  virtual void draw() override;
 };

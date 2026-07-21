@@ -34,7 +34,7 @@ import scoreboard;
 using namespace std;
 
 // Game owns and manages the main game objects
-export class Game : public Observer<FloorTransitionEvent>,
+export class Game : public Observer<FloorTransitionEvent, GameQuitEvent>,
                     public Subject<NewFloorEvent, PlayerActionEvent> {
   RNG rng;
   Scoreboard scoreboard;
@@ -59,7 +59,7 @@ export class Game : public Observer<FloorTransitionEvent>,
 
   // Initialize a new game.
   void newGame();
-  // Run turn for the Player.
+  // Run a turn for the Player.
   void runPlayerTurn(const PlayerAction& action);
   // Run one turn for every Enemy currently on the Floor.
   void runEnemyTurn();

@@ -15,6 +15,7 @@ import observer;
 export class Renderer : public Observer<NewFloorEvent, EntityDeathEvent, EntityMoveEvent> {
  public:
   virtual ~Renderer() = default;
+
+  // Draw the current state of the game to the screen.
   virtual void draw() = 0;
-  virtual void onNotify(const NewFloorEvent& event) override = 0;
 };

@@ -40,7 +40,7 @@ class Observer : public ObserverFor<Event>... {
 template <typename Event>
   requires std::is_class_v<Event>
 class SubjectFor {
-  // The backing list of observers.
+  // The backing list of observers, none of which are owned.
   std::list<ObserverFor<Event>*> observers;
 
  protected:
