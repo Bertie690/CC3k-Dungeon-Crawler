@@ -1,4 +1,4 @@
-export module character:concrete;
+export module character:base;
 
 #pragma once
 
@@ -20,10 +20,9 @@ import :movestrategytype;
 import :movement;
 #endif
 
-// Concrete base class that implements the Character interface, providing default implementations for most of its methods.
-// Still technically virtual, but can be instantiated directly (unlike Character.).
-// TODO: Rename this to something more appropriate that still conveys this is a "(slightly) more concrete Character"
-export class BaseCharacter : public ConcreteEntity, public Character {
+// Base class that implements the Character interface, providing default implementations for most of its methods.
+// Still technically virtual, but can be instantiated directly (unlike Character).
+export class BaseCharacter : public BaseEntity, public Character {
   // This Character's current HP.
   int hp;
   // The character's base stats.

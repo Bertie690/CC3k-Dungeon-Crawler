@@ -5,13 +5,13 @@ module character;
 #include <stdexcept>
 #include <variant>
 
-#include "character-concrete.cc"
+#include "character-base.cc"
 #include "character-movement.cc"
 #else
 import <cmath>;
 import <stdexcept>;
 import <variant>;
-import :concrete;
+import :base;
 import :movement;
 #endif  // __INTELLISENSE__
 
@@ -30,7 +30,7 @@ std::unique_ptr<CharacterMoveStrategy> buildStrategy(CharacterMoveStrategyType t
 
 BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceType,
                              CharacterMoveStrategyType strategyType)
-    : ConcreteEntity{position},
+    : BaseEntity{position},
       baseStats(baseStats),
       type(raceType),
       moveStrategy(buildStrategy(strategyType)) {};

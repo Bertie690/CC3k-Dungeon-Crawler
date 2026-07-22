@@ -23,19 +23,18 @@ export class Entity {
   // Only 1 Entity with collision can occupy a Cell at a time.
   virtual bool hasCollision() const;
 
-  // Determine what happens when another Entity attempts to enter this Entity's Cell.
+  // Determine what happens when another Entity attempts to enter this Entity's Cell, and trigger any related effects.
   virtual OverlapResult onOverlap(Entity& movingEntity);
 };
 
-// An entity that owns its own position.
-// Still technically virtual
-export class ConcreteEntity : public virtual Entity {
+// A base class for Entities that own their own positions.
+export class BaseEntity : public virtual Entity {
   // The backing position.
   Position pos;
 
  public:
-  ConcreteEntity(const Position& position) noexcept : pos(position) {};
-  virtual ~ConcreteEntity() = default;
+  BaseEntity(const Position& position) noexcept : pos(position) {};
+  virtual ~BaseEntity() = 0;
 
   virtual Position& position() noexcept override;
   virtual const Position& position() const noexcept override;
@@ -43,7 +42,10 @@ export class ConcreteEntity : public virtual Entity {
 
 Entity::~Entity() = default;
 bool Entity::hasCollision() const { return true; }
-OverlapResult Entity::onOverlap(Entity&) { return hasCollision() ? OverlapResult::Blocked : OverlapResult::Enter; }
+OverlapResult Entity::onOverlap(Entity&) {
+  return hasCollision() ? OverlapResult::Blocked : OverlapResult::Enter;
+}
 
-Position& ConcreteEntity::position() noexcept { return this->pos; }
-const Position& ConcreteEntity::position() const noexcept { return this->pos; }
+BaseEntity::~BaseEntity() = default;
+Position& BaseEntity::position() noexcept { return this->pos; }
+const Position& BaseEntity::position() const noexcept { return this->pos; }

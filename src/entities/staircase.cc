@@ -12,9 +12,9 @@ import overlapresult;
 
 // A Staircase represents an Entity that allows players to move between floors.
 // TODO: Implement floor transitions
-export class Staircase final : public ConcreteEntity {
+export class Staircase final : public BaseEntity {
   virtual OverlapResult onOverlap(Entity& movingEntity) override;
 
  public:
-  using ConcreteEntity::ConcreteEntity;
+  using BaseEntity::BaseEntity;
 };

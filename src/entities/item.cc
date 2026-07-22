@@ -17,7 +17,7 @@ import itemtype;
 #endif  // __INTELLISENSE__
 
 // An Item represents an Entity that can be picked up by a Character.
-export class Item : public ConcreteEntity {
+export class Item : public BaseEntity {
   // Return if the given Character can pick up this Item.
   virtual bool canPickup(Character& character) const;
   // Apply Item's effect to the Character.
@@ -30,7 +30,7 @@ export class Item : public ConcreteEntity {
   const ItemType type;
 
   // Construct a new Item with the given type.
-  Item(Position position, ItemType type) noexcept : ConcreteEntity{position}, type(type) {}
+  Item(Position position, ItemType type) noexcept : BaseEntity{position}, type(type) {}
   virtual ~Item() = 0;
 };
 

@@ -21,7 +21,7 @@ import :character;
 import :movestrategytype;
 #endif  // __INTELLISENSE__
 
-export class BaseCharacter;  // forward declare for friendship; no need to import 
+export class BaseCharacter;  // forward declare for friendship; no need to import
 
 // A CharacterMoveStrategy defines how a Character will choose its next move.
 export class CharacterMoveStrategy {
@@ -40,15 +40,15 @@ export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
   Action nextAction{Pass{}};
 
   virtual void onNotify(const PlayerActionEvent& event) override;
-  virtual Action getNextMove(Floor& floor, Character& character);
+  virtual Action getNextMove(Floor& floor, Character& character) override;
 };
 
 class RandomMoveStrategy final : public CharacterMoveStrategy {
  private:
-  virtual Action getNextMove(Floor& floor, Character& character);
+  virtual Action getNextMove(Floor& floor, Character& character) override;
 };
 
 class StaticMoveStrategy final : public CharacterMoveStrategy {
  private:
-  virtual Action getNextMove(Floor& floor, Character& character);
+  virtual Action getNextMove(Floor& floor, Character& character) override;
 };

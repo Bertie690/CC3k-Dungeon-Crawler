@@ -21,6 +21,7 @@ import stats;
 export class Player : public BaseCharacter {
  public:
   // Explicit constructor to guarantee Player strategy type.
+
   Player(Position position, Stats baseStats, RaceType raceType);
 
   // Expose the Player's strategy so the input handler can use it as an observer.
