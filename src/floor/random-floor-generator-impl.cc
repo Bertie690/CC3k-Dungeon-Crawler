@@ -9,7 +9,7 @@ module randomfloorgenerator;
 #include "../entities/gold-pile.cc"
 #include "../entities/staircase.cc"
 #include "../entities/stats.cc"
-#include "../enums/gold-size.cc"
+#include "../factories/gold-factory.cc"
 #include "../enums/race-type.cc"
 #include "../enums/room-type.cc"
 #include "../enums/tile-type.cc"
@@ -24,8 +24,8 @@ import <memory>;
 import <vector>;
 import enemy;
 import character;
+import goldfactory;
 import goldpile;
-import goldsize;
 import stats;
 import staircase;
 import racetype;
@@ -40,7 +40,7 @@ import room;
 
 using namespace std;
 
-RandomFloorGenerator::RandomFloorGenerator(RNG& rng) : rng{rng} {}
+RandomFloorGenerator::RandomFloorGenerator(RNG& rng) : rng{rng}, goldFactory{rng} {}
 
 // Selects a random available floor tile and removes it from availableTiles
 // TODO: Assumes there are available tiles to select from, should be updated if we do different Floor layout bonus
@@ -59,14 +59,16 @@ Floor RandomFloorGenerator::generateFloor() {
 
   Floor floor = createBaseFloor(rng);
   // Get all chambers in the floor
-  vector<const Room*> chambers;
+  vector<const Chamber*> chambers;
   for (const Room* room : floor.getRooms()) {
-    if (room->type() == RoomType::Chamber) chambers.push_back(room);
+    if (room->type() == RoomType::Chamber) {
+      chambers.push_back(static_cast<const Chamber*>(room));
+    }
   }
 
   // Create list of available floor tiles for each chamber
   vector<vector<Position>> availableTiles;
-  for (const Room* chamber : chambers) {
+  for (const Chamber* chamber : chambers) {
     vector<Position> chamberTiles;
     for (const Cell* cell : chamber->getCells()) {
       if (cell->tileType == TileType::Floor && !cell->isOccupied()) {
@@ -91,18 +93,7 @@ Floor RandomFloorGenerator::generateFloor() {
 
   for (int i = 0; i < 10; ++i) {
     int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
-    Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
-
-    // TODO: refactor to factory
-    int randomGoldSizeSelection = rng.intRange(8);
-    GoldSize goldSize = GoldSize::Normal; // randomGoldSizeSelection < 5
-    if (5 <= randomGoldSizeSelection && randomGoldSizeSelection < 7) {
-      goldSize = GoldSize::Small;
-    } else if (randomGoldSizeSelection == 7) {
-      // TODO: spawn DragonHoard instead
-      goldSize = GoldSize::DragonHoard;
-    }
-    floor.getCell(position).add(make_shared<GoldPile>(position, goldSize));
+    goldFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
   }
 
   // TEMP Demo: Spawn 20 Human enemies until enemy factories are made

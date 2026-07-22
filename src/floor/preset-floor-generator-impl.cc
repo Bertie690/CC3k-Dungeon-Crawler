@@ -6,9 +6,9 @@ module presetfloorgenerator;
 #include <string>
 #include <vector>
 
-#include "../entities/gold-pile.cc"
 #include "../entities/staircase.cc"
 #include "../enums/gold-size.cc"
+#include "../factories/gold-factory.cc"
 #include "floor.cc"
 #include "position.cc"
 #include "preset-floor-generator.cc"
@@ -17,8 +17,8 @@ import <fstream>;
 import <string>;
 import <vector>;
 import <memory>;
-import goldpile;
 import goldsize;
+import goldfactory;
 import position;
 import floor;
 import staircase;
@@ -36,9 +36,9 @@ vector<string> readFloorLines(ifstream& input) {
   return floorLines;
 }
 
-PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName) : rng{rng}, input{fileName} {}
+PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName) : rng{rng}, goldFactory{rng}, input{fileName} {}
 
-void placePresetEntities(Floor& floor, const vector<string>& floorLines) {
+void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFactory& goldFactory) {
   for (int y = 0; y < Floor::HEIGHT; ++y) {
     for (int x = 0; x < Floor::WIDTH; ++x) {
       const char c = floorLines[y][x];
@@ -68,18 +68,17 @@ void placePresetEntities(Floor& floor, const vector<string>& floorLines) {
           // TODO: create potion: PotionFactory
           break;
         case '6':
-          // TODO Can be replaced with a GoldFactory method
-          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::Normal));
+          floor.getCell(position).add(goldFactory.create(position, GoldSize::Normal));
           break;
         case '7':
-          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::Small));
+          floor.getCell(position).add(goldFactory.create(position, GoldSize::Small));
           break;
         case '8':
-          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::MerchantHoard));
+          floor.getCell(position).add(goldFactory.create(position, GoldSize::MerchantHoard));
           break;
         case '9':
           // TODO: Replace with DragonHoard
-          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::DragonHoard));
+          floor.getCell(position).add(goldFactory.create(position, GoldSize::DragonHoard));
           break;
       }
     }
@@ -93,6 +92,6 @@ Floor PresetFloorGenerator::generateFloor() {
   Floor floor = createBaseFloor(rng);
 
   // TODO: add factories to signature
-  placePresetEntities(floor, floorLines);
+  placePresetEntities(floor, floorLines, goldFactory);
   return floor;
 }

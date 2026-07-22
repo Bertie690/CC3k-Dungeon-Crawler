@@ -1,0 +1,63 @@
+export module standardfactory;
+
+#pragma once
+
+#ifdef __INTELLISENSE__
+#include <memory>
+#include <stdexcept>
+#include <type_traits>
+#include <vector>
+
+#include "../entities/entity.cc"
+#include "../floor/cell.cc"
+#include "../floor/chamber.cc"
+#include "../floor/position.cc"
+#include "factory-base.cc"
+#else
+import <memory>;
+import <stdexcept>;
+import <type_traits>;
+import <vector>;
+import cell;
+import chamber;
+import entity;
+import factorybase;
+import position;
+#endif  // __INTELLISENSE__
+
+// A StandardFactory for placing Entities on the Floor.
+export template<typename T>
+  // Only allow T if it inherits from or is of type Entity.
+  requires std::is_base_of_v<Entity, T>
+class StandardFactory : public FactoryBase {
+  // Create an Entity at position.
+  virtual std::shared_ptr<T> create(const Position& position) = 0;
+
+ public:
+  using FactoryBase::FactoryBase;
+  // Create an Entity within the Chamber using the reserved list of avalablePositions.
+  virtual void process(const Chamber& chamber,
+                       std::vector<Position>& availablePositions) override;
+};
+
+// Implementation
+template<typename T>
+  requires std::is_base_of_v<Entity, T>
+void StandardFactory<T>::process(const Chamber& chamber,
+                                 std::vector<Position>& availablePositions) {
+  if (availablePositions.empty()) {
+    throw std::out_of_range{"No valid Cells available for spawning"};
+  }
+  int selectedIndex = rng.intRange(static_cast<int>(availablePositions.size()));
+  Position selectedPosition = availablePositions[selectedIndex];
+  availablePositions[selectedIndex] = availablePositions.back();
+  availablePositions.pop_back();
+
+  for (Cell* cell : chamber.getCells()) {
+    if (cell->position == selectedPosition) {
+      cell->add(create(selectedPosition));
+      return;
+    }
+  }
+  throw std::out_of_range{"Selected position is not in the Chamber"};
+}
