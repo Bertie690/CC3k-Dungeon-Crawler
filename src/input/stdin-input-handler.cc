@@ -1,4 +1,4 @@
-module stdininputhandler;
+export module stdininputhandler;
 
 #ifdef __INTELLISENSE__
 #include <iostream>

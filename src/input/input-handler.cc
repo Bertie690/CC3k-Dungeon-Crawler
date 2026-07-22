@@ -23,7 +23,7 @@ import direction;
 import racetype;
 #endif  // __INTELLISENSE__
 
-export class InputHandler : public Observer<PlayerActionEvent, GameQuitEvent, RaceSelectEvent> {
+export class InputHandler : public Observer<PlayerActionEvent, GameQuitEvent, RaceSelectEvent>, public Subject<PlayerActionEvent> {
  protected:
   virtual PlayerAction readCommand() = 0;
 

@@ -5,6 +5,7 @@ module game;
 #include <memory>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include "../entities/enemy.cc"
@@ -25,6 +26,7 @@ import <algorithm>;
 import <memory>;
 import <string>;
 import <utility>;
+import <variant>;
 import <vector>;
 import enemy;
 import entity;
@@ -64,13 +66,13 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
   attach(this->renderer.get());
 }
 
-void Game::newGame() {
+void Game::newGame(RaceType race) {
   floorTransitionRequested = false;
   if (player) {
     detach(&player->inputObserver());
   }
   // (0,0) position outside of Chambers until we place Player on the first Floor
-  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade);
+  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, race);
   attach(&player->inputObserver());
   loadNextFloor();
   // TODO: start turns
@@ -90,6 +92,14 @@ void Game::loadNextFloor() {
 }
 
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
+
+void Game::onNotify(const PlayerActionEvent& event) {
+  if (const RaceSelect* raceSelect = get_if<RaceSelect>(&event.action)) {
+    newGame(raceSelect->race);
+    return;
+  }
+  runPlayerTurn(event.action);
+}
 
 void Game::runPlayerTurn(const PlayerAction& action) {
   notify(PlayerActionEvent{action});

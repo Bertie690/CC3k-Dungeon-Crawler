@@ -9,6 +9,7 @@ export module game;
 #include "../display/renderer.cc"
 #include "../entities/player.cc"
 #include "../enums/action.cc"
+#include "../enums/race-type.cc"
 #include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
@@ -25,6 +26,7 @@ import floorevents;
 import gameevents;
 import observer;
 import action;
+import racetype;
 import floorgenerator;
 import floor;
 import rng;
@@ -34,7 +36,7 @@ import scoreboard;
 using namespace std;
 
 // Game owns and manages the main game objects
-export class Game : public Observer<FloorTransitionEvent, GameQuitEvent>,
+export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent>,
                     public Subject<NewFloorEvent, PlayerActionEvent> {
   RNG rng;
   Scoreboard scoreboard;
@@ -50,6 +52,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent>,
 
   virtual void onNotify(const FloorTransitionEvent& event) override;
   virtual void onNotify(const GameQuitEvent& event) override;
+  virtual void onNotify(const PlayerActionEvent& event) override;
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.
@@ -57,8 +60,8 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent>,
   // Create a new Game with the given Renderer, floor file, and the default RNG seed.
   Game(unique_ptr<Renderer> renderer, const string& floorFile = "");
 
-  // Initialize a new game.
-  void newGame();
+  // Initialize a new game with the Player race.
+  void newGame(RaceType race);
   // Run a turn for the Player.
   void runPlayerTurn(const PlayerAction& action);
   // Run one turn for every Enemy currently on the Floor.

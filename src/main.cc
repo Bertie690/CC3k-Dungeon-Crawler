@@ -7,11 +7,13 @@
 #include <vector>
 
 #include "display/tui-renderer.cc"
+#include "display/renderer.cc"
 #include "enums/action.cc"
 #include "enums/direction.cc"
 #include "enums/race-type.cc"
 #include "game/game.cc"
 #include "input/stdin-input-handler.cc"
+#include "input/input-handler.cc"
 #else
 import <iostream>;
 import <memory>;
@@ -20,11 +22,13 @@ import <vector>;
 import <fstream>;
 import <cstdlib>;
 import tuirenderer;
+import renderer;
 import action;
 import direction;
 import racetype;
 import game;
 import stdininputhandler;
+import inputhandler;
 #endif  // __INTELLISENSE__
 
 using namespace std;
@@ -139,21 +143,22 @@ int main(int argc, char* argv[]) {
   unique_ptr<Renderer> renderer = make_unique<TUIRenderer>();
 
   // Create game with appropriate parameters
+  unique_ptr<Game> game;
   if (seed != 0) {
     if (!floorFile.empty()) {
-      Game game{move(renderer), floorFile, seed};
+      game = make_unique<Game>(move(renderer), floorFile, seed);
     } else {
-      Game game{move(renderer), "", seed};
+      game = make_unique<Game>(move(renderer), "", seed);
     }
   } else {
     if (!floorFile.empty()) {
-      Game game{move(renderer), floorFile};
+      game = make_unique<Game>(move(renderer), floorFile);
     } else {
-      Game game{move(renderer)};
+      game = make_unique<Game>(move(renderer));
     }
   }
 
-  game->newGame();
+  inputHandler->attach(game.get());
 
   // Main game loop using InputHandler
   while (true) {
