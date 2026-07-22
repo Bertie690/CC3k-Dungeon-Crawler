@@ -4,13 +4,17 @@ export module staircase;
 
 #ifdef __INTELLISENSE__
 #include "../entities/entity.cc"
+#include "../enums/overlap-result.cc"
 #else
 import entity;
+import overlapresult;
 #endif  // __INTELLISENSE__
 
 // A Staircase represents an Entity that allows players to move between floors.
 // TODO: Implement floor transitions
 export class Staircase final : public ConcreteEntity {
+  virtual OverlapResult onOverlap(Entity& movingEntity) override;
+
  public:
   using ConcreteEntity::ConcreteEntity;
 };

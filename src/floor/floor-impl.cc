@@ -6,6 +6,7 @@ module floor;
 #include <utility>
 #include <vector>
 
+#include "../enums/overlap-result.cc"
 #include "../events/floor-events.cc"
 #include "../events/observer.cc"
 #include "floor.cc"
@@ -16,6 +17,7 @@ import <utility>;
 import <vector>;
 import floorevents;
 import observer;
+import overlapresult;
 #endif  // __INTELLISENSE__
 
 using namespace std;
@@ -72,7 +74,6 @@ void Floor::move(Entity& entity, const Position& to) {
   Cell& toCell = getCell(to);
 
   if (!toCell.isWalkable()) throw invalid_argument{"Position is not walkable"};
-  if (toCell.isOccupied()) throw invalid_argument{"Position is occupied"};
 
   shared_ptr<Entity> movingEntity;
   for (const shared_ptr<Entity>& currentEntity : fromCell.getEntities()) {
@@ -82,10 +83,29 @@ void Floor::move(Entity& entity, const Position& to) {
     }
   }
   if (!movingEntity) throw invalid_argument{"Entity isn't on the Floor"};
+
+  vector<Entity*> consumedEntities;
+  for (const shared_ptr<Entity>& destinationEntity : toCell.getEntities()) {
+    switch (destinationEntity->onOverlap(entity)) {
+      case OverlapResult::Blocked:
+        throw invalid_argument{"Position is occupied"};
+      case OverlapResult::Enter:
+        break;
+      case OverlapResult::Consumed:
+        consumedEntities.push_back(destinationEntity.get());
+        break;
+      case OverlapResult::FloorTransition:
+        notify(FloorTransitionEvent{});
+        return;
+    }
+  }
+  for (Entity* consumedEntity : consumedEntities) {
+    toCell.remove(*consumedEntity);
+  }
+
   fromCell.remove(entity);
   entity.position() = to;
   toCell.add(movingEntity);
 
   notify(EntityMoveEvent{entity, fromPosition});
-  // TODO: if Player attempts to move to a staircase Cell, emit FloorTransitionEvent
 }

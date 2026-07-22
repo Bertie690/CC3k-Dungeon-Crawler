@@ -3,8 +3,10 @@ export module entity;
 #pragma once
 
 #ifdef __INTELLISENSE__
+#include "../enums/overlap-result.cc"
 #include "../floor/position.cc"
 #else
+import overlapresult;
 import position;
 #endif  // __INTELLISENSE__
 
@@ -20,6 +22,9 @@ export class Entity {
   // Return whether this Entity can collide with other Entities and block their movement.
   // Only 1 Entity with collision can occupy a Cell at a time.
   virtual bool hasCollision() const;
+
+  // Determine what happens when another Entity attempts to enter this Entity's Cell.
+  virtual OverlapResult onOverlap(Entity& movingEntity);
 };
 
 // An entity that owns its own position.
@@ -38,6 +43,7 @@ export class ConcreteEntity : public virtual Entity {
 
 Entity::~Entity() = default;
 bool Entity::hasCollision() const { return true; }
+OverlapResult Entity::onOverlap(Entity&) { return hasCollision() ? OverlapResult::Blocked : OverlapResult::Enter; }
 
 Position& ConcreteEntity::position() noexcept { return this->pos; }
 const Position& ConcreteEntity::position() const noexcept { return this->pos; }
