@@ -6,7 +6,9 @@ module presetfloorgenerator;
 #include <string>
 #include <vector>
 
+#include "../entities/gold-pile.cc"
 #include "../entities/staircase.cc"
+#include "../enums/gold-size.cc"
 #include "floor.cc"
 #include "position.cc"
 #include "preset-floor-generator.cc"
@@ -15,6 +17,8 @@ import <fstream>;
 import <string>;
 import <vector>;
 import <memory>;
+import goldpile;
+import goldsize;
 import position;
 import floor;
 import staircase;
@@ -64,10 +68,18 @@ void placePresetEntities(Floor& floor, const vector<string>& floorLines) {
           // TODO: create potion: PotionFactory
           break;
         case '6':
+          // TODO Can be replaced with a GoldFactory method
+          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::Normal));
+          break;
         case '7':
+          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::Small));
+          break;
         case '8':
+          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::MerchantHoard));
+          break;
         case '9':
-          // TODO: create gold : GoldFactory
+          // TODO: Replace with DragonHoard
+          floor.getCell(position).add(make_shared<GoldPile>(position, GoldSize::DragonHoard));
           break;
       }
     }

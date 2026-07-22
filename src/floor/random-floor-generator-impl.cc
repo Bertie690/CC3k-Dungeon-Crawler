@@ -6,8 +6,10 @@ module randomfloorgenerator;
 
 #include "../entities/enemy.cc"
 #include "../entities/character.cc"
+#include "../entities/gold-pile.cc"
 #include "../entities/staircase.cc"
 #include "../entities/stats.cc"
+#include "../enums/gold-size.cc"
 #include "../enums/race-type.cc"
 #include "../enums/room-type.cc"
 #include "../enums/tile-type.cc"
@@ -22,6 +24,8 @@ import <memory>;
 import <vector>;
 import enemy;
 import character;
+import goldpile;
+import goldsize;
 import stats;
 import staircase;
 import racetype;
@@ -74,17 +78,6 @@ Floor RandomFloorGenerator::generateFloor() {
   int playerChamber = rng.intRange(static_cast<int>(chambers.size()));
   floor.playerSpawn = takeRandomAvailableFloorTile(availableTiles[playerChamber], rng);
 
-  // TEMP Demo: Spawn 10 Human enemies until enemy factories are made
-  // TODO remove
-  for (int i = 0; i < 20; ++i) {
-    int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
-    Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
-    floor.getCell(position).add(make_shared<Enemy>(position, Stats{140, 20, 20}, RaceType::Human,
-                                                   CharacterMoveStrategyType::Random));
-  }
-
-  // TODO: randomly place enemies, potions, gold, stairs
-
   // Staircase must be in a different chamber than the player
   int staircaseChamber = 0;
   do {
@@ -93,6 +86,33 @@ Floor RandomFloorGenerator::generateFloor() {
 
   Position staircasePosition = takeRandomAvailableFloorTile(availableTiles[staircaseChamber], rng);
   floor.getCell(staircasePosition).add(make_shared<Staircase>(staircasePosition));
-  // Select stairs chamber from non playerChambers
+
+  // TODO: spawn potions
+
+  for (int i = 0; i < 10; ++i) {
+    int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
+    Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
+
+    // TODO: refactor to factory
+    int randomGoldSizeSelection = rng.intRange(8);
+    GoldSize goldSize = GoldSize::Normal; // randomGoldSizeSelection < 5
+    if (5 <= randomGoldSizeSelection && randomGoldSizeSelection < 7) {
+      goldSize = GoldSize::Small;
+    } else if (randomGoldSizeSelection == 7) {
+      // TODO: spawn DragonHoard instead
+      goldSize = GoldSize::DragonHoard;
+    }
+    floor.getCell(position).add(make_shared<GoldPile>(position, goldSize));
+  }
+
+  // TEMP Demo: Spawn 20 Human enemies until enemy factories are made
+  // TODO remove + add real enemy spawn
+  for (int i = 0; i < 20; ++i) {
+    int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
+    Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
+    floor.getCell(position).add(make_shared<Enemy>(position, Stats{140, 20, 20}, RaceType::Human,
+                                                   CharacterMoveStrategyType::Random));
+  }
+
   return floor;
 }
