@@ -49,7 +49,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent>,
   void loadNextFloor();
 
   virtual void onNotify(const FloorTransitionEvent& event) override;
-  virtual void onNotify(const GameQuitEvent& event) override {};
+  virtual void onNotify(const GameQuitEvent& event) override;
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.

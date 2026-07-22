@@ -66,10 +66,12 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
 
 void Game::newGame() {
   floorTransitionRequested = false;
+  if (player) {
+    detach(&player->inputObserver());
+  }
   // (0,0) position outside of Chambers until we place Player on the first Floor
-  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade,
-                               CharacterMoveStrategyType::PlayerInput);
-  attach(player.get());
+  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, RaceType::Shade);
+  attach(&player->inputObserver());
   loadNextFloor();
   // TODO: start turns
 }
@@ -130,6 +132,6 @@ void Game::runEnemyTurn() {
 }
 
 void Game::onNotify(const GameQuitEvent& event) {
-  if (event.showScoreboard) {
-
+  // TODO: Display scoreboard and end the game
+  // if (event.showScoreboard) {
 }

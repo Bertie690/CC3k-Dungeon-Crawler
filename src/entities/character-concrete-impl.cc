@@ -57,6 +57,7 @@ bool BaseCharacter::canAttack(const RaceType& defenderType) const {
   return isPlayer(this->raceType()) != isPlayer(defenderType);
 }
 RaceType BaseCharacter::raceType() const { return this->type; }
+CharacterMoveStrategy& BaseCharacter::movementStrategy() { return *moveStrategy; }
 
 #pragma endregion  // Getters/Hooks
 

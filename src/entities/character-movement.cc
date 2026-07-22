@@ -24,7 +24,7 @@ import :movestrategytype;
 export class BaseCharacter;  // forward declare for friendship; no need to import 
 
 // A CharacterMoveStrategy defines how a Character will choose its next move.
-class CharacterMoveStrategy {
+export class CharacterMoveStrategy {
   friend class BaseCharacter;
 
   // Return the next Action this Character should take, given the current state of the Floor.
@@ -34,9 +34,11 @@ class CharacterMoveStrategy {
   virtual ~CharacterMoveStrategy() = default;
 };
 
-class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
-                                      public Observer<PlayerActionEvent> {
-  // TODO: Implement player input move strategy
+export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
+                                             public Observer<PlayerActionEvent> {
+  // The input handler's determined next action.
+  Action nextAction{Pass{}};
+
   virtual void onNotify(const PlayerActionEvent& event) override;
   virtual Action getNextMove(Floor& floor, Character& character);
 };

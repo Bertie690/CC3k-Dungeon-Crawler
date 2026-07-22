@@ -46,6 +46,8 @@ export class BaseCharacter : public ConcreteEntity, public Character {
 
   virtual Action getNextMove(Floor& floor) override final;
 
+  CharacterMoveStrategy& movementStrategy();
+
   virtual double getAccuracy(const Character& defender) const override;
   virtual double getEvasion(const Character& attacker) const override;
   virtual unsigned int getAttacksPerTurn() const override;

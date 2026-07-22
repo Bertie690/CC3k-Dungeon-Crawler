@@ -2,29 +2,45 @@ module character;
 
 #ifdef __INTELLISENSE__
 #include <memory>
+#include <variant>
 #include <vector>
 
+#include "../enums/tile-type.cc"
+#include "../floor/cell.cc"
 #include "character-movement.cc"
 #else
 import <memory>;
+import <variant>;
 import <vector>;
 import action;
+import cell;
 import floor;
 import observer;
 import gameevents;
 import direction;
 import room;
-import <memory>;
+import tiletype;
 import :movement;
 import :movestrategytype;
 #endif  // __INTELLISENSE__
 
-void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent&) {}
+void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent& event) {
+  if (const Move* move = std::get_if<Move>(&event.action)) {
+    nextAction = *move;
+  } else if (const Attack* attack = std::get_if<Attack>(&event.action)) {
+    nextAction = *attack;
+  } else if (const UsePotion* potion = std::get_if<UsePotion>(&event.action)) {
+    nextAction = *potion;
+  } else {
+    nextAction = Pass{};
+  }
+}
 
-Action PlayerInputMoveStrategy::getNextMove(Floor& floor, Character& character) {
-  // TODO: Implement player input move strategy
-  return Pass{};
-};
+Action PlayerInputMoveStrategy::getNextMove(Floor&, Character&) {
+  Action action = nextAction;
+  nextAction = Pass{};
+  return action;
+}
 
 Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
   const Room& room = floor.getRoomAt(character.position());
