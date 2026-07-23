@@ -68,8 +68,7 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
       continue;
     }
 
-    // Filter out doors
-    if (destination.tileType == TileType::Floor) {
+    if (!RandomMoveStrategy::frozen && destination.tileType == TileType::Floor) {
       availableAdjacentCells.push_back(direction);
     }
   }

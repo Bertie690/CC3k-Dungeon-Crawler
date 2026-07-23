@@ -44,11 +44,19 @@ export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
 };
 
 class RandomMoveStrategy final : public CharacterMoveStrategy {
- private:
+  virtual Action getNextMove(Floor& floor, Character& character) override;
+
+  public:
+   static inline bool frozen = false;
+};
+
+// TODO: Rename to 'DragonMoveStrategy' and allow dragons to attack enemies adjacent to their hoard
+class StaticMoveStrategy final : public CharacterMoveStrategy {
   virtual Action getNextMove(Floor& floor, Character& character) override;
 };
 
-class StaticMoveStrategy final : public CharacterMoveStrategy {
- private:
-  virtual Action getNextMove(Floor& floor, Character& character) override;
-};
+// Toggle whether enemies are frozen or not.
+// Defaults to toggling the current state, but can be set explicitly on/off if needed.
+export void freezeEnemies(bool frozen = !RandomMoveStrategy::frozen) {
+  RandomMoveStrategy::frozen = frozen;
+}

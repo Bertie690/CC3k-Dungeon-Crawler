@@ -99,6 +99,10 @@ void Game::onNotify(const PlayerActionEvent& event) {
     newGame(raceSelect->race);
     return;
   }
+  if (const FreezeEnemies* freeze = get_if<FreezeEnemies>(&event.action)) {
+    freezeEnemies();
+    return;
+  }
   runPlayerTurn(event.action);
 }
 

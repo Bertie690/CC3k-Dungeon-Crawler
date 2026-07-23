@@ -144,18 +144,10 @@ int main(int argc, char* argv[]) {
 
   // Create game with appropriate parameters
   unique_ptr<Game> game;
-  if (seed != 0) {
-    if (!floorFile.empty()) {
-      game = make_unique<Game>(move(renderer), floorFile, seed);
-    } else {
-      game = make_unique<Game>(move(renderer), "", seed);
-    }
+  if (seed == 0) {
+    game = make_unique<Game>(move(renderer), floorFile);
   } else {
-    if (!floorFile.empty()) {
-      game = make_unique<Game>(move(renderer), floorFile);
-    } else {
-      game = make_unique<Game>(move(renderer));
-    }
+    game = make_unique<Game>(move(renderer), floorFile, seed);
   }
 
   inputHandler->attach(game.get());
