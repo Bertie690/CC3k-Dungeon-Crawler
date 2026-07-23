@@ -22,8 +22,8 @@ std::unique_ptr<CharacterMoveStrategy> buildStrategy(CharacterMoveStrategyType t
       return std::make_unique<PlayerInputMoveStrategy>();
     case CharacterMoveStrategyType::Random:
       return std::make_unique<RandomMoveStrategy>();
-    case CharacterMoveStrategyType::Static:
-      return std::make_unique<StaticMoveStrategy>();
+    case CharacterMoveStrategyType::Dragon:
+      throw std::invalid_argument("DragonMoveStrategy requires a gold position to be specified... please construct directly");
   }
   throw std::invalid_argument("CharacterMoveStrategyType lacks strategy");
 }
@@ -34,6 +34,12 @@ BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceTy
       baseStats(baseStats),
       type(raceType),
       moveStrategy(buildStrategy(strategyType)) {};
+BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceType,
+                             std::unique_ptr<CharacterMoveStrategy> strat)
+    : BaseEntity{position},
+      baseStats(baseStats),
+      type(raceType),
+      moveStrategy(std::move(strat)) {};
 
 #pragma region Getters/Hooks
 bool BaseCharacter::isDead() const { return this->hp <= 0; }

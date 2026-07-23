@@ -24,7 +24,7 @@ export class FactoryBase {
   FactoryBase(RNG& rng) : rng{rng} {}
   virtual ~FactoryBase() = default;
 
-  // Create an Entity within the Chamber using the reserved list of avalablePositions.
+  // Process the given Chamber. The provided list of availablePositions is used to improve caching purposes.
   virtual void process(const Chamber& chamber,
                        std::vector<Position>& availablePositions) = 0;
 };

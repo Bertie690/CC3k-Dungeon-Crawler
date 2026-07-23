@@ -80,11 +80,29 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
   return Move{availableAdjacentCells[randomIndex]};
 };
 
-Action StaticMoveStrategy::getNextMove(Floor& floor, Character& character) {
+DragonMoveStrategy::DragonMoveStrategy(const Position& goldPos) : goldPos(goldPos) {}
+
+Action DragonMoveStrategy::getNextMove(Floor& floor, Character& character) {
   const Room& room = floor.getRoomAt(character.position());
 
   for (const Direction direction : room.getAdjacentCells(character.position())) {
     const Cell& destination = floor.getCell(character.position() + direction);
+    if (!destination.isOccupied()) {
+      continue;
+    }
+    for (const auto& entity : destination.getEntities()) {
+      const Character* target = dynamic_cast<const Character*>(entity.get());
+      if (target && character.canAttack(target->raceType())) {
+        // found someone to smack
+        return Attack{direction};
+      }
+    }
+  }
+
+  // check next to gold hoard
+  // technically duplicates search range slightly, but it's fiiine
+  for (const Direction direction : room.getAdjacentCells(goldPos)) {
+    const Cell& destination = floor.getCell(goldPos + direction);
     if (!destination.isOccupied()) {
       continue;
     }

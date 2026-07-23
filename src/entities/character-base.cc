@@ -58,6 +58,8 @@ export class BaseCharacter : public BaseEntity, public Character {
  public:
   BaseCharacter(Position position, Stats baseStats, RaceType raceType,
                 CharacterMoveStrategyType strategyType);
+  BaseCharacter(Position position, Stats baseStats, RaceType raceType,
+                std::unique_ptr<CharacterMoveStrategy> strat);
   virtual ~BaseCharacter() = default;
 
   virtual RaceType raceType() const override final;

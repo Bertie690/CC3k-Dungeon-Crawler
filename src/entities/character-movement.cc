@@ -46,13 +46,15 @@ export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
 class RandomMoveStrategy final : public CharacterMoveStrategy {
   virtual Action getNextMove(Floor& floor, Character& character) override;
 
-  public:
-   static inline bool frozen = false;
+ public:
+  static inline bool frozen = false;
 };
 
-// TODO: Rename to 'DragonMoveStrategy' and allow dragons to attack enemies adjacent to their hoard
-class StaticMoveStrategy final : public CharacterMoveStrategy {
+export class DragonMoveStrategy final : public CharacterMoveStrategy {
   virtual Action getNextMove(Floor& floor, Character& character) override;
+
+  const Position goldPos = Position{-1, -1};
+  DragonMoveStrategy(const Position& goldPos);
 };
 
 // Toggle whether enemies are frozen or not.
