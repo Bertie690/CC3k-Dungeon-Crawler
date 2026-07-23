@@ -5,6 +5,7 @@ export module presetfloorgenerator;
 #ifdef __INTELLISENSE__
 #include <fstream>
 #include <string>
+#include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
 #include "../utils/rng.cc"
 #include "floor-generator.cc"
@@ -12,6 +13,7 @@ export module presetfloorgenerator;
 #else
 import <fstream>;
 import <string>;
+import enemyfactory;
 import goldfactory;
 import rng;
 import floor;
@@ -21,6 +23,7 @@ import floorgenerator;
 export class PresetFloorGenerator : public FloorGenerator {
   RNG& rng;
   GoldFactory goldFactory;
+  EnemyFactory enemyFactory;
   std::ifstream input;
   int nextFloor = 1;
 

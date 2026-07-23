@@ -68,6 +68,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
 
 void Game::newGame(RaceType race) {
   floorTransitionRequested = false;
+  // TODO reset other state like merchant hostility
   if (player) {
     detach(&player->inputObserver());
   }

@@ -4,11 +4,11 @@ module randomfloorgenerator;
 #include <memory>
 #include <vector>
 
-#include "../entities/enemy.cc"
 #include "../entities/character.cc"
 #include "../entities/gold-pile.cc"
 #include "../entities/staircase.cc"
 #include "../entities/stats.cc"
+#include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
 #include "../enums/race-type.cc"
 #include "../enums/room-type.cc"
@@ -22,8 +22,8 @@ module randomfloorgenerator;
 #else
 import <memory>;
 import <vector>;
-import enemy;
 import character;
+import enemyfactory;
 import goldfactory;
 import goldpile;
 import stats;
@@ -40,7 +40,8 @@ import room;
 
 using namespace std;
 
-RandomFloorGenerator::RandomFloorGenerator(RNG& rng) : rng{rng}, goldFactory{rng} {}
+RandomFloorGenerator::RandomFloorGenerator(RNG& rng)
+    : rng{rng}, goldFactory{rng}, enemyFactory{rng} {}
 
 // Selects a random available floor tile and removes it from availableTiles
 // TODO: Assumes there are available tiles to select from, should be updated if we do different Floor layout bonus
@@ -96,13 +97,9 @@ Floor RandomFloorGenerator::generateFloor() {
     goldFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
   }
 
-  // TEMP Demo: Spawn 20 Human enemies until enemy factories are made
-  // TODO remove + add real enemy spawn
   for (int i = 0; i < 20; ++i) {
     int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
-    Position position = takeRandomAvailableFloorTile(availableTiles[chamberIndex], rng);
-    floor.getCell(position).add(make_shared<Enemy>(position, Stats{140, 20, 20}, RaceType::Human,
-                                                   CharacterMoveStrategyType::Random));
+    enemyFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
   }
 
   return floor;

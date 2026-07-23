@@ -8,6 +8,7 @@ module presetfloorgenerator;
 
 #include "../entities/staircase.cc"
 #include "../enums/gold-size.cc"
+#include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
 #include "floor.cc"
 #include "position.cc"
@@ -18,6 +19,7 @@ import <string>;
 import <vector>;
 import <memory>;
 import goldsize;
+import enemyfactory;
 import goldfactory;
 import position;
 import floor;
@@ -36,9 +38,9 @@ vector<string> readFloorLines(ifstream& input) {
   return floorLines;
 }
 
-PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName) : rng{rng}, goldFactory{rng}, input{fileName} {}
+PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName) : rng{rng}, goldFactory{rng}, enemyFactory{rng}, input{fileName} {}
 
-void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFactory& goldFactory) {
+void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFactory& goldFactory, EnemyFactory& enemyFactory) {
   for (int y = 0; y < Floor::HEIGHT; ++y) {
     for (int x = 0; x < Floor::WIDTH; ++x) {
       const char c = floorLines[y][x];
@@ -57,7 +59,8 @@ void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFac
         case 'M':
         case 'D':
         case 'L':
-          // TODO: create enemy: EnemyFactory
+          // TODO: link dragons to hoards
+          floor.getCell(position).add(enemyFactory.create(position, c));
           break;
         case '0':
         case '1':
@@ -92,6 +95,6 @@ Floor PresetFloorGenerator::generateFloor() {
   Floor floor = createBaseFloor(rng);
 
   // TODO: add factories to signature
-  placePresetEntities(floor, floorLines, goldFactory);
+  placePresetEntities(floor, floorLines, goldFactory, enemyFactory);
   return floor;
 }
