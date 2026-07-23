@@ -17,10 +17,6 @@ import action;
 import floor;
 #endif  // __INTELLISENSE__
 
-export struct EntityDeathEvent {
-  // The entity that has died.
-  const Entity& entity;
-};
 
 export struct GameQuitEvent {
   bool showScoreboard;

@@ -154,6 +154,8 @@ export class DragonMoveStrategy final : public CharacterMoveStrategy {
   virtual Action getNextMove(Floor& floor, Character& character) override;
 
   const Position goldPos = Position{-1, -1};
+
+ public:
   DragonMoveStrategy(const Position& goldPos);
 };
 

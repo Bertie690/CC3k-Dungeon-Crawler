@@ -54,7 +54,7 @@ shared_ptr<Enemy> EnemyFactory::create(const Position& position, RaceType race) 
   CharacterMoveStrategyType strategy = CharacterMoveStrategyType::Random;
 
   if (race == RaceType::Dragon) {
-    strategy = CharacterMoveStrategyType::Static;
+    strategy = CharacterMoveStrategyType::Dragon;
   }
   if (race == RaceType::Merchant) {
     return make_shared<Merchant>(position, stats, race, strategy);
