@@ -34,10 +34,6 @@ export class BaseCharacter : public BaseEntity, public Character {
   // A new copy is created upon class creation.
   std::unique_ptr<CharacterMoveStrategy> moveStrategy;
 
-  virtual unsigned int maxHp() const override final;
-  virtual unsigned int atk() const override final;
-  virtual unsigned int def() const override final;
-
   virtual bool isDead() const override final;
 
  protected:

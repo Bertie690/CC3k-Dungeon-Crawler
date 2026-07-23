@@ -36,9 +36,6 @@ BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceTy
       moveStrategy(buildStrategy(strategyType)) {};
 
 #pragma region Getters/Hooks
-unsigned int BaseCharacter::atk() const { return this->getStats().atk; }
-unsigned int BaseCharacter::def() const { return this->getStats().def; }
-unsigned int BaseCharacter::maxHp() const { return this->getStats().maxHp; }
 bool BaseCharacter::isDead() const { return this->hp <= 0; }
 
 Stats BaseCharacter::getStats() const { return this->baseStats; }

@@ -4,6 +4,7 @@ module character;
 #include <cmath>
 #include <memory>
 #include <variant>
+
 #include "character-character.cc"
 #else
 import <cmath>;
@@ -14,6 +15,10 @@ import floor;
 import cell;
 import action;
 #endif  // __INTELLISENSE__
+
+unsigned int Character::atk() const { return this->getStats().atk; }
+unsigned int Character::def() const { return this->getStats().def; }
+unsigned int Character::maxHp() const { return this->getStats().maxHp; }
 
 void Character::attack(Character& defender, Floor& floor) {
   const unsigned int attacks = this->getAttacksPerTurn();

@@ -11,7 +11,6 @@ export module character:character;
 #include "../enums/gold-size.cc"
 #include "../enums/race-type.cc"
 #include "../floor/floor.cc"
-#include "character-decorators.cc"
 #include "character-movement.cc"
 #include "entity.cc"
 #include "stats.cc"
@@ -27,22 +26,26 @@ import <cmath>;
 import <memory>;
 #endif  // __INTELLISENSE__
 
+export class CharacterDecorator;  // for friendship
+
 // A Character represents an Entity that can move and partake in combat.
 export class Character : public virtual Entity {
- protected:
+  friend class
+      CharacterDecorator;  // Allow decorators to access protected methods to allow cross-instance access
 
+ protected:
   // Return this Character's maximum HP.
-  virtual unsigned int maxHp() const = 0;
+  unsigned int maxHp() const;
   // Return this Character's attack stat.
-  virtual unsigned int atk() const = 0;
+  unsigned int atk() const;
   // Return this Character's defense stat.
-  virtual unsigned int def() const = 0;
+  unsigned int def() const;
 
   // Return whether this Character is dead.
   virtual bool isDead() const = 0;
 
   // Attempt to attack another Character.
-  virtual void attack(Character& defender, Floor& floor);
+  void attack(Character& defender, Floor& floor);
 
   virtual Action getNextMove(Floor& floor) = 0;
 
@@ -74,7 +77,7 @@ export class Character : public virtual Entity {
   virtual RaceType raceType() const = 0;
 
   // Perform an action for the turn.
-  virtual void act(Floor& floor);
+  void act(Floor& floor);
 
   // Deal the given amount of damage to this Character.
   // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
