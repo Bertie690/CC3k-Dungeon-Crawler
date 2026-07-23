@@ -5,14 +5,11 @@ module character;
 #include <stdexcept>
 #include <variant>
 
-#include "character-base.cc"
-#include "character-movement.cc"
+#include "character.cc"
 #else
 import <cmath>;
 import <stdexcept>;
 import <variant>;
-import :base;
-import :movement;
 #endif  // __INTELLISENSE__
 
 // Helper function to instantiate a movement strategy based on the corresponding enum value.

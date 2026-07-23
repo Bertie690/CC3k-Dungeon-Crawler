@@ -7,7 +7,7 @@ module character;
 
 #include "../enums/tile-type.cc"
 #include "../floor/cell.cc"
-#include "character-movement.cc"
+#include "character.cc"
 #else
 import <memory>;
 import <variant>;
@@ -20,8 +20,6 @@ import gameevents;
 import direction;
 import room;
 import tiletype;
-import :movement;
-import :movestrategytype;
 #endif  // __INTELLISENSE__
 
 void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent& event) {

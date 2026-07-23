@@ -10,14 +10,11 @@ module character;
 #include "../enums/race-type.cc"
 #include "../floor/floor.cc"
 #include "../floor/position.cc"
-#include "character-character.cc"
-#include "character-decorators.cc"
+#include "character.cc"
 #else
 import <memory>;
 import position;
 import floor;
-import :character;
-import :decorators;
 import action;
 import goldsize;
 import entity;

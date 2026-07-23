@@ -5,12 +5,11 @@ module character;
 #include <memory>
 #include <variant>
 
-#include "character-character.cc"
+#include "character.cc"
 #else
 import <cmath>;
 import <memory>;
 import <variant>;
-import :character;
 import floor;
 import cell;
 import action;
