@@ -23,3 +23,10 @@ export struct EntityMoveEvent {
 
 // Request that Game advances to the next Floor.
 export struct FloorTransitionEvent {};
+
+export struct EntityDeathEvent {
+  // The entity that has died.
+  const Entity& entity;
+
+  EntityDeathEvent(const Entity& entity) : entity(entity) {}
+};

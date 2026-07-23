@@ -41,6 +41,9 @@ export class Character : public virtual Entity {
   // Return this Character's defense stat.
   unsigned int def() const;
 
+  // Drain the given amount of HP from the defender, healing this Character for the same amount.
+  void drain(Character& defender, unsigned int hp);
+
   // Return whether this Character is dead.
   virtual bool isDead() const = 0;
 
@@ -61,8 +64,11 @@ export class Character : public virtual Entity {
   virtual unsigned int getAttacksPerTurn() const = 0;
   // Return the damage multiplier this Character has against the given defender.
   virtual double getAttackDamageMultiplier(const Character& defender) const = 0;
-  // Return the amount of gold this Character will drop when killed.
+  // Return the size of the pile of Gold this Character will drop when killed.
   virtual GoldSize getGoldDrop() const = 0;
+  // Return the amount of extra gold this Character will obtain when killing an enemy.
+  // Unused by enemies (for now), but can be used to implement special player abilities.
+  virtual int getExtraGoldDrop() const = 0;
   // Return the multiplier this Character places on opposing HP-draining effects.
   // Negative amounts will result in the attacker taking damage instead of healing.
   virtual double getDrainMulti(const Character& attacker) const = 0;
@@ -70,6 +76,10 @@ export class Character : public virtual Entity {
   virtual void onHit(Character& defender, unsigned int damage) = 0;
   // Trigger effects when this Character takes a hit from another Character.
   virtual void onBeingAttacked(Character& attacker, unsigned int damage) = 0;
+  // Trigger effects when this Character is killed, right before it is removed from the Floor.
+  // The killer parameter may be null if the Character was killed by a non-Character source (e.g. a potion).
+  virtual void onDeath(Character* killer) = 0;
+  virtual void onTurnEnd() = 0;
 
  public:
   virtual ~Character() = default;
@@ -81,7 +91,8 @@ export class Character : public virtual Entity {
 
   // Deal the given amount of damage to this Character.
   // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
-  virtual void damage(unsigned int amt, bool lethal = true) = 0;
+  // The source parameter indicates the Character dealing the damage, if any (for the purpose of on-kill procs).
+  virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) = 0;
   // Heal this Character up to its maximum HP.
   virtual void heal(unsigned int amt) = 0;
 

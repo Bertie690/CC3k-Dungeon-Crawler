@@ -28,4 +28,5 @@ export class Player : public BaseCharacter {
   Observer<PlayerActionEvent>& inputObserver();
 
   int gold = 0;
+  // TODO: Add game over handling
 };

@@ -76,3 +76,12 @@ void Character::act(Floor& floor) {
 
   this->attack(*character, floor);
 }
+
+void Character::drain(Character& defender, unsigned int hp) {
+  defender.damage(hp);
+  if (const double mult = defender.getDrainMulti(*this); mult > 1.0) {
+    this->heal(hp * mult);
+  } else {
+    this->damage(hp * static_cast<int>(-mult));
+  }
+}

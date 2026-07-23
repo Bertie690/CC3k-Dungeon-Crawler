@@ -48,9 +48,12 @@ export class BaseCharacter : public BaseEntity, public Character {
   virtual unsigned int getAttacksPerTurn() const override;
   virtual double getAttackDamageMultiplier(const Character& defender) const override;
   virtual GoldSize getGoldDrop() const override;
+  virtual int getExtraGoldDrop() const override;
   virtual double getDrainMulti(const Character& attacker) const override;
   virtual void onHit(Character& defender, unsigned int damage) override;
   virtual void onBeingAttacked(Character& attacker, unsigned int damage) override;
+  virtual void onTurnEnd() override;
+  virtual void onDeath(Character* killer) override;
 
  public:
   BaseCharacter(Position position, Stats baseStats, RaceType raceType,
@@ -59,7 +62,7 @@ export class BaseCharacter : public BaseEntity, public Character {
 
   virtual RaceType raceType() const override final;
 
-  virtual void damage(unsigned int amt, bool lethal = true) override final;
+  virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
 
   virtual double getPotionEffectMultiplier() const override;

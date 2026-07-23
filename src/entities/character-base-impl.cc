@@ -44,9 +44,12 @@ double BaseCharacter::getEvasion(const Character& attacker) const { return 1.0; 
 unsigned int BaseCharacter::getAttacksPerTurn() const { return 1; }
 double BaseCharacter::getAttackDamageMultiplier(const Character& defender) const { return 1.0; }
 GoldSize BaseCharacter::getGoldDrop() const { return GoldSize::None; }
+int BaseCharacter::getExtraGoldDrop() const { return 0; }
 double BaseCharacter::getDrainMulti(const Character& attacker) const { return 1.0; }
 void BaseCharacter::onHit(Character& defender, unsigned int damage) {}
 void BaseCharacter::onBeingAttacked(Character& attacker, unsigned int damage) {}
+void BaseCharacter::onDeath(Character* killer) {}
+void BaseCharacter::onTurnEnd() {}
 
 double BaseCharacter::getPotionEffectMultiplier() const { return 1.0; }
 double BaseCharacter::getScoreMulti() const { return 1.0; }
@@ -64,15 +67,15 @@ Action BaseCharacter::getNextMove(Floor& floor) {
   return this->moveStrategy->getNextMove(floor, *this);
 }
 
-void BaseCharacter::damage(unsigned int amt, bool lethal) {
+void BaseCharacter::damage(unsigned int amt, bool lethal, Character* source) {
   this->hp -= amt;
   if (!this->isDead()) {
     return;
   }
   if (lethal) {
-    this->hp = 1;
+    this->onDeath(source);
   } else {
-    // TODO @ShauryaSuri: implement removal from floor
+    this->hp = 1;
   }
 }
 

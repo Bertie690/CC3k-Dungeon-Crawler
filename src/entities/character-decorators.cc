@@ -4,136 +4,232 @@ export module character:decorators;
 
 #ifdef __INTELLISENSE__
 #include <memory>
-#include "character-character.cc"
-#include "../floor/position.cc"
-#include "../floor/floor.cc"
+
 #include "../enums/action.cc"
 #include "../enums/gold-size.cc"
 #include "../enums/race-type.cc"
+#include "../events/observer.cc"
+#include "../floor/floor.cc"
+#include "../floor/position.cc"
+#include "character-character.cc"
 #else
 import <memory>;
 import position;
 import floor;
 import :character;
 import action;
+import observer;
 import goldsize;
 import entity;
 import stats;
 import racetype;
-#endif // __INTELLISENSE__
+#endif  // __INTELLISENSE__
 
+// Abstract base decorator class for Characters, allowing for temporary or permanent modifications to their behavior.
 class CharacterDecorator : public Character {
+ protected:
   std::unique_ptr<Character> character;
-
- public:
-  // Return whether this Character is dead.
   virtual bool isDead() const override final;
 
   virtual Action getNextMove(Floor& floor) override final;
 
-  // Return this Character's current stats.
   virtual Stats getStats() const override;
-  // Return this Character's current accuracy multiplier against the given defender.
   virtual double getAccuracy(const Character& defender) const override;
-  // Return this Character's current evasion multiplier against the given attacker.
-  // (For example, a value of 2 translates to a 50% decrease to enemy accuracy.)
   virtual double getEvasion(const Character& attacker) const override;
-  // Return the number of attacks this Character can make per action taken.
-  // (They will all strike the same target.)
   virtual unsigned int getAttacksPerTurn() const override;
-  // Return the damage multiplier this Character has against the given defender.
   virtual double getAttackDamageMultiplier(const Character& defender) const override;
-  // Return the amount of gold this Character will drop when killed.
-  virtual GoldSize getGoldDrop() const override;
-  // Return the multiplier this Character places on opposing HP-draining effects.
-  // Negative amounts will result in the attacker taking damage instead of healing.
+  virtual GoldSize getGoldDrop() const override final;
+  virtual int getExtraGoldDrop() const override;
   virtual double getDrainMulti(const Character& attacker) const override;
-  // Trigger effects when this Character lands a hit on another Character.
   virtual void onHit(Character& defender, unsigned int damage) override;
-  // Trigger effects when this Character takes a hit from another Character.
   virtual void onBeingAttacked(Character& attacker, unsigned int damage) override;
 
+  virtual void onDeath(Character* killer) override;
+  virtual void onTurnEnd() override;
+
  public:
-
- CharacterDecorator(std::unique_ptr<Character> character)
-      : character(std::move(character)) {}
-
+  CharacterDecorator(std::unique_ptr<Character> character);
   virtual ~CharacterDecorator() = 0;
 
-  virtual RaceType raceType() const override;
+  virtual RaceType raceType() const override final;
 
-  // Deal the given amount of damage to this Character.
-  // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
-  virtual void damage(unsigned int amt, bool lethal = true) override final;
-  // Heal this Character up to its maximum HP.
+  virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
 
-  // Return the multiplier for the potency of this Character's potions.
   virtual double getPotionEffectMultiplier() const override;
-  // Return the multiplier for this Character's score. Unused for enemies (for now...)
   virtual double getScoreMulti() const override;
 
-  // Return whether this Character can attack a defender of the given type.
-  // Intended to be hooked into during command selection, and is entirely unused for player-controlled characters.
-  virtual bool canAttack(const RaceType& defenderType) const override;
+  virtual bool canAttack(const RaceType& defenderType) const override final;
 };
 
-CharacterDecorator::~CharacterDecorator() = default;
+// Class for temporary decorators that are automatically removed when a new floor is generated.
+class TempCharacterDecorator : public CharacterDecorator, public Observer<NewFloorEvent> {
+  std::unique_ptr<Character>* prev = nullptr;
+  bool unlinked = false;
 
-bool CharacterDecorator::isDead() const { return character->isDead(); }
+  void unlink();
 
-Action CharacterDecorator::getNextMove(Floor& floor) {
-  return character->getNextMove(floor);
-}
+  virtual void onNotify(const NewFloorEvent&) override final;
 
-Stats CharacterDecorator::getStats() const { return character->getStats(); }
+ public:
+  TempCharacterDecorator(std::unique_ptr<Character> character,
+                         std::unique_ptr<Character>* ownerSlot);
+  virtual ~TempCharacterDecorator() = 0;
+};
 
-double CharacterDecorator::getAccuracy(const Character& defender) const {
-  return character->getAccuracy(defender);
-}
+#pragma region Concrete Decorators
 
-double CharacterDecorator::getEvasion(const Character& attacker) const {
-  return character->getEvasion(attacker);
-}
+export class PotionEffectCharacterDecorator final : public CharacterDecorator {
+  const double effectMulti;
 
-unsigned int CharacterDecorator::getAttacksPerTurn() const {
-  return character->getAttacksPerTurn();
-}
+ protected:
+  virtual double getPotionEffectMultiplier() const override {
+    return CharacterDecorator::getPotionEffectMultiplier() * effectMulti;
+  }
 
-double CharacterDecorator::getAttackDamageMultiplier(const Character& defender) const {
-  return character->getAttackDamageMultiplier(defender);
-}
+ public:
+  PotionEffectCharacterDecorator(std::unique_ptr<Character> character, double effectMulti)
+      : CharacterDecorator(std::move(character)), effectMulti(effectMulti) {}
+  virtual ~PotionEffectCharacterDecorator() = default;
+};
 
-GoldSize CharacterDecorator::getGoldDrop() const { return character->getGoldDrop(); }
+export class AttacksPerTurnCharacterDecorator final : public CharacterDecorator {
+  const unsigned int attacks;
 
-double CharacterDecorator::getDrainMulti(const Character& attacker) const {
-  return character->getDrainMulti(attacker);
-}
+ protected:
+  virtual unsigned int getAttacksPerTurn() const override {
+    return CharacterDecorator::getAttacksPerTurn() + attacks;
+  }
 
-void CharacterDecorator::onHit(Character& defender, unsigned int damage) {
-  character->onHit(defender, damage);
-}
+ public:
+  AttacksPerTurnCharacterDecorator(std::unique_ptr<Character> character, unsigned int attacks)
+      : CharacterDecorator(std::move(character)), attacks(attacks) {}
+  virtual ~AttacksPerTurnCharacterDecorator() = default;
+};
 
-void CharacterDecorator::onBeingAttacked(Character& attacker, unsigned int damage) {
-  character->onBeingAttacked(attacker, damage);
-}
+export class HpDrainCharacterDecorator final : public CharacterDecorator {
+  // The amount of hit-points to drain.
+  const unsigned int hpDrain;
 
-RaceType CharacterDecorator::raceType() const { return character->raceType(); }
+ protected:
+  virtual void onHit(Character& defender, unsigned int damage) override {
+    CharacterDecorator::onHit(defender, damage);
+    this->drain(defender, hpDrain);
+  }
 
-void CharacterDecorator::damage(unsigned int amt, bool lethal) {
-  character->damage(amt, lethal);
-}
+ public:
+  HpDrainCharacterDecorator(std::unique_ptr<Character> character, unsigned int hpDrain)
+      : CharacterDecorator(std::move(character)), hpDrain(hpDrain) {}
+  virtual ~HpDrainCharacterDecorator() = default;
+};
 
-void CharacterDecorator::heal(unsigned int amt) { character->heal(amt); }
+export class ScoreMultiCharacterDecorator final : public CharacterDecorator {
+  const double scoreMulti;
 
-double CharacterDecorator::getPotionEffectMultiplier() const {
-  return character->getPotionEffectMultiplier();
-}
+ protected:
+  virtual double getScoreMulti() const override {
+    return CharacterDecorator::getScoreMulti() * scoreMulti;
+  }
 
-double CharacterDecorator::getScoreMulti() const {
-  return character->getScoreMulti();
-}
+ public:
+  ScoreMultiCharacterDecorator(std::unique_ptr<Character> character, double scoreMulti)
+      : CharacterDecorator(std::move(character)), scoreMulti(scoreMulti) {}
+  virtual ~ScoreMultiCharacterDecorator() = default;
+};
 
-bool CharacterDecorator::canAttack(const RaceType& defenderType) const {
-  return character->canAttack(defenderType);
-}
+export class RaceTypeDamageMultiplierCharacterDecorator final : public CharacterDecorator {
+  const RaceType targetRace;
+  const double damageMulti;
+
+ protected:
+  virtual double getAttackDamageMultiplier(const Character& defender) const override {
+    return CharacterDecorator::getAttackDamageMultiplier(defender) *
+    (defender.raceType() == targetRace ? damageMulti : 1.0);
+  }
+
+  public:
+  RaceTypeDamageMultiplierCharacterDecorator(std::unique_ptr<Character> character,
+                                             RaceType targetRace,
+                                             double damageMulti)
+      : CharacterDecorator(std::move(character)), targetRace(targetRace), damageMulti(damageMulti) {}
+  virtual ~RaceTypeDamageMultiplierCharacterDecorator() = default;
+};
+
+export class TurnHpRegenCharacterDecorator final : public CharacterDecorator {
+  const unsigned int hpRegen;
+
+ protected:
+  virtual void onTurnEnd() override {
+    CharacterDecorator::onTurnEnd();
+    this->heal(hpRegen);
+  }
+
+ public:
+  TurnHpRegenCharacterDecorator(std::unique_ptr<Character> character, unsigned int hpRegen)
+      : CharacterDecorator(std::move(character)), hpRegen(hpRegen) {}
+  virtual ~TurnHpRegenCharacterDecorator() = default;
+};
+
+export class GoldOnKillCharacterDecorator final : public CharacterDecorator {
+  const int goldOnKill;
+
+ protected:
+  virtual int getExtraGoldDrop() const override {
+    return CharacterDecorator::getExtraGoldDrop() + goldOnKill;
+  }
+
+ public:
+  GoldOnKillCharacterDecorator(std::unique_ptr<Character> character, int goldOnKill)
+      : CharacterDecorator(std::move(character)), goldOnKill(goldOnKill) {}
+  virtual ~GoldOnKillCharacterDecorator() = default;
+};
+
+export class ReverseDrainCharacterDecorator final : public CharacterDecorator {
+ protected:
+  virtual double getDrainMulti(const Character& attacker) const override {
+    return -CharacterDecorator::getDrainMulti(attacker);
+  }
+
+ public:
+  ReverseDrainCharacterDecorator(std::unique_ptr<Character> character)
+      : CharacterDecorator(std::move(character)) {}
+  virtual ~ReverseDrainCharacterDecorator() = default;
+};
+
+export class DodgeChanceCharacterDecorator final : public CharacterDecorator {
+  const double dodgeChance;
+
+ protected:
+  virtual double getEvasion(const Character& attacker) const override {
+    return CharacterDecorator::getEvasion(attacker) * (1.0 + dodgeChance);
+  }
+
+ public:
+  DodgeChanceCharacterDecorator(std::unique_ptr<Character> character, double dodgeChance)
+      : CharacterDecorator(std::move(character)), dodgeChance(dodgeChance) {}
+  virtual ~DodgeChanceCharacterDecorator() = default;
+};
+
+export class TempStatChangeCharacterDecorator final : public TempCharacterDecorator {
+  const Stats statDelta;
+  const bool increase;
+
+ protected:
+  virtual Stats getStats() const override {
+    return increase ?
+      CharacterDecorator::getStats() + statDelta
+      : CharacterDecorator::getStats() - statDelta;
+  }
+
+ public:
+  TempStatChangeCharacterDecorator(std::unique_ptr<Character> character,
+                                   std::unique_ptr<Character>* ownerSlot,
+                                   Stats statDelta,
+                                   bool increase = true)
+      : TempCharacterDecorator(std::move(character), ownerSlot), statDelta(statDelta), increase(increase) {}
+  virtual ~TempStatChangeCharacterDecorator() = default;
+};
+
+
+
+#pragma endregion  // Concrete Decorators
