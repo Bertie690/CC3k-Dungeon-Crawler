@@ -5,6 +5,7 @@ export module presetfloorgenerator;
 #ifdef __INTELLISENSE__
 #include <fstream>
 #include <string>
+#include "../factories/dragon-hoard-factory.cc"
 #include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
 #include "../utils/rng.cc"
@@ -13,6 +14,7 @@ export module presetfloorgenerator;
 #else
 import <fstream>;
 import <string>;
+import dragonhoardfactory;
 import enemyfactory;
 import goldfactory;
 import rng;
@@ -22,8 +24,9 @@ import floorgenerator;
 
 export class PresetFloorGenerator : public FloorGenerator {
   RNG& rng;
-  GoldFactory goldFactory;
   EnemyFactory enemyFactory;
+  GoldFactory goldFactory;
+  DragonHoardFactory dragonHoardFactory;
   std::ifstream input;
   int nextFloor = 1;
 

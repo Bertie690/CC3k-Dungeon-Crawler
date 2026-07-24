@@ -4,12 +4,16 @@ export module goldfactory;
 
 #ifdef __INTELLISENSE__
 #include <memory>
+#include <vector>
 #include "../entities/gold-pile.cc"
 #include "../enums/gold-size.cc"
+#include "../floor/chamber.cc"
 #include "../floor/position.cc"
 #include "standard-factory.cc"
 #else
 import <memory>;
+import <vector>;
+import chamber;
 import goldpile;
 import goldsize;
 import position;
@@ -17,14 +21,17 @@ import standardfactory;
 #endif  // __INTELLISENSE__
 
 export class GoldFactory : public StandardFactory<GoldPile> {
-  // Randomly select a GoldSize using the required probabilities.
-  GoldSize randomGoldSize();
-
  public:
   using StandardFactory<GoldPile>::StandardFactory;
 
+  // Randomly select a GoldSize using the required probabilities.
+  GoldSize randomGoldSize();
   // Create a random size GoldPile at position per Gold probability distribution.
   virtual std::shared_ptr<GoldPile> create(const Position& position) override;
   // Create a GoldPile of the given size at position.
   std::shared_ptr<GoldPile> create(const Position& position, GoldSize size);
+  // Place a GoldPile of the given size in the availablePositions.
+  // Necessary since gold type must be chosen before placement in random generation.
+  void process(Chamber& chamber, std::vector<Position>& availablePositions,
+               GoldSize size);
 };

@@ -50,17 +50,19 @@ Stats EnemyFactory::baseStatsFor(RaceType race) const {
 shared_ptr<Enemy> EnemyFactory::create(const Position& position) { return create(position, randomRace()); }
 
 shared_ptr<Enemy> EnemyFactory::create(const Position& position, RaceType race) {
+  if (race == RaceType::Dragon) { throw invalid_argument{"race create: use createDragon"}; }
   Stats stats = baseStatsFor(race);
   CharacterMoveStrategyType strategy = CharacterMoveStrategyType::Random;
 
-  if (race == RaceType::Dragon) {
-    strategy = CharacterMoveStrategyType::Dragon;
-  }
   if (race == RaceType::Merchant) {
     return make_shared<Merchant>(position, stats, race, strategy);
   }
   // TODO: Apply the race decorators
   return make_shared<Enemy>(position, stats, race, strategy);
+}
+
+shared_ptr<Enemy> EnemyFactory::createDragon(const Position& dragonPosition, const Position& hoardPosition) {
+  return make_shared<Enemy>(dragonPosition, baseStatsFor(RaceType::Dragon), RaceType::Dragon, make_unique<DragonMoveStrategy>(hoardPosition));
 }
 
 shared_ptr<Enemy> EnemyFactory::create(const Position& position, char symbol) {
@@ -76,7 +78,7 @@ shared_ptr<Enemy> EnemyFactory::create(const Position& position, char symbol) {
     case 'M':
       return create(position, RaceType::Merchant);
     case 'D':
-      return create(position, RaceType::Dragon);
+      throw invalid_argument{"symbol create: use createDragon"};
     case 'L':
       return create(position, RaceType::Halfling);
     default:

@@ -65,6 +65,7 @@ export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent> {
 
   // Get list of all Rooms.
   std::vector<const Room*> getRooms() const;
+  std::vector<Room*> getRooms();
 
   // Attempt to move an Entity from its current position to the given position.
   // Throws an exception if the move is invalid.

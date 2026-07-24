@@ -35,4 +35,6 @@ export class EnemyFactory : public StandardFactory<Enemy> {
   virtual std::shared_ptr<Enemy> create(const Position& position) override;
   // preset-gen: Create a chosen RaceType Enemy at position using its symbol.
   std::shared_ptr<Enemy> create(const Position& position, char symbol);
+  // Create a Dragon at dragonPosition that guards the Hoard at hoardPosition.
+  std::shared_ptr<Enemy> createDragon(const Position& dragonPosition, const Position& hoardPosition);
 };

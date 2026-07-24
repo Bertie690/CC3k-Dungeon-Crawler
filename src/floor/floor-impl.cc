@@ -65,6 +65,15 @@ vector<const Room*> Floor::getRooms() const {
   return roomPtrs;
 }
 
+vector<Room*> Floor::getRooms() {
+  vector<Room*> roomPtrs;
+
+  for (const unique_ptr<Room>& room : rooms) {
+    roomPtrs.push_back(room.get());
+  }
+  return roomPtrs;
+}
+
 void Floor::move(Entity& entity, const Position& to) {
   if (!hasCell(to)) {
     throw out_of_range{"Position doesn't exist"};

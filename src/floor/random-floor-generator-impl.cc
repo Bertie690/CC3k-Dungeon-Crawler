@@ -8,6 +8,8 @@ module randomfloorgenerator;
 #include "../entities/gold-pile.cc"
 #include "../entities/staircase.cc"
 #include "../entities/stats.cc"
+#include "../enums/gold-size.cc"
+#include "../factories/dragon-hoard-factory.cc"
 #include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
 #include "../enums/race-type.cc"
@@ -23,9 +25,11 @@ module randomfloorgenerator;
 import <memory>;
 import <vector>;
 import character;
+import dragonhoardfactory;
 import enemyfactory;
 import goldfactory;
 import goldpile;
+import goldsize;
 import stats;
 import staircase;
 import racetype;
@@ -41,7 +45,7 @@ import room;
 using namespace std;
 
 RandomFloorGenerator::RandomFloorGenerator(RNG& rng)
-    : rng{rng}, goldFactory{rng}, enemyFactory{rng} {}
+    : rng{rng}, enemyFactory{rng}, goldFactory{rng}, dragonHoardFactory{rng, enemyFactory} {}
 
 // Selects a random available floor tile and removes it from availableTiles
 // TODO: Assumes there are available tiles to select from, should be updated if we do different Floor layout bonus
@@ -60,16 +64,16 @@ Floor RandomFloorGenerator::generateFloor() {
 
   Floor floor = createBaseFloor(rng);
   // Get all chambers in the floor
-  vector<const Chamber*> chambers;
-  for (const Room* room : floor.getRooms()) {
+  vector<Chamber*> chambers;
+  for (Room* room : floor.getRooms()) {
     if (room->type() == RoomType::Chamber) {
-      chambers.push_back(static_cast<const Chamber*>(room));
+      chambers.push_back(static_cast<Chamber*>(room));
     }
   }
 
   // Create list of available floor tiles for each chamber
   vector<vector<Position>> availableTiles;
-  for (const Chamber* chamber : chambers) {
+  for (Chamber* chamber : chambers) {
     vector<Position> chamberTiles;
     for (const Cell* cell : chamber->getCells()) {
       if (cell->tileType == TileType::Floor && !cell->isOccupied()) {
@@ -94,7 +98,12 @@ Floor RandomFloorGenerator::generateFloor() {
 
   for (int i = 0; i < 10; ++i) {
     int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
-    goldFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
+    GoldSize size = goldFactory.randomGoldSize();
+    if (size == GoldSize::DragonHoard) {
+      dragonHoardFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
+    } else {
+      goldFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex], size);
+    }
   }
 
   for (int i = 0; i < 20; ++i) {

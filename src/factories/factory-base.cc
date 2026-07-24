@@ -25,6 +25,6 @@ export class FactoryBase {
   virtual ~FactoryBase() = default;
 
   // Process the given Chamber. The provided list of availablePositions is used to improve caching purposes.
-  virtual void process(const Chamber& chamber,
+  virtual void process(Chamber& chamber,
                        std::vector<Position>& availablePositions) = 0;
 };

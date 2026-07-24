@@ -36,14 +36,14 @@ class StandardFactory : public FactoryBase {
  public:
   using FactoryBase::FactoryBase;
   // Create an Entity within the Chamber using the reserved list of avalablePositions.
-  virtual void process(const Chamber& chamber,
+  virtual void process(Chamber& chamber,
                        std::vector<Position>& availablePositions) override;
 };
 
 // Implementation
 template<typename T>
   requires std::is_base_of_v<Entity, T>
-void StandardFactory<T>::process(const Chamber& chamber,
+void StandardFactory<T>::process(Chamber& chamber,
                                  std::vector<Position>& availablePositions) {
   if (availablePositions.empty()) {
     throw std::out_of_range{"No valid Cells available for spawning"};
@@ -53,11 +53,5 @@ void StandardFactory<T>::process(const Chamber& chamber,
   availablePositions[selectedIndex] = availablePositions.back();
   availablePositions.pop_back();
 
-  for (Cell* cell : chamber.getCells()) {
-    if (cell->position == selectedPosition) {
-      cell->add(create(selectedPosition));
-      return;
-    }
-  }
-  throw std::out_of_range{"Selected position is not in the Chamber"};
+  chamber[selectedPosition].add(create(selectedPosition));
 }

@@ -18,6 +18,7 @@ import itemtype;
 
 // An Item represents an Entity that can be picked up by a Character.
 export class Item : public BaseEntity {
+ protected:
   // Return if the given Character can pick up this Item.
   virtual bool canPickup(Character& character) const;
   // Apply Item's effect to the Character.
