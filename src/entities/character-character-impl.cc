@@ -73,16 +73,19 @@ void Character::act(Floor& floor) {
   Action nextMove = this->getNextMove(floor);
 
   if (Pass* pass = std::get_if<Pass>(&nextMove)) {
+  this->onTurnEnd();
     return;
   }
 
   if (Move* move = std::get_if<Move>(&nextMove)) {
     floor.move(*this, this->position() + move->dir);
+    this->onTurnEnd();
     return;
   }
 
   if (UsePotion* potion = std::get_if<UsePotion>(&nextMove)) {
     // TODO: Implement potion usage
+  this->onTurnEnd();
     return;
   }
 
@@ -102,9 +105,8 @@ void Character::act(Floor& floor) {
   }
 
   this->attack(*character, floor);
+  this->onTurnEnd();
 }
-
-void Character::endTurn() { onTurnEnd(); }
 
 void Character::drain(Character& defender, unsigned int hp) {
   defender.damage(hp);

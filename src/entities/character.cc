@@ -116,8 +116,6 @@ export class Character : public virtual Entity {
 
   // Perform an action for the turn.
   void act(Floor& floor);
-  // Trigger onTurnEnd effects.
-  void endTurn();
 
   // Deal the given amount of damage to this Character.
   // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
@@ -136,7 +134,7 @@ export class Character : public virtual Entity {
   virtual bool canAttack(const RaceType& defenderType) const = 0;
 };
 
-export class BaseCharacter;  // forward declare for friendship; no need to import
+#pragma region Movement Strategies
 
 // A CharacterMoveStrategy defines how a Character will choose its next move.
 export class CharacterMoveStrategy {
@@ -179,6 +177,8 @@ export class DragonMoveStrategy final : public CharacterMoveStrategy {
 export void freezeEnemies(bool frozen = !RandomMoveStrategy::frozen) {
   RandomMoveStrategy::frozen = frozen;
 }
+
+#pragma endregion Movement Strategies
 
 // Base class that implements the Character interface, providing default implementations for most of its methods.
 // Still technically virtual, but can be instantiated directly (unlike Character).
