@@ -45,15 +45,37 @@ import room;
 using namespace std;
 
 namespace {
-  string actionDescription(const PlayerAction& action) {
-    if (holds_alternative<Move>(action)) return "Moved";
-    if (holds_alternative<Attack>(action)) return "Attacked";
-    if (holds_alternative<UsePotion>(action)) return "Used a potion";
-    if (holds_alternative<FreezeEnemies>(action)) return "Toggled enemy movement";
-    if (holds_alternative<Pass>(action)) return "Waited";
-    return "Selected a race";
+  string characterName(const Entity& entity) {
+    const Character* character = dynamic_cast<const Character*>(&entity);
+    if (!character) return "unknown entity";
+    if (isPlayer(character->raceType())) return "PC";
+
+    switch (character->raceType()) {
+      case RaceType::Human: return "H";
+      case RaceType::Dwarf: return "W";
+      case RaceType::Elf: return "E";
+      case RaceType::Orc: return "O";
+      case RaceType::Merchant: return "M";
+      case RaceType::Dragon: return "D";
+      case RaceType::Halfling: return "L";
+      default: return "Enemy";
+    }
   }
-}  // namespace
+
+  string directionName(const Position& from, const Position& to) {
+    if (to.y < from.y) {
+      if (to.x < from.x) return "north-west";
+      if (to.x > from.x) return "north-east";
+      return "north";
+    }
+    if (to.y > from.y) {
+      if (to.x < from.x) return "south-west";
+      if (to.x > from.x) return "south-east";
+      return "south";
+    }
+    return to.x < from.x ? "west" : "east";
+  }
+}
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
     : rng{seed}, scoreboard{}, playerFactory{rng}, renderer{move(renderer)}, floorGenerator{}, floor{} {
@@ -89,6 +111,7 @@ void Game::newGame(RaceType race) {
   }
   // (0,0) position outside of Chambers until we place Player on the first Floor
   player = playerFactory.create(Position{0, 0}, race);
+  goldAtTurnStart = player->getGold();
   attach(player->inputObserver());
   loadNextFloor();
   // TODO: start turns
@@ -99,7 +122,9 @@ void Game::loadNextFloor() {
   floor = make_unique<Floor>(floorGenerator->generateFloor());
   floor->SubjectFor<EntityMoveEvent>::attach(renderer.get());
   floor->SubjectFor<EntityDeathEvent>::attach(renderer.get());
-  floor->attach(this);
+  floor->SubjectFor<FloorTransitionEvent>::attach(this);
+  floor->SubjectFor<EntityMoveEvent>::attach(this);
+  floor->SubjectFor<CharacterActionEvent>::attach(this);
 
   // Player is added outside of FloorGenerator to share ownership with the Game
   player->position() = floor->playerSpawn;
@@ -125,6 +150,49 @@ void Game::endGame(bool victory) {
 
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
 
+void Game::appendAction(const string& message) {
+  if (!lastAction.empty()) lastAction += "; ";
+  lastAction += message;
+}
+
+void Game::onNotify(const EntityMoveEvent& event) {
+  if (!dynamic_cast<const Character*>(&event.entity)) return;
+
+  const bool isPlayerMove = &event.entity == player.get();
+  const Position& playerPosition = player->position();
+  const bool movedNextToPlayer = !isPlayerMove &&
+      event.to.x >= playerPosition.x - 1 && event.to.x <= playerPosition.x + 1 &&
+      event.to.y >= playerPosition.y - 1 && event.to.y <= playerPosition.y + 1;
+
+  if (isPlayerMove || movedNextToPlayer) {
+    appendAction(characterName(event.entity) + " moves " + directionName(event.from, event.to));
+  }
+  if (isPlayerMove && player->getGold() > goldAtTurnStart) {
+    appendAction("PC picks up " + to_string(player->getGold() - goldAtTurnStart) + " gold");
+    goldAtTurnStart = player->getGold();
+  }
+}
+
+void Game::onNotify(const CharacterActionEvent& event) {
+  const string attacker = characterName(event.attacker);
+  const string defender = characterName(event.defender);
+
+  if (event.result == CharacterActionEvent::Result::Miss) {
+    appendAction(attacker + " misses " + defender);
+    return;
+  }
+
+  string message = attacker + " deals " + to_string(event.damage) + " damage to " + defender;
+
+  if (event.defeated) message += " and defeats " + defender;
+  appendAction(message);
+
+  if (&event.attacker == player.get() && player->getGold() > goldAtTurnStart) {
+    appendAction("PC gains " + to_string(player->getGold() - goldAtTurnStart) + " gold");
+    goldAtTurnStart = player->getGold();
+  }
+}
+
 void Game::onNotify(const PlayerActionEvent& event) {
   if (const RaceSelect* raceSelect = get_if<RaceSelect>(&event.action)) {
     newGame(raceSelect->race);
@@ -135,7 +203,7 @@ void Game::onNotify(const PlayerActionEvent& event) {
   }
   if (const FreezeEnemies* freeze = get_if<FreezeEnemies>(&event.action)) {
     freezeEnemies();
-    lastAction = actionDescription(event.action);
+    lastAction = "PC toggles enemy movement";
     renderer->draw(playerDisplayInfo());
     return;
   }
@@ -143,7 +211,10 @@ void Game::onNotify(const PlayerActionEvent& event) {
 }
 
 void Game::runPlayerTurn(const PlayerAction& action) {
-  lastAction = actionDescription(action);
+  lastAction.clear();
+  goldAtTurnStart = player->getGold();
+  if (holds_alternative<Pass>(action)) appendAction("PC waits");
+  if (holds_alternative<UsePotion>(action)) appendAction("PC uses a potion");
   notify(PlayerActionEvent{action});
   player->act(*floor);
   if (player->dead()) {
@@ -159,6 +230,7 @@ void Game::runPlayerTurn(const PlayerAction& action) {
       return;
     }
     floorTransitionRequested = false;
+    appendAction("PC descends to the next floor");
     loadNextFloor();
     return;
   }

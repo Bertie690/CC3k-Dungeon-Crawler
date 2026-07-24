@@ -40,7 +40,8 @@ import scoreboard;
 using namespace std;
 
 // Game owns and manages the main game objects
-export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent>,
+export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent,
+                                    EntityMoveEvent, CharacterActionEvent>,
                     public Subject<NewFloorEvent, PlayerActionEvent> {
   RNG rng;
   Scoreboard scoreboard;
@@ -52,6 +53,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   unsigned int floorNumber = 0;
   std::string lastAction = "Starting a new game";
   bool gameOver = false;
+  int goldAtTurnStart = 0;
   // Flag used to know to generate the next Floor instead of running enemy turns.
   bool floorTransitionRequested = false;
 
@@ -60,10 +62,13 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   // End the game and calculate a score if game was won.
   void endGame(bool victory);
   PlayerDisplayInfo playerDisplayInfo() const;
+  void appendAction(const std::string& message);
 
   virtual void onNotify(const FloorTransitionEvent& event) override;
   virtual void onNotify(const GameQuitEvent& event) override;
   virtual void onNotify(const PlayerActionEvent& event) override;
+  virtual void onNotify(const EntityMoveEvent& event) override;
+  virtual void onNotify(const CharacterActionEvent& event) override;
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.

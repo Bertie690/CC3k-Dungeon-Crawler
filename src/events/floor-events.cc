@@ -21,6 +21,23 @@ export struct EntityMoveEvent {
   EntityMoveEvent(const Entity& entity, const Position& from) : entity(entity), from(from) {}
 };
 
+export struct CharacterActionEvent {
+  enum class Result {
+    Hit,
+    Miss,
+  };
+
+  const Entity& attacker;
+  const Entity& defender;
+  const Result result;
+  const unsigned int damage;
+  const bool defeated;
+
+  CharacterActionEvent(const Entity& attacker, const Entity& defender, Result result,
+                       unsigned int damage = 0, bool defeated = false)
+      : attacker(attacker), defender(defender), result(result), damage(damage), defeated(defeated) {}
+};
+
 // Request that Game advances to the next Floor.
 export struct FloorTransitionEvent {};
 

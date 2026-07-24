@@ -6,6 +6,7 @@ module character;
 #include <variant>
 
 #include "character.cc"
+#include "../events/floor-events.cc"
 #else
 import <cmath>;
 import <memory>;
@@ -13,6 +14,7 @@ import <variant>;
 import floor;
 import cell;
 import action;
+import floorevents;
 #endif  // __INTELLISENSE__
 
 unsigned int Character::atk() const { return this->getStats().atk; }
@@ -33,8 +35,8 @@ void Character::attack(Character& defender, Floor& floor) {
     const double evasion = defender.getEvasion(*this);
 
     if (floor.rng.randDouble() > (accuracy / evasion)) {
-      // miss
-      // TODO: Add a UI event?
+      floor.reportCharacterAction(
+          CharacterActionEvent{*this, defender, CharacterActionEvent::Result::Miss});
       continue;
     }
 
@@ -42,23 +44,28 @@ void Character::attack(Character& defender, Floor& floor) {
     // ceiling((100/(100 + Def (Defender))) * Atk(Attacker))
     const unsigned int damage =
         std::ceil(100.0 / (100.0 + defender.def()) * this->atk() * damageMultiplier);
-    defender.damage(damage);
+    const unsigned int hpBefore = defender.currentHp();
+    defender.damage(damage, true, this);
+    const unsigned int damageDealt = hpBefore - defender.currentHp();
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
-    if (defender.dead()) {
-      // Add corresponding gold to Player and remove the enemy
-      if (!isPlayer(defender.raceType())) {
-        int baseAddedGold = 0;
-        RaceType deadRaceType = defender.raceType();
-        if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
-          baseAddedGold += floor.rng.intRange(2) + 1;
-        }
-        // add gold to the Player
-        addGold(baseAddedGold + getExtraGoldDrop());
-        floor.remove(defender);
+    if (defender.dead() && !isPlayer(defender.raceType())) {
+
+      int baseAddedGold = 0;
+      RaceType deadRaceType = defender.raceType();
+      if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
+        baseAddedGold += floor.rng.intRange(2) + 1;
       }
+      // add gold to the Player
+      addGold(baseAddedGold + getExtraGoldDrop());
+      floor.reportCharacterAction(CharacterActionEvent{
+          *this, defender, CharacterActionEvent::Result::Hit, damageDealt, true});
+      floor.remove(defender);
       return;
     }
+
+    floor.reportCharacterAction(CharacterActionEvent{
+        *this, defender, CharacterActionEvent::Result::Hit, damageDealt, defender.dead()});
   }
 }
 

@@ -27,7 +27,8 @@ import observer;
 import floorevents;
 #endif  // __INTELLISENSE__
 
-export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent, EntityDeathEvent> {
+export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent, EntityDeathEvent,
+                                   CharacterActionEvent> {
   std::vector<std::unique_ptr<Room>> rooms;
 
   // Return whether the given position is valid on this Floor.
@@ -73,4 +74,7 @@ export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent, Entit
 
   // Remove a defeated entity from its current cell and notify renderers.
   void remove(Entity& entity);
+
+  // Publish a combat outcome for the action log.
+  void reportCharacterAction(const CharacterActionEvent& event);
 };

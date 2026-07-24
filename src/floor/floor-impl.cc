@@ -124,3 +124,5 @@ void Floor::remove(Entity& entity) {
   getCell(position).remove(entity);
   notify(EntityDeathEvent{position});
 }
+
+void Floor::reportCharacterAction(const CharacterActionEvent& event) { notify(event); }
