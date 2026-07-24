@@ -10,5 +10,5 @@ double Enemy::getAccuracy(const Character& defender) const { return 0.5; }
 
 void Enemy::onDeath(Character*) {
   // TODO add? BaseCharacter::onDeath(killer);
-  notify(EntityDeathEvent{*this});
+  notify(EntityDeathEvent{position()});
 }

@@ -95,7 +95,8 @@ void Game::newGame(RaceType race) {
 void Game::loadNextFloor() {
   ++floorNumber;
   floor = make_unique<Floor>(floorGenerator->generateFloor());
-  floor->attach(renderer.get());
+  floor->SubjectFor<EntityMoveEvent>::attach(renderer.get());
+  floor->SubjectFor<EntityDeathEvent>::attach(renderer.get());
   floor->attach(this);
 
   // Player is added outside of FloorGenerator to share ownership with the Game

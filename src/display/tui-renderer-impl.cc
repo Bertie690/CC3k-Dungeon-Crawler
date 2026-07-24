@@ -194,9 +194,8 @@ string TUIRenderer::buildStatsFooter(const PlayerDisplayInfo& info) const {
 
 void TUIRenderer::onNotify(const EntityDeathEvent& event) {
   if (!currentFloor) return;
-  const Position position = event.entity.position();
-  const Cell& cell = currentFloor->getCell(position);
-  displayGrid[position.y][position.x] = getCellText(cell);
+  const Cell& cell = currentFloor->getCell(event.position);
+  displayGrid[event.position.y][event.position.x] = getCellText(cell);
 }
 
 void TUIRenderer::onNotify(const EntityMoveEvent& event) {

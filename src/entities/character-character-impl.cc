@@ -19,6 +19,7 @@ unsigned int Character::atk() const { return this->getStats().atk; }
 unsigned int Character::def() const { return this->getStats().def; }
 unsigned int Character::maxHp() const { return this->getStats().maxHp; }
 Stats Character::stats() const { return this->getStats(); }
+bool Character::dead() const { return this->isDead(); }
 
 void Character::attack(Character& defender, Floor& floor) {
   const unsigned int attacks = this->getAttacksPerTurn();
@@ -39,6 +40,10 @@ void Character::attack(Character& defender, Floor& floor) {
     defender.damage(damage);
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
+    if (defender.dead() && !isPlayer(defender.raceType())) {
+      floor.remove(defender);
+      return;
+    }
   }
 }
 

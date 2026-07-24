@@ -104,6 +104,7 @@ export class Character : public virtual Entity {
   // Public read-only values used by renderers and other presentation code.
   virtual unsigned int currentHp() const = 0;
   Stats stats() const;
+  bool dead() const;
 
   // Perform an action for the turn.
   void act(Floor& floor);

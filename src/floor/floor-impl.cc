@@ -118,3 +118,9 @@ void Floor::move(Entity& entity, const Position& to) {
 
   notify(EntityMoveEvent{entity, fromPosition});
 }
+
+void Floor::remove(Entity& entity) {
+  const Position position = entity.position();
+  getCell(position).remove(entity);
+  notify(EntityDeathEvent{position});
+}

@@ -25,8 +25,8 @@ export struct EntityMoveEvent {
 export struct FloorTransitionEvent {};
 
 export struct EntityDeathEvent {
-  // The entity that has died.
-  const Entity& entity;
+  // The position the entity occupied when it died.
+  const Position position;
 
-  EntityDeathEvent(const Entity& entity) : entity(entity) {}
+  EntityDeathEvent(const Position& position) : position(position) {}
 };

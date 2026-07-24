@@ -27,7 +27,7 @@ import observer;
 import floorevents;
 #endif  // __INTELLISENSE__
 
-export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent> {
+export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent, EntityDeathEvent> {
   std::vector<std::unique_ptr<Room>> rooms;
 
   // Return whether the given position is valid on this Floor.
@@ -70,4 +70,7 @@ export class Floor : public Subject<EntityMoveEvent, FloorTransitionEvent> {
   // Attempt to move an Entity from its current position to the given position.
   // Throws an exception if the move is invalid.
   void move(Entity& entity, const Position& to);
+
+  // Remove a defeated entity from its current cell and notify renderers.
+  void remove(Entity& entity);
 };
