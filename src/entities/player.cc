@@ -25,7 +25,11 @@ export class Player : public BaseCharacter {
   Player(Position position, Stats baseStats, RaceType raceType);
 
   // Expose the Player's strategy so the input handler can use it as an observer.
-  Observer<PlayerActionEvent>& inputObserver();
+  virtual Observer<PlayerActionEvent>* inputObserver() override;
+  // Return Player's gold.
+  virtual int getGold() const override;
+  // Add amount to Player's gold.
+  virtual void addGold(int amount) override;
 
   int gold = 0;
   // TODO: Add game over handling

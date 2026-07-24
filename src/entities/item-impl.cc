@@ -2,13 +2,13 @@ module item;
 
 #ifdef __INTELLISENSE__
 #include "item.cc"
-#include "player.cc"
+#include "../enums/race-type.cc"
 #else
-import player;
+import racetype;
 #endif  // __INTELLISENSE__
 
 bool Item::canPickup(Character& character) const {
-  return dynamic_cast<Player*>(&character);
+  return isPlayer(character.raceType());
 }
 
 OverlapResult Item::onOverlap(Entity& movingEntity) {

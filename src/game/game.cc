@@ -7,12 +7,14 @@ export module game;
 #include <string>
 
 #include "../display/renderer.cc"
+#include "../entities/character.cc"
 #include "../entities/player.cc"
 #include "../enums/action.cc"
 #include "../enums/race-type.cc"
 #include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
+#include "../factories/player-factory.cc"
 #include "../floor/floor-generator.cc"
 #include "../floor/floor.cc"
 #include "../utils/rng.cc"
@@ -20,11 +22,13 @@ export module game;
 #else
 import <memory>;
 import <string>;
+import character;
 import renderer;
 import player;
 import floorevents;
 import gameevents;
 import observer;
+import playerfactory;
 import action;
 import racetype;
 import floorgenerator;
@@ -40,10 +44,11 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
                     public Subject<NewFloorEvent, PlayerActionEvent> {
   RNG rng;
   Scoreboard scoreboard;
+  PlayerFactory playerFactory;
   unique_ptr<Renderer> renderer;
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;
-  shared_ptr<Player> player = {};
+  shared_ptr<Character> player = {};
   unsigned int floorNumber = 0;
   std::string lastAction = "Starting a new game";
   // Flag used to know to generate the next Floor instead of running enemy turns.

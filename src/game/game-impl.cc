@@ -56,7 +56,7 @@ namespace {
 }  // namespace
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
-    : rng{seed}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{} {
+    : rng{seed}, scoreboard{}, playerFactory{rng}, renderer{move(renderer)}, floorGenerator{}, floor{} {
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
@@ -67,7 +67,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
 }
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
-    : rng{}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{} {
+    : rng{}, scoreboard{}, playerFactory{rng}, renderer{move(renderer)}, floorGenerator{}, floor{} {
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
@@ -83,11 +83,11 @@ void Game::newGame(RaceType race) {
   lastAction = "Started a new game";
   // TODO reset other state like merchant hostility
   if (player) {
-    detach(&player->inputObserver());
+    detach(player->inputObserver());
   }
   // (0,0) position outside of Chambers until we place Player on the first Floor
-  player = make_shared<Player>(Position{0, 0}, Stats{125, 25, 25}, race);
-  attach(&player->inputObserver());
+  player = playerFactory.create(Position{0, 0}, race);
+  attach(player->inputObserver());
   loadNextFloor();
   // TODO: start turns
 }
@@ -108,7 +108,7 @@ void Game::loadNextFloor() {
 }
 
 PlayerDisplayInfo Game::playerDisplayInfo() const {
-  return PlayerDisplayInfo{player->raceType(),  player->gold,    floorNumber,
+  return PlayerDisplayInfo{player->raceType(),  player->getGold(), floorNumber,
                            player->currentHp(), player->stats(), lastAction};
 }
 
@@ -132,6 +132,7 @@ void Game::runPlayerTurn(const PlayerAction& action) {
   lastAction = actionDescription(action);
   notify(PlayerActionEvent{action});
   player->act(*floor);
+  player->endTurn();
 
   // Player reached staircase, enemy turn is skipped and next floor is loaded
   if (floorTransitionRequested) {

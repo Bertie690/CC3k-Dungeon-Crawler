@@ -3,11 +3,11 @@ module dragonhoard;
 #ifdef __INTELLISENSE__
 #include "dragon-hoard.cc"
 #include "item.cc"
-#include "player.cc"
+#include "../enums/race-type.cc"
 #else
 import goldsize;
 import item;
-import player;
+import racetype;
 #endif  // __INTELLISENSE__
 
 using namespace std;
@@ -22,11 +22,11 @@ DragonHoard::~DragonHoard() {
 }
 
 bool DragonHoard::canPickup(Character& character) const {
-  return dynamic_cast<Player*>(&character) && !guarded;
+  return isPlayer(character.raceType()) && !guarded;
 }
 
 OverlapResult DragonHoard::onOverlap(Entity& movingEntity) {
-  if (guarded && dynamic_cast<Player*>(&movingEntity)) {
+  if (guarded && character && isPlayer(dynamic_cast<Character*>(&movingEntity)->raceType())) {
     return OverlapResult::Enter;
   }
   // Determine behaviour like any other Item depending on movingEntity

@@ -101,6 +101,14 @@ export class Character : public virtual Entity {
 
   virtual RaceType raceType() const = 0;
 
+  // Player fields for decorators
+  // Expose the Player's strategy so the input handler can use it as an observer.
+  virtual Observer<PlayerActionEvent>* inputObserver();
+  // Return Player's gold.
+  virtual int getGold() const;
+  // Add amount to Player's gold.
+  virtual void addGold(int amount);
+
   // Public read-only values used by renderers and other presentation code.
   virtual unsigned int currentHp() const = 0;
   Stats stats() const;
@@ -108,6 +116,8 @@ export class Character : public virtual Entity {
 
   // Perform an action for the turn.
   void act(Floor& floor);
+  // Trigger onTurnEnd effects.
+  void endTurn();
 
   // Deal the given amount of damage to this Character.
   // If lethal is set to false, the damage dealt will not reduce this Character below 1 HP.
@@ -254,6 +264,9 @@ class CharacterDecorator : public Character {
   virtual const Position& position() const noexcept override;
 
   virtual RaceType raceType() const override final;
+  virtual Observer<PlayerActionEvent>* inputObserver() override;
+  virtual int getGold() const override;
+  virtual void addGold(int amount) override;
 
   virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;

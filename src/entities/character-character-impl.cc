@@ -21,6 +21,11 @@ unsigned int Character::maxHp() const { return this->getStats().maxHp; }
 Stats Character::stats() const { return this->getStats(); }
 bool Character::dead() const { return this->isDead(); }
 
+// defaults for non-player characters
+Observer<PlayerActionEvent>* Character::inputObserver() { return nullptr; }
+int Character::getGold() const { return 0; }
+void Character::addGold(int) {}
+
 void Character::attack(Character& defender, Floor& floor) {
   const unsigned int attacks = this->getAttacksPerTurn();
   for (unsigned int i = 0; i < attacks; i++) {
@@ -41,6 +46,14 @@ void Character::attack(Character& defender, Floor& floor) {
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
     if (defender.dead() && !isPlayer(defender.raceType())) {
+
+      int baseAddedGold = 0;
+      RaceType deadRaceType = defender.raceType();
+      if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
+        baseAddedGold += floor.rng.intRange(2) + 1;
+      }
+      // add gold to the Player
+      addGold(baseAddedGold + getExtraGoldDrop());
       floor.remove(defender);
       return;
     }
@@ -82,9 +95,11 @@ void Character::act(Floor& floor) {
   this->attack(*character, floor);
 }
 
+void Character::endTurn() { onTurnEnd(); }
+
 void Character::drain(Character& defender, unsigned int hp) {
   defender.damage(hp);
-  if (const double mult = defender.getDrainMulti(*this); mult > 1.0) {
+  if (const double mult = defender.getDrainMulti(*this); mult > 0.0) {
     this->heal(hp * mult);
   } else {
     this->damage(hp * static_cast<int>(-mult));

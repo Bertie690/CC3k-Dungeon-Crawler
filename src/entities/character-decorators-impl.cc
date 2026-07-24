@@ -29,6 +29,9 @@ CharacterDecorator::~CharacterDecorator() = default;
 
 Position& CharacterDecorator::position() noexcept { return character->position(); }
 const Position& CharacterDecorator::position() const noexcept { return character->position(); }
+Observer<PlayerActionEvent>* CharacterDecorator::inputObserver() { return character->inputObserver(); }
+int CharacterDecorator::getGold() const { return character->getGold(); }
+void CharacterDecorator::addGold(int amount) { character->addGold(amount); }
 
 bool CharacterDecorator::isDead() const { return character->isDead(); }
 
