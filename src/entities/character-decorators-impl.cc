@@ -27,6 +27,9 @@ CharacterDecorator::CharacterDecorator(std::unique_ptr<Character> character)
 #pragma region Method Forwards
 CharacterDecorator::~CharacterDecorator() = default;
 
+Position& CharacterDecorator::position() noexcept { return character->position(); }
+const Position& CharacterDecorator::position() const noexcept { return character->position(); }
+
 bool CharacterDecorator::isDead() const { return character->isDead(); }
 
 Action CharacterDecorator::getNextMove(Floor& floor) { return character->getNextMove(floor); }

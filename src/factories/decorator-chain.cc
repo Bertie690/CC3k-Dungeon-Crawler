@@ -3,9 +3,11 @@ export module decoratorchain;
 #ifdef __INTELLISENSE__
 #include <memory>
 #include <type_traits>
+#include <utility>
 #else
 import <memory>;
 import <type_traits>;
+import <utility>;
 #endif  // __INTELLISENSE__
 
 
@@ -23,7 +25,7 @@ class DecoratorChain {
     // Returns the current instance for chaining.
     template<typename Decorator, typename... Args>
       requires std::is_class_v<Decorator> && std::is_base_of_v<Base, Decorator> && std::is_constructible_v<Decorator, std::unique_ptr<Base>, Args...>
-    DecoratorChain<Decorator>& add(Args&&... args) {
+    DecoratorChain<Base>& add(Args&&... args) {
       base = std::make_unique<Decorator>(std::move(base), std::forward<Args>(args)...);
 
       return *this;

@@ -120,7 +120,7 @@ void Game::runPlayerTurn(const PlayerAction& action) {
 }
 
 void Game::runEnemyTurn() {
-  vector<shared_ptr<Enemy>> enemies;
+  vector<shared_ptr<Character>> enemies;
 
   // Add all Enemies in Chambers to the enemies vector
   for (const Room* room : floor->getRooms()) {
@@ -128,19 +128,19 @@ void Game::runEnemyTurn() {
 
     for (const Cell* cell : room->getCells()) {
       for (const shared_ptr<Entity>& entity : cell->getEntities()) {
-        shared_ptr<Enemy> enemy = dynamic_pointer_cast<Enemy>(entity);
-        if (enemy) enemies.push_back(enemy);
+        shared_ptr<Character> character = dynamic_pointer_cast<Character>(entity);
+        if (character && !isPlayer(character->raceType())) enemies.push_back(character);
       }
     }
   }
 
   // TODO: could possibly be optimized
-  sort(enemies.begin(), enemies.end(), [](const shared_ptr<Enemy>& a, const shared_ptr<Enemy>& b) {
+  sort(enemies.begin(), enemies.end(), [](const shared_ptr<Character>& a, const shared_ptr<Character>& b) {
     return a->position() < b->position();
   });
 
   // Run each Enemy's turn
-  for (const shared_ptr<Enemy>& enemy : enemies) {
+  for (const shared_ptr<Character>& enemy : enemies) {
     enemy->act(*floor);
   }
   renderer->draw();

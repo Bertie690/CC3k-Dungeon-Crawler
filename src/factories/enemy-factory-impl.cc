@@ -6,10 +6,12 @@ module enemyfactory;
 
 #include "../entities/merchant.cc"
 #include "../entities/character.cc"
+#include "decorator-chain.cc"
 #include "enemy-factory.cc"
 #else
 import <memory>;
 import <stdexcept>;
+import decoratorchain;
 import merchant;
 import character;
 #endif  // __INTELLISENSE__
@@ -47,25 +49,44 @@ Stats EnemyFactory::baseStatsFor(RaceType race) const {
   }
 }
 
-shared_ptr<Enemy> EnemyFactory::create(const Position& position) { return create(position, randomRace()); }
+shared_ptr<Character> EnemyFactory::create(const Position& position) { return create(position, randomRace()); }
 
-shared_ptr<Enemy> EnemyFactory::create(const Position& position, RaceType race) {
+shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType race) {
   if (race == RaceType::Dragon) { throw invalid_argument{"race create: use createDragon"}; }
   Stats stats = baseStatsFor(race);
   CharacterMoveStrategyType strategy = CharacterMoveStrategyType::Random;
 
+  unique_ptr<Character> enemy;
   if (race == RaceType::Merchant) {
-    return make_shared<Merchant>(position, stats, race, strategy);
+    enemy = make_unique<Merchant>(position, stats, race, strategy);
+  } else {
+    enemy = make_unique<Enemy>(position, stats, race, strategy);
   }
-  // TODO: Apply the race decorators
-  return make_shared<Enemy>(position, stats, race, strategy);
+  DecoratorChain<Character> decoratorChain{move(enemy)};
+  switch (race) {
+    case RaceType::Dwarf:
+      decoratorChain.add<ReverseDrainCharacterDecorator>();
+      break;
+    case RaceType::Elf:
+      decoratorChain.add<AttacksPerTurnCharacterDecorator>(1);
+      break;
+    case RaceType::Orc:
+      decoratorChain.add<RaceTypeDamageMultiplierCharacterDecorator>(RaceType::Goblin, 1.5);
+      break;
+    case RaceType::Halfling:
+      decoratorChain.add<DodgeChanceCharacterDecorator>(0.5);
+      break;
+    default:
+      break;
+  }
+  return shared_ptr<Character>{decoratorChain.build()};
 }
 
 shared_ptr<Enemy> EnemyFactory::createDragon(const Position& dragonPosition, const Position& hoardPosition) {
   return make_shared<Enemy>(dragonPosition, baseStatsFor(RaceType::Dragon), RaceType::Dragon, make_unique<DragonMoveStrategy>(hoardPosition));
 }
 
-shared_ptr<Enemy> EnemyFactory::create(const Position& position, char symbol) {
+shared_ptr<Character> EnemyFactory::create(const Position& position, char symbol) {
   switch (symbol) {
     case 'H':
       return create(position, RaceType::Human);

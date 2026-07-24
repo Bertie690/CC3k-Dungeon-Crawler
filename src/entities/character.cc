@@ -244,6 +244,9 @@ class CharacterDecorator : public Character {
   CharacterDecorator(std::unique_ptr<Character> character);
   virtual ~CharacterDecorator() = 0;
 
+  virtual Position& position() noexcept override;
+  virtual const Position& position() const noexcept override;
+
   virtual RaceType raceType() const override final;
 
   virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
@@ -394,7 +397,7 @@ export class DodgeChanceCharacterDecorator final : public CharacterDecorator {
 
  protected:
   virtual double getEvasion(const Character& attacker) const override {
-    return CharacterDecorator::getEvasion(attacker) * (1.0 + dodgeChance);
+    return CharacterDecorator::getEvasion(attacker) / (1.0 - dodgeChance);
   }
 
  public:
