@@ -44,6 +44,17 @@ import room;
 
 using namespace std;
 
+namespace {
+  string actionDescription(const PlayerAction& action) {
+    if (holds_alternative<Move>(action)) return "Moved";
+    if (holds_alternative<Attack>(action)) return "Attacked";
+    if (holds_alternative<UsePotion>(action)) return "Used a potion";
+    if (holds_alternative<FreezeEnemies>(action)) return "Toggled enemy movement";
+    if (holds_alternative<Pass>(action)) return "Waited";
+    return "Selected a race";
+  }
+}  // namespace
+
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
     : rng{seed}, scoreboard{}, renderer{move(renderer)}, floorGenerator{}, floor{} {
   if (floorFile.empty()) {
@@ -68,6 +79,8 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
 
 void Game::newGame(RaceType race) {
   floorTransitionRequested = false;
+  floorNumber = 0;
+  lastAction = "Started a new game";
   // TODO reset other state like merchant hostility
   if (player) {
     detach(&player->inputObserver());
@@ -80,6 +93,7 @@ void Game::newGame(RaceType race) {
 }
 
 void Game::loadNextFloor() {
+  ++floorNumber;
   floor = make_unique<Floor>(floorGenerator->generateFloor());
   floor->attach(renderer.get());
   floor->attach(this);
@@ -89,7 +103,12 @@ void Game::loadNextFloor() {
   floor->getCell(player->position()).add(player);
 
   notify(NewFloorEvent{floor.get()});
-  renderer->draw();
+  renderer->draw(playerDisplayInfo());
+}
+
+PlayerDisplayInfo Game::playerDisplayInfo() const {
+  return PlayerDisplayInfo{player->raceType(),  player->gold,    floorNumber,
+                           player->currentHp(), player->stats(), lastAction};
 }
 
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
@@ -101,12 +120,15 @@ void Game::onNotify(const PlayerActionEvent& event) {
   }
   if (const FreezeEnemies* freeze = get_if<FreezeEnemies>(&event.action)) {
     freezeEnemies();
+    lastAction = actionDescription(event.action);
+    renderer->draw(playerDisplayInfo());
     return;
   }
   runPlayerTurn(event.action);
 }
 
 void Game::runPlayerTurn(const PlayerAction& action) {
+  lastAction = actionDescription(action);
   notify(PlayerActionEvent{action});
   player->act(*floor);
 
@@ -143,7 +165,7 @@ void Game::runEnemyTurn() {
   for (const shared_ptr<Character>& enemy : enemies) {
     enemy->act(*floor);
   }
-  renderer->draw();
+  renderer->draw(playerDisplayInfo());
 }
 
 void Game::onNotify(const GameQuitEvent& event) {

@@ -18,6 +18,7 @@ import action;
 unsigned int Character::atk() const { return this->getStats().atk; }
 unsigned int Character::def() const { return this->getStats().def; }
 unsigned int Character::maxHp() const { return this->getStats().maxHp; }
+Stats Character::stats() const { return this->getStats(); }
 
 void Character::attack(Character& defender, Floor& floor) {
   const unsigned int attacks = this->getAttacksPerTurn();

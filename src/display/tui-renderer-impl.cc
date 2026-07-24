@@ -2,6 +2,7 @@ module tuirenderer;
 
 #ifdef __INTELLISENSE__
 #include <iostream>
+#include <sstream>
 
 #include "../entities/character.cc"
 #include "../entities/entity.cc"
@@ -14,6 +15,7 @@ module tuirenderer;
 #include "tui-renderer.cc"
 #else
 import <iostream>;
+import <sstream>;
 import staircase;
 import entity;
 import character;
@@ -36,6 +38,38 @@ namespace Color {
   const string MAGENTA = "\033[35m";
   const string CYAN = "\033[36m";
 }  // namespace Color
+
+namespace {
+  string raceName(RaceType race) {
+    switch (race) {
+      case RaceType::Shade:
+        return "Shade";
+      case RaceType::Drow:
+        return "Drow";
+      case RaceType::Vampire:
+        return "Vampire";
+      case RaceType::Troll:
+        return "Troll";
+      case RaceType::Goblin:
+        return "Goblin";
+      case RaceType::Human:
+        return "Human";
+      case RaceType::Dwarf:
+        return "Dwarf";
+      case RaceType::Elf:
+        return "Elf";
+      case RaceType::Orc:
+        return "Orc";
+      case RaceType::Merchant:
+        return "Merchant";
+      case RaceType::Dragon:
+        return "Dragon";
+      case RaceType::Halfling:
+        return "Halfling";
+    }
+    return "Unknown";
+  }
+}  // namespace
 
 TUIRenderer::TUIRenderer() : currentFloor{nullptr} {}
 
@@ -111,7 +145,7 @@ string TUIRenderer::getEntitySymbol(const Entity& entity) const noexcept {
       case RaceType::Vampire:
       case RaceType::Troll:
       case RaceType::Goblin:
-        return Color::RED + "@" + Color::RESET;
+        return Color::CYAN + "@" + Color::RESET;
       default:
         throw std::runtime_error("Unknown character race type!");
     }
@@ -130,7 +164,7 @@ string TUIRenderer::getEntitySymbol(const Entity& entity) const noexcept {
   throw std::runtime_error("Unknown entity class instance!");
 }
 
-void TUIRenderer::draw() {
+void TUIRenderer::draw(const PlayerDisplayInfo& info) {
   if (!currentFloor) {
     // TODO: Add race selection screen?
     cerr << "No floor loaded" << endl;
@@ -143,6 +177,19 @@ void TUIRenderer::draw() {
     }
     cout << endl;
   }
+
+  cout << endl << buildStatsFooter(info);
+}
+
+string TUIRenderer::buildStatsFooter(const PlayerDisplayInfo& info) const {
+  ostringstream out;
+  out << "Race: " << raceName(info.race) << "   Gold: " << info.gold << "   Floor "
+      << info.floorNumber << endl;
+  out << "HP: " << info.hp << "/" << info.stats.maxHp << endl;
+  out << "Atk: " << info.stats.atk << endl;
+  out << "Def: " << info.stats.def << endl;
+  out << "Action: " << info.action << endl;
+  return out.str();
 }
 
 void TUIRenderer::onNotify(const EntityDeathEvent& event) {

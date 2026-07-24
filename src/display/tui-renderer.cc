@@ -34,6 +34,7 @@ export class TUIRenderer : public Renderer {
   std::string getCellText(const Cell& cell) const;
   // Return the text to be displayed for the given Entity.
   std::string getEntitySymbol(const Entity& entity) const noexcept;
+  std::string buildStatsFooter(const PlayerDisplayInfo& info) const;
   void rebuildGrid();
 
   virtual void onNotify(const EntityDeathEvent& event) override;
@@ -42,5 +43,5 @@ export class TUIRenderer : public Renderer {
 
  public:
   TUIRenderer();
-  virtual void draw() override;
+  virtual void draw(const PlayerDisplayInfo& info) override;
 };

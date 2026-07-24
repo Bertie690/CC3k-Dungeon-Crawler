@@ -28,18 +28,23 @@ std::unique_ptr<CharacterMoveStrategy> buildStrategy(CharacterMoveStrategyType t
 BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceType,
                              CharacterMoveStrategyType strategyType)
     : BaseEntity{position},
+      hp(baseStats.maxHp),
       baseStats(baseStats),
       type(raceType),
       moveStrategy(buildStrategy(strategyType)) {};
 BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceType,
                              std::unique_ptr<CharacterMoveStrategy> strat)
     : BaseEntity{position},
+      hp(baseStats.maxHp),
       baseStats(baseStats),
       type(raceType),
       moveStrategy(std::move(strat)) {};
 
 #pragma region Getters/Hooks
 bool BaseCharacter::isDead() const { return this->hp <= 0; }
+unsigned int BaseCharacter::currentHp() const {
+  return static_cast<unsigned int>(std::max(0, this->hp));
+}
 
 Stats BaseCharacter::getStats() const { return this->baseStats; }
 double BaseCharacter::getAccuracy(const Character& defender) const { return 1.0; }

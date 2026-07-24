@@ -44,11 +44,14 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;
   shared_ptr<Player> player = {};
+  unsigned int floorNumber = 0;
+  std::string lastAction = "Starting a new game";
   // Flag used to know to generate the next Floor instead of running enemy turns.
   bool floorTransitionRequested = false;
 
   // Generate a Floor and move the Player to its determined spawn position.
   void loadNextFloor();
+  PlayerDisplayInfo playerDisplayInfo() const;
 
   virtual void onNotify(const FloorTransitionEvent& event) override;
   virtual void onNotify(const GameQuitEvent& event) override;

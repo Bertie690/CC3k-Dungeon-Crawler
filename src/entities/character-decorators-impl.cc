@@ -35,6 +35,7 @@ bool CharacterDecorator::isDead() const { return character->isDead(); }
 Action CharacterDecorator::getNextMove(Floor& floor) { return character->getNextMove(floor); }
 
 Stats CharacterDecorator::getStats() const { return character->getStats(); }
+unsigned int CharacterDecorator::currentHp() const { return character->currentHp(); }
 
 double CharacterDecorator::getAccuracy(const Character& defender) const {
   return character->getAccuracy(defender);

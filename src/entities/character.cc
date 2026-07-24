@@ -101,6 +101,10 @@ export class Character : public virtual Entity {
 
   virtual RaceType raceType() const = 0;
 
+  // Public read-only values used by renderers and other presentation code.
+  virtual unsigned int currentHp() const = 0;
+  Stats stats() const;
+
   // Perform an action for the turn.
   void act(Floor& floor);
 
@@ -211,6 +215,7 @@ export class BaseCharacter : public BaseEntity, public Character {
 
   virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
+  virtual unsigned int currentHp() const override final;
 
   virtual double getPotionEffectMultiplier() const override;
   virtual double getScoreMulti() const override;
@@ -251,6 +256,7 @@ class CharacterDecorator : public Character {
 
   virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
+  virtual unsigned int currentHp() const override;
 
   virtual double getPotionEffectMultiplier() const override;
   virtual double getScoreMulti() const override;
