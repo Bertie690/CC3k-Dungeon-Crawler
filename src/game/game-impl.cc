@@ -78,6 +78,8 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
 }
 
 void Game::newGame(RaceType race) {
+  gameOver = false;
+  scoreboard.score = 0;
   floorTransitionRequested = false;
   floorNumber = 0;
   lastAction = "Started a new game";
@@ -112,11 +114,23 @@ PlayerDisplayInfo Game::playerDisplayInfo() const {
                            player->currentHp(), player->stats(), lastAction};
 }
 
+void Game::endGame(bool victory) {
+  gameOver = true;
+  scoreboard.score = victory ? player->getGold() * player->getScoreMulti() : 0;
+  lastAction = victory ? "Reached the end of the game" : "Player died";
+  floorTransitionRequested = false;
+  renderer->draw(playerDisplayInfo());
+  renderer->drawGameOutcome(victory, scoreboard.score);
+}
+
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
 
 void Game::onNotify(const PlayerActionEvent& event) {
   if (const RaceSelect* raceSelect = get_if<RaceSelect>(&event.action)) {
     newGame(raceSelect->race);
+    return;
+  }
+  if (gameOver) {
     return;
   }
   if (const FreezeEnemies* freeze = get_if<FreezeEnemies>(&event.action)) {
@@ -132,10 +146,18 @@ void Game::runPlayerTurn(const PlayerAction& action) {
   lastAction = actionDescription(action);
   notify(PlayerActionEvent{action});
   player->act(*floor);
+  if (player->dead()) {
+    endGame(false);
+    return;
+  }
   player->endTurn();
 
   // Player reached staircase, enemy turn is skipped and next floor is loaded
   if (floorTransitionRequested) {
+    if (floorNumber == 5) {
+      endGame(true);
+      return;
+    }
     floorTransitionRequested = false;
     loadNextFloor();
     return;
@@ -166,6 +188,10 @@ void Game::runEnemyTurn() {
   // Run each Enemy's turn
   for (const shared_ptr<Character>& enemy : enemies) {
     enemy->act(*floor);
+    if (player->dead()) {
+      endGame(false);
+      return;
+    }
   }
   renderer->draw(playerDisplayInfo());
 }

@@ -5,7 +5,5 @@ export module scoreboard;
 // Scoreboard tracks the player's score
 export class Scoreboard {
  public:
-  int score = 0;
-
-  // TODO: implement once Player module is ready
+  double score = 0;
 };

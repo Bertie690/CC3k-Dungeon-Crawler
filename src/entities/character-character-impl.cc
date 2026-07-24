@@ -45,16 +45,18 @@ void Character::attack(Character& defender, Floor& floor) {
     defender.damage(damage);
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
-    if (defender.dead() && !isPlayer(defender.raceType())) {
-
-      int baseAddedGold = 0;
-      RaceType deadRaceType = defender.raceType();
-      if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
-        baseAddedGold += floor.rng.intRange(2) + 1;
+    if (defender.dead()) {
+      // Add corresponding gold to Player and remove the enemy
+      if (!isPlayer(defender.raceType())) {
+        int baseAddedGold = 0;
+        RaceType deadRaceType = defender.raceType();
+        if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
+          baseAddedGold += floor.rng.intRange(2) + 1;
+        }
+        // add gold to the Player
+        addGold(baseAddedGold + getExtraGoldDrop());
+        floor.remove(defender);
       }
-      // add gold to the Player
-      addGold(baseAddedGold + getExtraGoldDrop());
-      floor.remove(defender);
       return;
     }
   }

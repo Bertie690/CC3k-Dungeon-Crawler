@@ -51,11 +51,14 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   shared_ptr<Character> player = {};
   unsigned int floorNumber = 0;
   std::string lastAction = "Starting a new game";
+  bool gameOver = false;
   // Flag used to know to generate the next Floor instead of running enemy turns.
   bool floorTransitionRequested = false;
 
   // Generate a Floor and move the Player to its determined spawn position.
   void loadNextFloor();
+  // End the game and calculate a score if game was won.
+  void endGame(bool victory);
   PlayerDisplayInfo playerDisplayInfo() const;
 
   virtual void onNotify(const FloorTransitionEvent& event) override;

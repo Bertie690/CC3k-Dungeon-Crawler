@@ -34,4 +34,6 @@ export class Renderer : public Observer<NewFloorEvent, EntityDeathEvent, EntityM
 
   // Draw the current state of the game to the screen.
   virtual void draw(const PlayerDisplayInfo& info) = 0;
+  // Display the outcome of a game.
+  virtual void drawGameOutcome(bool victory, double score) = 0;
 };

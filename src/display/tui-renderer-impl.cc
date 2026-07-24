@@ -181,6 +181,19 @@ void TUIRenderer::draw(const PlayerDisplayInfo& info) {
   cout << endl << buildStatsFooter(info);
 }
 
+void TUIRenderer::drawGameOutcome(bool victory, double score) {
+  if (victory) {
+    cout << endl << "----------GAME WON----------" << endl;
+    cout << "You passed floor 5!" << endl;
+    cout << "Score: " << score << endl;
+  } else {
+    cout << endl << "----------GAME OVER----------" << endl;
+    cout << "Your player has died." << endl;
+    cout << "Score: " << score << endl;
+  }
+  cout << "Enter r to restart or q to quit the game." << endl;
+}
+
 string TUIRenderer::buildStatsFooter(const PlayerDisplayInfo& info) const {
   ostringstream out;
   out << "Race: " << raceName(info.race) << "   Gold: " << info.gold << "   Floor "
