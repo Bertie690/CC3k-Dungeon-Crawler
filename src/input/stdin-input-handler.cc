@@ -3,6 +3,7 @@ export module stdininputhandler;
 #ifdef __INTELLISENSE__
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -15,6 +16,7 @@ export module stdininputhandler;
 #else
 import <iostream>;
 import <memory>;
+import <stdexcept>;
 import <string>;
 import <vector>;
 import inputhandler;
@@ -143,6 +145,7 @@ export class StdinInputHandler : public InputHandler {
         return UsePotion{dir};
       }
     }
+    throw invalid_argument{"Invalid command"};
   }
 
   PlayerAction readCommand() override {

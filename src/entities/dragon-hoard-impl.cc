@@ -26,7 +26,7 @@ bool DragonHoard::canPickup(Character& character) const {
 }
 
 OverlapResult DragonHoard::onOverlap(Entity& movingEntity) {
-  if (guarded && character && isPlayer(dynamic_cast<Character*>(&movingEntity)->raceType())) {
+  if (guarded && isPlayer(dynamic_cast<Character*>(&movingEntity)->raceType())) {
     return OverlapResult::Enter;
   }
   // Determine behaviour like any other Item depending on movingEntity
