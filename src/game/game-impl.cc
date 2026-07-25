@@ -12,6 +12,7 @@ module game;
 #include "../entities/character.cc"
 #include "../entities/enemy.cc"
 #include "../entities/entity.cc"
+#include "../entities/merchant.cc"
 #include "../entities/player.cc"
 #include "../entities/stats.cc"
 #include "../enums/gold-size.cc"
@@ -34,6 +35,7 @@ import <variant>;
 import <vector>;
 import enemy;
 import entity;
+import merchant;
 import character;
 import player;
 import stats;
@@ -105,6 +107,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
       scoreboard{},
       playerFactory{rng},
       goldFactory{rng},
+      floorFile{floorFile},
       renderer{move(renderer)},
       floorGenerator{},
       floor{} {
@@ -122,6 +125,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
       scoreboard{},
       playerFactory{rng},
       goldFactory{rng},
+      floorFile{floorFile},
       renderer{move(renderer)},
       floorGenerator{},
       floor{} {
@@ -140,7 +144,13 @@ void Game::newGame(RaceType race) {
   floorTransitionRequested = false;
   floorNumber = 0;
   lastAction = "Started a new game";
-  // TODO reset other state like merchant hostility
+  Merchant::resetHostility();
+  freezeEnemies(false);
+  if (floorFile.empty()) {
+    floorGenerator = make_unique<RandomFloorGenerator>(rng);
+  } else {
+    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile);
+  }
   if (player) {
     detach(player->inputObserver());
   }
@@ -174,6 +184,7 @@ PlayerDisplayInfo Game::playerDisplayInfo() const {
 void Game::endGame(bool victory) {
   scoreboard.score = victory ? player->getGold() * player->getScoreMulti() : 0;
   lastAction = victory ? "Reached the end of the game" : "Player died";
+  pendingGameOver = true;
   floorTransitionRequested = false;
   renderer->draw(playerDisplayInfo());
   renderer->drawGameOutcome(victory, scoreboard.score);
@@ -224,10 +235,7 @@ void Game::onNotify(const CharacterAttackEvent& event) {
   }
 }
 
-void Game::onNotify(const RaceSelectEvent& event) {
-  if (pendingGameOver) return;
-  newGame(event.raceType);
-}
+void Game::onNotify(const RaceSelectEvent& event) { newGame(event.raceType); }
 
 void Game::onNotify(const FreezeEnemiesEvent&) {
   if (pendingGameOver) return;

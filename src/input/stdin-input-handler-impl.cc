@@ -101,9 +101,8 @@ UIAction StdinInputHandler::readGameCommand() {
   if (token == "f") return FreezeEnemies{};
 
   if (token == "r") {
-    // TODO: Restart the game
     awaitingRace = true;
-    return Pass{};
+    return Restart{};
   }
 
   if (const auto& dir = parseDirection(token)) {

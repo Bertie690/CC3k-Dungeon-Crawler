@@ -53,6 +53,9 @@ void InputHandler::processInput() {
     notify(RaceSelectEvent{raceSelect->race});
   } else if (std::holds_alternative<FreezeEnemies>(action)) {
     notify(FreezeEnemiesEvent{});
+  } else if (std::holds_alternative<Restart>(action)) {
+    // doesn't emit PlayerActionEvent since we shouldn't run enemy turns
+    return;
   } else if (std::holds_alternative<Quit>(action)) {
     notify(GameQuitEvent{true});
   } else {

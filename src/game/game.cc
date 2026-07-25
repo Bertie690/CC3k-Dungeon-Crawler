@@ -51,6 +51,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   Scoreboard scoreboard;
   PlayerFactory playerFactory;
   GoldFactory goldFactory;
+  const string floorFile;
   unique_ptr<Renderer> renderer;
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;

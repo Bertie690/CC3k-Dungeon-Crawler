@@ -44,11 +44,13 @@ export struct UsePotion {
 };
 // Freeze all enemies.
 export struct FreezeEnemies {};
+// Return to race selection.
+export struct Restart {};
 // Quit the game.
 export struct Quit {};
 
 // An action the end user can take with respect to the game.
 export using UIAction =
-    std::variant<Pass, Move, Attack, UsePotion, RaceSelect, FreezeEnemies, Quit>;
+    std::variant<Pass, Move, Attack, UsePotion, RaceSelect, FreezeEnemies, Restart, Quit>;
 // An action any character can take.
 export using Action = std::variant<Pass, Move, Attack, UsePotion>;

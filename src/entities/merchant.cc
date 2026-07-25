@@ -21,4 +21,6 @@ export class Merchant : public Enemy {
 
  public:
   using Enemy::Enemy;
+
+  static void resetHostility() { hostile = false; }
 };
