@@ -8,6 +8,9 @@ import <limits>;
 #endif  // __INTELLISENSE__
 
 // A Stats struct represents the stats of a Character.
+// Stats are used to determine the outcome of combat and other interactions between Characters.
+//
+// The addition and subtraction operators are guaranteed to prevent overflow and underflow, respectively.
 export struct Stats {
   // Maximum HP
   unsigned int maxHp;

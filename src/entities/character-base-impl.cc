@@ -45,10 +45,8 @@ BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceTy
       moveStrategy(std::move(strat)) {};
 
 #pragma region Getters/Hooks
-bool BaseCharacter::isDead() const { return this->hp <= 0; }
-unsigned int BaseCharacter::currentHp() const {
-  return static_cast<unsigned int>(std::max(0, this->hp));
-}
+bool BaseCharacter::isDead() const { return this->hp <= 0U; }
+unsigned int BaseCharacter::currentHp() const { return std::max(0U, this->hp); }
 
 Stats BaseCharacter::getStats() const { return this->baseStats; }
 double BaseCharacter::getAccuracy(const Character& defender) const { return 1.0; }
@@ -56,14 +54,13 @@ double BaseCharacter::getEvasion(const Character& attacker) const { return 1.0; 
 unsigned int BaseCharacter::getAttacksPerTurn() const { return 1; }
 double BaseCharacter::getAttackDamageMultiplier(const Character& defender) const { return 1.0; }
 GoldDrop BaseCharacter::getGoldDrop() const {
-  // TODO: Update after https://piazza.com/class/mo31aduaog5h5/post/350
-  return InstantGoldDrop{0};
+  return GoldDrop{.instantAmount = static_cast<unsigned int>(GoldSize::Small)};
 }
-GoldDrop BaseCharacter::getKillGoldDrop() const { return InstantGoldDrop{0}; }
 double BaseCharacter::getDrainMulti(const Character& attacker) const { return 1.0; }
 void BaseCharacter::onHit(Character& defender, unsigned int damage) {}
 void BaseCharacter::onBeingAttacked(Character& attacker, unsigned int damage) {}
-void BaseCharacter::onDeath(Character* killer) {}
+void BaseCharacter::onDeath(Character* killer) { Character::onDeath(killer); }
+void BaseCharacter::onKill(const Character& killer) { Character::onKill(killer);}
 void BaseCharacter::onTurnEnd() {}
 
 double BaseCharacter::getPotionEffectMultiplier() const { return 1.0; }
@@ -83,8 +80,8 @@ Action BaseCharacter::getNextMove(Floor& floor) {
 }
 
 void BaseCharacter::damage(unsigned int amt, bool lethal, Character* source) {
-  this->hp -= amt;
-  if (!this->isDead()) {
+  if (amt < this->hp) {
+    this->hp -= amt;
     return;
   }
   if (lethal) {

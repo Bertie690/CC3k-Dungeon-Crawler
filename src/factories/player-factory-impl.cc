@@ -9,7 +9,9 @@ module playerfactory;
 #include "../enums/gold-size.cc"
 #include "decorator-chain.cc"
 #include "player-factory.cc"
+#include <limits>
 #else
+import <limits>;
 import <memory>;
 import <stdexcept>;
 import character;
@@ -23,15 +25,15 @@ using namespace std;
 Stats PlayerFactory::baseStatsFor(RaceType race) const {
   switch (race) {
     case RaceType::Shade:
-      return Stats{125, 25, 25};
+      return Stats{.maxHp = 125, .atk = 25, .def = 25};
     case RaceType::Drow:
-      return Stats{150, 25, 15};
+      return Stats{.maxHp = 150, .atk = 25, .def = 15};
     case RaceType::Vampire:
-      return Stats{50, 25, 25};
+      return Stats{.maxHp = 50, .atk = 25, .def = 25};
     case RaceType::Troll:
-      return Stats{120, 25, 15};
+      return Stats{.maxHp = 120, .atk = 25, .def = 15};
     case RaceType::Goblin:
-      return Stats{110, 15, 20};
+      return Stats{.maxHp = 110, .atk = 15, .def = 20};
     default:
       throw invalid_argument{"Unknown player race"};
   }
@@ -55,13 +57,15 @@ shared_ptr<Character> PlayerFactory::create(const Position& position, RaceType r
       decoratorChain.add<PotionEffectCharacterDecorator>(1.5);
       break;
     case RaceType::Vampire:
-      decoratorChain.add<HpDrainCharacterDecorator>(5);
+      decoratorChain
+        .add<HpDrainCharacterDecorator>(5)
+        .add<StatChangeCharacterDecorator>(Stats{.maxHp = std::numeric_limits<unsigned int>::max()}, true);
       break;
     case RaceType::Troll:
       decoratorChain.add<TurnHpRegenCharacterDecorator>(5);
       break;
     case RaceType::Goblin:
-      decoratorChain.add<GoldOnKillCharacterDecorator>(InstantGoldDrop{5});
+      decoratorChain.add<GoldOnKillCharacterDecorator>(5);
       break;
     default:
       break;

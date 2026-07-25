@@ -11,7 +11,7 @@ import <compare>;
 import direction;
 #endif  // __INTELLISENSE__
 
-// A Position represents a vector in Z^2.
+// A Position represents a vector in 2D integer space.
 export struct Position {
   // The X coordinate. Positive is right, negative is left.
   int x;

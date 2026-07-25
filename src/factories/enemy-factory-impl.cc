@@ -33,28 +33,33 @@ RaceType EnemyFactory::randomRace() {
 Stats EnemyFactory::baseStatsFor(RaceType race) const {
   switch (race) {
     case RaceType::Human:
-      return Stats{140, 20, 20};
+      return Stats{.maxHp = 140, .atk = 20, .def = 20};
     case RaceType::Dwarf:
-      return Stats{100, 20, 30};
+      return Stats{.maxHp = 100, .atk = 20, .def = 30};
     case RaceType::Elf:
-      return Stats{140, 30, 10};
+      return Stats{.maxHp = 140, .atk = 30, .def = 10};
     case RaceType::Orc:
-      return Stats{180, 30, 25};
+      return Stats{.maxHp = 180, .atk = 30, .def = 25};
     case RaceType::Merchant:
-      return Stats{30, 70, 5};
+      return Stats{.maxHp = 30, .atk = 70, .def = 5};
     case RaceType::Dragon:
-      return Stats{150, 20, 20};
+      return Stats{.maxHp = 150, .atk = 20, .def = 20};
     case RaceType::Halfling:
-      return Stats{100, 15, 20};
+      return Stats{.maxHp = 100, .atk = 15, .def = 20};
     default:
       throw invalid_argument{"Unknown enemy race"};
   }
 }
 
-shared_ptr<Character> EnemyFactory::create(const Position& position) { return create(position, randomRace()); }
+shared_ptr<Character> EnemyFactory::create(const Position& position) {
+  return create(position, randomRace());
+}
 
 shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType race) {
-  if (race == RaceType::Dragon) { throw invalid_argument{"race create: use createDragon"}; }
+  if (race == RaceType::Dragon) {
+    throw invalid_argument{"Cannot create a Dragon without an associated hoard!"};
+  }
+
   Stats stats = baseStatsFor(race);
   CharacterMoveStrategyType strategy = CharacterMoveStrategyType::Random;
 
@@ -64,6 +69,7 @@ shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType ra
   } else {
     enemy = make_unique<Enemy>(position, stats, race, strategy);
   }
+
   DecoratorChain<Character> decoratorChain{move(enemy)};
   switch (race) {
     case RaceType::Dwarf:
@@ -80,16 +86,21 @@ shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType ra
       break;
     case RaceType::Human:
       decoratorChain.add<GoldOnDeathCharacterDecorator>(
-          NormalGoldDrop{.pileSize = GoldSize::Normal, .pilesDropped = 2});
+          GoldDrop{.pileSize = GoldSize::Normal, .pilesDropped = 2});
       break;
+    case RaceType::Merchant:
+      decoratorChain.add<GoldOnDeathCharacterDecorator>(
+          GoldDrop{.pileSize = GoldSize::MerchantHoard, .pilesDropped = 1});
     default:
       break;
   }
   return shared_ptr<Character>{decoratorChain.build()};
 }
 
-shared_ptr<Enemy> EnemyFactory::createDragon(const Position& dragonPosition, const Position& hoardPosition) {
-  return make_shared<Enemy>(dragonPosition, baseStatsFor(RaceType::Dragon), RaceType::Dragon, make_unique<DragonMoveStrategy>(hoardPosition));
+shared_ptr<Enemy> EnemyFactory::createDragon(const Position& dragonPosition,
+                                             const Position& hoardPosition) {
+  return make_shared<Enemy>(dragonPosition, baseStatsFor(RaceType::Dragon), RaceType::Dragon,
+                            make_unique<DragonMoveStrategy>(hoardPosition));
 }
 
 shared_ptr<Character> EnemyFactory::create(const Position& position, char symbol) {

@@ -44,30 +44,21 @@ void Character::attack(Character& defender, Floor& floor) {
     // ceiling((100/(100 + Def (Defender))) * Atk(Attacker))
     const unsigned int damage =
         std::ceil(100.0 / (100.0 + defender.def()) * this->atk() * damageMultiplier);
+
     const unsigned int hpBefore = defender.currentHp();
     defender.damage(damage, true, this);
     const unsigned int damageDealt = hpBefore - defender.currentHp();
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
-    if (defender.dead()) {
-      int baseAddedGold = 0;
-      RaceType deadRaceType = defender.raceType();
-      if (!isPlayer(deadRaceType) && deadRaceType != RaceType::Human &&
-          deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
-        baseAddedGold += floor.rng.intRange(2) + 1;
-      }
-      floor.reportCharacterAction(CharacterActionEvent{
-          *this, defender, CharacterActionEvent::Result::Hit, damageDealt, true});
-      floor.reportCharacterDeath(CharacterDeathEvent{
-          defender, position(), defender.raceType(),
-          baseAddedGold == 0 ? defender.getGoldDrop()
-                             : GoldDrop{InstantGoldDrop{static_cast<unsigned int>(baseAddedGold)}},
-          isPlayer(deadRaceType) ? GoldDrop{InstantGoldDrop{0}} : getKillGoldDrop()});
-      return;
-    }
 
     floor.reportCharacterAction(CharacterActionEvent{
         *this, defender, CharacterActionEvent::Result::Hit, damageDealt, defender.dead()});
+
+    if (defender.dead()) {
+      // TODO: Push action from onDeath function if possible
+      floor.reportCharacterDeath(
+          CharacterDeathEvent{defender, position(), defender.raceType(), defender.getGoldDrop()});
+    }
   }
 }
 
@@ -116,5 +107,16 @@ void Character::drain(Character& defender, unsigned int hp) {
     this->heal(hp * mult);
   } else {
     this->damage(hp * static_cast<int>(-mult));
+  }
+}
+
+void Character::onDeath(Character* killer) {
+  if (!killer) return;
+  killer->onKill(*this);
+}
+
+void Character::onKill(const Character& killed) {
+  if (const unsigned int amt = killed.getGoldDrop().instantAmount) {
+    this->addGold(amt);
   }
 }

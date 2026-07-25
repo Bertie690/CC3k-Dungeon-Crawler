@@ -11,7 +11,7 @@ import <utility>;
 #endif  // __INTELLISENSE__
 
 
-// Utility class to chain decorators together using a fluent builder.
+// Utility class to chain decorators together using a fluent builder-style pattern.
 export template<typename Base>
   requires std::is_class_v<Base>
 class DecoratorChain {

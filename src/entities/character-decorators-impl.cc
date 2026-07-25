@@ -59,7 +59,6 @@ double CharacterDecorator::getAttackDamageMultiplier(const Character& defender) 
 }
 
 GoldDrop CharacterDecorator::getGoldDrop() const { return character->getGoldDrop(); }
-GoldDrop CharacterDecorator::getKillGoldDrop() const { return character->getKillGoldDrop(); }
 
 double CharacterDecorator::getDrainMulti(const Character& attacker) const {
   return character->getDrainMulti(attacker);
@@ -73,6 +72,7 @@ void CharacterDecorator::onBeingAttacked(Character& attacker, unsigned int damag
   character->onBeingAttacked(attacker, damage);
 }
 void CharacterDecorator::onDeath(Character* killer) { character->onDeath(killer); }
+void CharacterDecorator::onKill(const Character& killer) { character->onKill(killer); }
 void CharacterDecorator::onTurnEnd() { character->onTurnEnd(); }
 
 RaceType CharacterDecorator::raceType() const { return character->raceType(); }
@@ -80,7 +80,6 @@ RaceType CharacterDecorator::raceType() const { return character->raceType(); }
 void CharacterDecorator::damage(unsigned int amt, bool lethal, Character* source) {
   character->damage(amt, lethal, source);
 }
-
 void CharacterDecorator::heal(unsigned int amt) { character->heal(amt); }
 
 double CharacterDecorator::getPotionEffectMultiplier() const {

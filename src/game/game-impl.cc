@@ -319,22 +319,13 @@ void Game::onNotify(const CharacterDeathEvent& event) {
   string message = "PC killed " + characterName(event.entity);
 
   // create the enemy's physical GoldPile(s)
-  if (const auto normalGoldDrop = std::get_if<NormalGoldDrop>(&event.goldDrop)) {
-    message += " which drops " + to_string(normalGoldDrop->pilesDropped) + " piles of gold";
-    for (unsigned int i = 0; i < normalGoldDrop->pilesDropped; ++i) {
+  if (const unsigned int goldDropped = event.goldDrop.pilesDropped) {
+    message += " which drops " + to_string(goldDropped) + " piles of gold";
+    for (unsigned int i = 0; i < goldDropped; ++i) {
       floor->getCell(event.position)
-          .add(goldFactory.create(event.position, normalGoldDrop->pileSize));
+          .add(goldFactory.create(event.position, event.goldDrop.pileSize));
     }
-  } else {
-    // Award the enemy's gold reward to the player
-    const auto& instantGoldDrop = std::get<InstantGoldDrop>(event.goldDrop);
-    message += " which drops " + to_string(instantGoldDrop.amount) + " gold";
-    player->addGold(instantGoldDrop.amount);
   }
 
-  // Award extra gold earned by the player's abilities
-  if (const auto instantKillerGold = std::get_if<InstantGoldDrop>(&event.killerGoldDrop)) {
-    player->addGold(instantKillerGold->amount);
-  }
   appendAction(message);
 }

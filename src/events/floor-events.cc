@@ -78,18 +78,14 @@ export struct CharacterDeathEvent {
   // The race of the Character that just died.
   const RaceType raceType;
 
-  // Information pertaining to the gold dropped by the Character upon death.
+  // Information pertaining to the gold dropped by the dying Character upon death.
   GoldDrop goldDrop;
 
-  // gold awarded directly to the killer.
-  GoldDrop killerGoldDrop;
-
   CharacterDeathEvent(const Entity& entity, const Position& killerPosition, const RaceType raceType,
-                      GoldDrop goldDrop, GoldDrop killerGoldDrop)
+                      GoldDrop goldDrop)
       : entity(entity),
         position(entity.position()),
         killerPosition(killerPosition),
         raceType(raceType),
-        goldDrop(goldDrop),
-        killerGoldDrop(killerGoldDrop) {}
+        goldDrop(goldDrop)        {}
 };
