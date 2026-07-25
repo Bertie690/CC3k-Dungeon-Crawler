@@ -27,15 +27,12 @@ import observer;
 import floorevents;
 #endif  // __INTELLISENSE__
 
-export class Floor : public Observer<CharacterDeathEvent>,
-                     public Subject<CharacterActionEvent, EntityMoveEvent, FloorTransitionEvent,
+export class Floor : public Subject<CharacterActionEvent, EntityMoveEvent, FloorTransitionEvent,
                                     EntityDeathEvent, CharacterDeathEvent> {
   std::vector<std::unique_ptr<Room>> rooms;
 
   // Return whether the given position is valid on this Floor.
   bool isInBounds(const Position& position) const;
-
-  virtual void onNotify(const CharacterDeathEvent& event) override final;
 
  public:
   // The height of a single Floor grid.
@@ -80,4 +77,7 @@ export class Floor : public Observer<CharacterDeathEvent>,
 
   // Publish a combat outcome for the action log.
   void reportCharacterAction(const CharacterActionEvent& event);
+
+  // Publish a Character death and remove it from the Floor.
+  void reportCharacterDeath(const CharacterDeathEvent& event);
 };

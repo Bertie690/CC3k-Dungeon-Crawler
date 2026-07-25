@@ -2,6 +2,12 @@ export module goldsize;
 
 #pragma once
 
+#ifdef __INTELLISENSE__
+#include <variant>
+#else
+import <variant>;
+#endif  // __INTELLISENSE__
+
 // Enum representing the different sizes of gold piles.
 // Each one is mapped to their numeric value for use with static_cast.
 export enum class GoldSize {
@@ -12,13 +18,13 @@ export enum class GoldSize {
   DragonHoard = 6,
 };
 
-struct InstantGoldDrop {
+export struct InstantGoldDrop {
   const unsigned int amount;
 };
-struct NormalGoldDrop {
-  // The number of gold piles to drop upon the entity's demise.
-  const unsigned int pilesDropped;
+export struct NormalGoldDrop {
   // The size of each pile.
   const GoldSize pileSize;
+  // The number of gold piles to drop upon the entity's demise.
+  const unsigned int pilesDropped;
 };
-using GoldDrop = std::variant<InstantGoldDrop, NormalGoldDrop>;
+export using GoldDrop = std::variant<InstantGoldDrop, NormalGoldDrop>;

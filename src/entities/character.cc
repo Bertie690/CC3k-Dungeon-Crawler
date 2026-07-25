@@ -183,9 +183,7 @@ export void freezeEnemies(bool frozen = !RandomMoveStrategy::frozen) {
 
 // Base class that implements the Character interface, providing default implementations for most of its methods.
 // Still technically virtual, but can be instantiated directly (unlike Character).
-export class BaseCharacter : public BaseEntity,
-                             public Character,
-                             public Observer<CharacterDeathEvent> {
+export class BaseCharacter : public BaseEntity, public Character {
   // This Character's current HP.
   int hp;
   // The character's base stats.

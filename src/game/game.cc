@@ -14,6 +14,7 @@ export module game;
 #include "../events/floor-events.cc"
 #include "../events/game-events.cc"
 #include "../events/observer.cc"
+#include "../factories/gold-factory.cc"
 #include "../factories/player-factory.cc"
 #include "../floor/floor-generator.cc"
 #include "../floor/floor.cc"
@@ -28,6 +29,7 @@ import player;
 import floorevents;
 import gameevents;
 import observer;
+import goldfactory;
 import playerfactory;
 import action;
 import racetype;
@@ -47,6 +49,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   RNG rng;
   Scoreboard scoreboard;
   PlayerFactory playerFactory;
+  GoldFactory goldFactory;
   unique_ptr<Renderer> renderer;
   unique_ptr<FloorGenerator> floorGenerator;
   unique_ptr<Floor> floor;

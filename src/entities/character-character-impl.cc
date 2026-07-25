@@ -49,18 +49,20 @@ void Character::attack(Character& defender, Floor& floor) {
     const unsigned int damageDealt = hpBefore - defender.currentHp();
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
-    if (defender.dead() && !isPlayer(defender.raceType())) {
+    if (defender.dead()) {
       int baseAddedGold = 0;
       RaceType deadRaceType = defender.raceType();
-      if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant &&
-          deadRaceType != RaceType::Dragon) {
+      if (!isPlayer(deadRaceType) && deadRaceType != RaceType::Human &&
+          deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
         baseAddedGold += floor.rng.intRange(2) + 1;
       }
-      // add gold to the Player
-      addGold(baseAddedGold + getKillGoldDrop());
       floor.reportCharacterAction(CharacterActionEvent{
           *this, defender, CharacterActionEvent::Result::Hit, damageDealt, true});
-      floor.remove(defender);
+      floor.reportCharacterDeath(CharacterDeathEvent{
+          defender, position(), defender.raceType(),
+          baseAddedGold == 0 ? defender.getGoldDrop()
+                             : GoldDrop{InstantGoldDrop{static_cast<unsigned int>(baseAddedGold)}},
+          isPlayer(deadRaceType) ? GoldDrop{InstantGoldDrop{0}} : getKillGoldDrop()});
       return;
     }
 

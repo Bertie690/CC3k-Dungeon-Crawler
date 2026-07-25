@@ -49,13 +49,6 @@ import room;
 using namespace std;
 
 namespace {
-  constexpr string characterName(const Entity& entity) noexcept {
-    if (const Character* character = dynamic_cast<const Character*>(&entity)) {
-      return characterName(character->raceType());
-    }
-    return "unknown entity";
-  }
-
   constexpr string characterName(const RaceType type) noexcept {
     try {
       if (isPlayer(type)) return "PC";
@@ -83,6 +76,13 @@ namespace {
     }
   }
 
+  constexpr string characterName(const Entity& entity) noexcept {
+    if (const Character* character = dynamic_cast<const Character*>(&entity)) {
+      return characterName(character->raceType());
+    }
+    return "unknown entity";
+  }
+
   string directionName(const Position& from, const Position& to) {
     if (to.y < from.y) {
       if (to.x < from.x) return "north-west";
@@ -102,6 +102,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
     : rng{seed},
       scoreboard{},
       playerFactory{rng},
+      goldFactory{rng},
       renderer{move(renderer)},
       floorGenerator{},
       floor{} {
@@ -115,7 +116,13 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
 }
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
-    : rng{}, scoreboard{}, playerFactory{rng}, renderer{move(renderer)}, floorGenerator{}, floor{} {
+    : rng{},
+      scoreboard{},
+      playerFactory{rng},
+      goldFactory{rng},
+      renderer{move(renderer)},
+      floorGenerator{},
+      floor{} {
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
@@ -296,7 +303,7 @@ void Game::onNotify(const CharacterDeathEvent& event) {
   notify(event);
 
   const Position& playerPosition = player->position();
-  if (playerPosition == event.position) {
+  if (&event.entity == player.get()) {
     // "Game Over, Man! Game Over!"
     pendingGameOver = true;
     return;
@@ -307,20 +314,27 @@ void Game::onNotify(const CharacterDeathEvent& event) {
     return;
   }
 
-  // handle the gold pickup
-
   // TODO: move action messages into wherever the action bar is moved
 
   string message = "PC killed " + characterName(event.entity);
 
+  // create the enemy's physical GoldPile(s)
   if (const auto normalGoldDrop = std::get_if<NormalGoldDrop>(&event.goldDrop)) {
     message += " which drops " + to_string(normalGoldDrop->pilesDropped) + " piles of gold";
-    appendAction(message);
-    return;
+    for (unsigned int i = 0; i < normalGoldDrop->pilesDropped; ++i) {
+      floor->getCell(event.position)
+          .add(goldFactory.create(event.position, normalGoldDrop->pileSize));
+    }
+  } else {
+    // Award the enemy's gold reward to the player
+    const auto& instantGoldDrop = std::get<InstantGoldDrop>(event.goldDrop);
+    message += " which drops " + to_string(instantGoldDrop.amount) + " gold";
+    player->addGold(instantGoldDrop.amount);
   }
-  const auto& instantGoldDrop = std::get<InstantGoldDrop>(event.goldDrop);
-  message += " which drops " + to_string(instantGoldDrop.amount) + " gold";
 
-  player->addGold(instantGoldDrop.amount);
+  // Award extra gold earned by the player's abilities
+  if (const auto instantKillerGold = std::get_if<InstantGoldDrop>(&event.killerGoldDrop)) {
+    player->addGold(instantKillerGold->amount);
+  }
   appendAction(message);
 }
