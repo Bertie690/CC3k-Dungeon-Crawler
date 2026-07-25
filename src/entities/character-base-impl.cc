@@ -5,11 +5,13 @@ module character;
 #include <stdexcept>
 #include <variant>
 
+#include "../enums/gold-size.cc"
 #include "character.cc"
 #else
 import <cmath>;
 import <stdexcept>;
 import <variant>;
+import goldsize;
 #endif  // __INTELLISENSE__
 
 // Helper function to instantiate a movement strategy based on the corresponding enum value.
@@ -20,7 +22,9 @@ std::unique_ptr<CharacterMoveStrategy> buildStrategy(CharacterMoveStrategyType t
     case CharacterMoveStrategyType::Random:
       return std::make_unique<RandomMoveStrategy>();
     case CharacterMoveStrategyType::Dragon:
-      throw std::invalid_argument("DragonMoveStrategy requires a gold position to be specified... please construct directly");
+      throw std::invalid_argument(
+          "DragonMoveStrategy requires a gold position to be specified... please construct "
+          "directly");
   }
   throw std::invalid_argument("CharacterMoveStrategyType lacks strategy");
 }
@@ -51,8 +55,11 @@ double BaseCharacter::getAccuracy(const Character& defender) const { return 1.0;
 double BaseCharacter::getEvasion(const Character& attacker) const { return 1.0; }
 unsigned int BaseCharacter::getAttacksPerTurn() const { return 1; }
 double BaseCharacter::getAttackDamageMultiplier(const Character& defender) const { return 1.0; }
-GoldSize BaseCharacter::getGoldDrop() const { return GoldSize::None; }
-int BaseCharacter::getExtraGoldDrop() const { return 0; }
+GoldDrop BaseCharacter::getGoldDrop() const {
+  // TODO: Update after https://piazza.com/class/mo31aduaog5h5/post/350
+  return InstantGoldDrop{0};
+}
+GoldDrop BaseCharacter::getKillGoldDrop() const { return InstantGoldDrop{0}; }
 double BaseCharacter::getDrainMulti(const Character& attacker) const { return 1.0; }
 void BaseCharacter::onHit(Character& defender, unsigned int damage) {}
 void BaseCharacter::onBeingAttacked(Character& attacker, unsigned int damage) {}

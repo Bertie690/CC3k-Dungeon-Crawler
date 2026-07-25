@@ -5,8 +5,8 @@ module character;
 #include <memory>
 #include <variant>
 
-#include "character.cc"
 #include "../events/floor-events.cc"
+#include "character.cc"
 #else
 import <cmath>;
 import <memory>;
@@ -50,14 +50,14 @@ void Character::attack(Character& defender, Floor& floor) {
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
     if (defender.dead() && !isPlayer(defender.raceType())) {
-
       int baseAddedGold = 0;
       RaceType deadRaceType = defender.raceType();
-      if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant && deadRaceType != RaceType::Dragon) {
+      if (deadRaceType != RaceType::Human && deadRaceType != RaceType::Merchant &&
+          deadRaceType != RaceType::Dragon) {
         baseAddedGold += floor.rng.intRange(2) + 1;
       }
       // add gold to the Player
-      addGold(baseAddedGold + getExtraGoldDrop());
+      addGold(baseAddedGold + getKillGoldDrop());
       floor.reportCharacterAction(CharacterActionEvent{
           *this, defender, CharacterActionEvent::Result::Hit, damageDealt, true});
       floor.remove(defender);
@@ -73,7 +73,7 @@ void Character::act(Floor& floor) {
   Action nextMove = this->getNextMove(floor);
 
   if (Pass* pass = std::get_if<Pass>(&nextMove)) {
-  this->onTurnEnd();
+    this->onTurnEnd();
     return;
   }
 
@@ -85,7 +85,7 @@ void Character::act(Floor& floor) {
 
   if (UsePotion* potion = std::get_if<UsePotion>(&nextMove)) {
     // TODO: Implement potion usage
-  this->onTurnEnd();
+    this->onTurnEnd();
     return;
   }
 

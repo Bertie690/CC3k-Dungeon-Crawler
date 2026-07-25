@@ -10,8 +10,8 @@ export module dragonhoard;
 #include "../events/observer.cc"
 #include "../floor/position.cc"
 #include "character.cc"
-#include "entity.cc"
 #include "enemy.cc"
+#include "entity.cc"
 #include "gold-pile.cc"
 #else
 import <memory>;

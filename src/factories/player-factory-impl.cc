@@ -3,8 +3,10 @@ module playerfactory;
 #ifdef __INTELLISENSE__
 #include <memory>
 #include <stdexcept>
+
 #include "../entities/character.cc"
 #include "../entities/player.cc"
+#include "../enums/gold-size.cc"
 #include "decorator-chain.cc"
 #include "player-factory.cc"
 #else
@@ -12,6 +14,7 @@ import <memory>;
 import <stdexcept>;
 import character;
 import decoratorchain;
+import goldsize;
 import player;
 #endif  // __INTELLISENSE__
 
@@ -58,7 +61,7 @@ shared_ptr<Character> PlayerFactory::create(const Position& position, RaceType r
       decoratorChain.add<TurnHpRegenCharacterDecorator>(5);
       break;
     case RaceType::Goblin:
-      decoratorChain.add<GoldOnKillCharacterDecorator>(5);
+      decoratorChain.add<GoldOnKillCharacterDecorator>(InstantGoldDrop{5});
       break;
     default:
       break;

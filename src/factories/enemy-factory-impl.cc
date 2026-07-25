@@ -4,8 +4,9 @@ module enemyfactory;
 #include <memory>
 #include <stdexcept>
 
-#include "../entities/merchant.cc"
 #include "../entities/character.cc"
+#include "../entities/merchant.cc"
+#include "../enums/gold-size.cc"
 #include "decorator-chain.cc"
 #include "enemy-factory.cc"
 #else
@@ -13,6 +14,7 @@ import <memory>;
 import <stdexcept>;
 import decoratorchain;
 import merchant;
+import goldsize;
 import character;
 #endif  // __INTELLISENSE__
 
@@ -75,6 +77,10 @@ shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType ra
       break;
     case RaceType::Halfling:
       decoratorChain.add<DodgeChanceCharacterDecorator>(0.5);
+      break;
+    case RaceType::Human:
+      decoratorChain.add<GoldOnDeathCharacterDecorator>(
+          NormalGoldDrop{.pileSize = GoldSize::Normal, .pilesDropped = 2});
       break;
     default:
       break;

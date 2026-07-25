@@ -33,6 +33,7 @@ import action;
 import racetype;
 import floorgenerator;
 import floor;
+import floorevents;
 import rng;
 import scoreboard;
 #endif  // __INTELLISENSE__
@@ -41,8 +42,8 @@ using namespace std;
 
 // Game owns and manages the main game objects
 export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent,
-                                    EntityMoveEvent, CharacterActionEvent>,
-                    public Subject<NewFloorEvent, PlayerActionEvent> {
+                                    EntityMoveEvent, CharacterActionEvent, CharacterDeathEvent>,
+                    public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent> {
   RNG rng;
   Scoreboard scoreboard;
   PlayerFactory playerFactory;
@@ -52,7 +53,8 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   shared_ptr<Character> player = {};
   unsigned int floorNumber = 0;
   std::string lastAction = "Starting a new game";
-  bool gameOver = false;
+  // Whether a game over is pending. Will be checked at the end of every single turn.
+  bool pendingGameOver = false;
   int goldAtTurnStart = 0;
   // Flag used to know to generate the next Floor instead of running enemy turns.
   bool floorTransitionRequested = false;
@@ -69,6 +71,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   virtual void onNotify(const PlayerActionEvent& event) override;
   virtual void onNotify(const EntityMoveEvent& event) override;
   virtual void onNotify(const CharacterActionEvent& event) override;
+  virtual void onNotify(const CharacterDeathEvent& event) override;
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.

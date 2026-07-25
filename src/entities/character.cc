@@ -80,10 +80,10 @@ export class Character : public virtual Entity {
   // Return the damage multiplier this Character has against the given defender.
   virtual double getAttackDamageMultiplier(const Character& defender) const = 0;
   // Return the size of the pile of Gold this Character will drop when killed.
-  virtual GoldSize getGoldDrop() const = 0;
+  virtual GoldDrop getGoldDrop() const = 0;
   // Return the amount of extra gold this Character will obtain when killing an enemy.
   // Unused by enemies (for now), but can be used to implement special player abilities.
-  virtual int getExtraGoldDrop() const = 0;
+  virtual GoldDrop getKillGoldDrop() const = 0;
   // Return the multiplier this Character places on opposing HP-draining effects.
   // Negative amounts will result in the attacker taking damage instead of healing.
   virtual double getDrainMulti(const Character& attacker) const = 0;
@@ -111,6 +111,7 @@ export class Character : public virtual Entity {
 
   // Public read-only values used by renderers and other presentation code.
   virtual unsigned int currentHp() const = 0;
+  // TODO: remove these
   Stats stats() const;
   bool dead() const;
 
@@ -182,7 +183,9 @@ export void freezeEnemies(bool frozen = !RandomMoveStrategy::frozen) {
 
 // Base class that implements the Character interface, providing default implementations for most of its methods.
 // Still technically virtual, but can be instantiated directly (unlike Character).
-export class BaseCharacter : public BaseEntity, public Character {
+export class BaseCharacter : public BaseEntity,
+                             public Character,
+                             public Observer<CharacterDeathEvent> {
   // This Character's current HP.
   int hp;
   // The character's base stats.
@@ -207,8 +210,8 @@ export class BaseCharacter : public BaseEntity, public Character {
   virtual double getEvasion(const Character& attacker) const override;
   virtual unsigned int getAttacksPerTurn() const override;
   virtual double getAttackDamageMultiplier(const Character& defender) const override;
-  virtual GoldSize getGoldDrop() const override;
-  virtual int getExtraGoldDrop() const override;
+  virtual GoldDrop getGoldDrop() const override;
+  virtual GoldDrop getKillGoldDrop() const override;
   virtual double getDrainMulti(const Character& attacker) const override;
   virtual void onHit(Character& defender, unsigned int damage) override;
   virtual void onBeingAttacked(Character& attacker, unsigned int damage) override;
@@ -224,7 +227,8 @@ export class BaseCharacter : public BaseEntity, public Character {
 
   virtual RaceType raceType() const override final;
 
-  virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
+  virtual void damage(unsigned int amt, bool lethal = true,
+                      Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
   virtual unsigned int currentHp() const override final;
 
@@ -247,8 +251,8 @@ class CharacterDecorator : public Character {
   virtual double getEvasion(const Character& attacker) const override;
   virtual unsigned int getAttacksPerTurn() const override;
   virtual double getAttackDamageMultiplier(const Character& defender) const override;
-  virtual GoldSize getGoldDrop() const override final;
-  virtual int getExtraGoldDrop() const override;
+  virtual GoldDrop getGoldDrop() const override;
+  virtual GoldDrop getKillGoldDrop() const override;
   virtual double getDrainMulti(const Character& attacker) const override;
   virtual void onHit(Character& defender, unsigned int damage) override;
   virtual void onBeingAttacked(Character& attacker, unsigned int damage) override;
@@ -268,7 +272,8 @@ class CharacterDecorator : public Character {
   virtual int getGold() const override;
   virtual void addGold(int amount) override;
 
-  virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) override final;
+  virtual void damage(unsigned int amt, bool lethal = true,
+                      Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
   virtual unsigned int currentHp() const override;
 
@@ -360,14 +365,15 @@ export class RaceTypeDamageMultiplierCharacterDecorator final : public Character
  protected:
   virtual double getAttackDamageMultiplier(const Character& defender) const override {
     return CharacterDecorator::getAttackDamageMultiplier(defender) *
-    (defender.raceType() == targetRace ? damageMulti : 1.0);
+           (defender.raceType() == targetRace ? damageMulti : 1.0);
   }
 
-  public:
+ public:
   RaceTypeDamageMultiplierCharacterDecorator(std::unique_ptr<Character> character,
-                                             RaceType targetRace,
-                                             double damageMulti)
-      : CharacterDecorator(std::move(character)), targetRace(targetRace), damageMulti(damageMulti) {}
+                                             RaceType targetRace, double damageMulti)
+      : CharacterDecorator(std::move(character)),
+        targetRace(targetRace),
+        damageMulti(damageMulti) {}
   virtual ~RaceTypeDamageMultiplierCharacterDecorator() = default;
 };
 
@@ -387,15 +393,13 @@ export class TurnHpRegenCharacterDecorator final : public CharacterDecorator {
 };
 
 export class GoldOnKillCharacterDecorator final : public CharacterDecorator {
-  const int goldOnKill;
+  const GoldDrop goldOnKill;
 
  protected:
-  virtual int getExtraGoldDrop() const override {
-    return CharacterDecorator::getExtraGoldDrop() + goldOnKill;
-  }
+  virtual GoldDrop getKillGoldDrop() const override { return goldOnKill; }
 
  public:
-  GoldOnKillCharacterDecorator(std::unique_ptr<Character> character, int goldOnKill)
+  GoldOnKillCharacterDecorator(std::unique_ptr<Character> character, GoldDrop goldOnKill)
       : CharacterDecorator(std::move(character)), goldOnKill(goldOnKill) {}
   virtual ~GoldOnKillCharacterDecorator() = default;
 };
@@ -426,26 +430,36 @@ export class DodgeChanceCharacterDecorator final : public CharacterDecorator {
   virtual ~DodgeChanceCharacterDecorator() = default;
 };
 
+export class GoldOnDeathCharacterDecorator final : public CharacterDecorator {
+  const GoldDrop goldOnDeath;
+
+ protected:
+  virtual GoldDrop getGoldDrop() const override { return goldOnDeath; }
+
+ public:
+  GoldOnDeathCharacterDecorator(std::unique_ptr<Character> character, GoldDrop goldOnDeath)
+      : CharacterDecorator(std::move(character)), goldOnDeath(goldOnDeath) {}
+  virtual ~GoldOnDeathCharacterDecorator() = default;
+};
+
 export class TempStatChangeCharacterDecorator final : public TempCharacterDecorator {
   const Stats statDelta;
   const bool increase;
 
  protected:
   virtual Stats getStats() const override {
-    return increase ?
-      CharacterDecorator::getStats() + statDelta
-      : CharacterDecorator::getStats() - statDelta;
+    return increase ? CharacterDecorator::getStats() + statDelta
+                    : CharacterDecorator::getStats() - statDelta;
   }
 
  public:
   TempStatChangeCharacterDecorator(std::unique_ptr<Character> character,
-                                   std::unique_ptr<Character>* ownerSlot,
-                                   Stats statDelta,
+                                   std::unique_ptr<Character>* ownerSlot, Stats statDelta,
                                    bool increase = true)
-      : TempCharacterDecorator(std::move(character), ownerSlot), statDelta(statDelta), increase(increase) {}
+      : TempCharacterDecorator(std::move(character), ownerSlot),
+        statDelta(statDelta),
+        increase(increase) {}
   virtual ~TempStatChangeCharacterDecorator() = default;
 };
-
-
 
 #pragma endregion  // Concrete Decorators

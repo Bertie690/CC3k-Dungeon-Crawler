@@ -60,17 +60,64 @@ class SubjectFor {
 };
 
 // Class representing a subject that can emit multiple event types.
+//
+// Subclasses that want to subscribe to specific events can use the attach/detach methods on SubjectFor instead.
 export template <typename... Events>
   requires(std::is_class_v<Events> && ...) && (sizeof...(Events) > 0)
 class Subject : public SubjectFor<Events>... {
+  template <typename Event, typename ObserverType>
+  // Whether the given ObserverType is compatible with the given Event type.
+  static constexpr bool observerSupportsEvent = std::is_base_of_v<ObserverFor<Event>, ObserverType>;
+
+  // Internal helper methods to allow parameter pack expansion to work with the attach/detach methods below
+
+  template <typename Event, typename ObserverType>
+  void attachForEvent(ObserverType* observer) {
+    if constexpr (observerSupportsEvent<Event, ObserverType>) {
+      SubjectFor<Event>::attach(static_cast<ObserverFor<Event>*>(observer));
+    }
+  }
+
+  template <typename Event, typename ObserverType>
+  void detachForEvent(ObserverType* observer) {
+    if constexpr (observerSupportsEvent<Event, ObserverType>) {
+      SubjectFor<Event>::detach(static_cast<ObserverFor<Event>*>(observer));
+    }
+  }
+
   // Pull all relevant methods out from the base classes to avoid unqualified name lookup causing compiler errors
   // when multiple base classes share the same method names (even if those methods would be unambiguous during actual overload resolution).
-  protected:
-    using SubjectFor<Events>::notify...;
-  public:
-    virtual ~Subject() = default;
-    using SubjectFor<Events>::attach...;
-    using SubjectFor<Events>::detach...;
+ protected:
+  using SubjectFor<Events>::notify...;
+
+ public:
+  virtual ~Subject() = default;
+
+  // Attach a (compatibly-typed) observer to this Subject, which will be notified upon a corresponding event being emitted.
+  // The Subject does not take ownership of the observer; it is the caller's responsibility to ensure the Observer
+  // lives longer than the duration of its attachment.
+  //
+  // This, by default, subscribes the observer to all event types that it is compatible with.
+  // Consumers that want to subscribe to specific events can use the attach/detach methods from SubjectFor instead.
+  template <typename ObserverType>
+    requires(std::is_class_v<ObserverType>) &&
+            // non-empty intersection (at least 1 matches)
+            (std::is_base_of_v<ObserverFor<Events>, ObserverType> || ...)
+  void attach(ObserverType* observer) {
+    (attachForEvent<Events>(observer), ...);
+  }
+
+  // Detach an observer from this Subject, which will no longer be notified upon a corresponding event being emitted.
+  //
+  // This, by default, unsubscribes the observer from all event types that it is compatible with.
+  // Consumers that want to unsubscribe from specific events can use the attach/detach methods from SubjectFor instead.
+  template <typename ObserverType>
+    requires(std::is_class_v<ObserverType>) &&
+            // non-empty intersection (at least 1 matches)
+            (std::is_base_of_v<ObserverFor<Events>, ObserverType> || ...)
+  void detach(ObserverType* observer) {
+    (detachForEvent<Events>(observer), ...);
+  }
 };
 
 template <typename Event>

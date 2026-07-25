@@ -29,7 +29,9 @@ CharacterDecorator::~CharacterDecorator() = default;
 
 Position& CharacterDecorator::position() noexcept { return character->position(); }
 const Position& CharacterDecorator::position() const noexcept { return character->position(); }
-Observer<PlayerActionEvent>* CharacterDecorator::inputObserver() { return character->inputObserver(); }
+Observer<PlayerActionEvent>* CharacterDecorator::inputObserver() {
+  return character->inputObserver();
+}
 int CharacterDecorator::getGold() const { return character->getGold(); }
 void CharacterDecorator::addGold(int amount) { character->addGold(amount); }
 
@@ -56,8 +58,8 @@ double CharacterDecorator::getAttackDamageMultiplier(const Character& defender) 
   return character->getAttackDamageMultiplier(defender);
 }
 
-GoldSize CharacterDecorator::getGoldDrop() const { return character->getGoldDrop(); }
-int CharacterDecorator::getExtraGoldDrop() const { return character->getExtraGoldDrop(); }
+GoldDrop CharacterDecorator::getGoldDrop() const { return character->getGoldDrop(); }
+GoldDrop CharacterDecorator::getKillGoldDrop() const { return character->getKillGoldDrop(); }
 
 double CharacterDecorator::getDrainMulti(const Character& attacker) const {
   return character->getDrainMulti(attacker);
@@ -75,7 +77,9 @@ void CharacterDecorator::onTurnEnd() { character->onTurnEnd(); }
 
 RaceType CharacterDecorator::raceType() const { return character->raceType(); }
 
-void CharacterDecorator::damage(unsigned int amt, bool lethal, Character* source) { character->damage(amt, lethal, source); }
+void CharacterDecorator::damage(unsigned int amt, bool lethal, Character* source) {
+  character->damage(amt, lethal, source);
+}
 
 void CharacterDecorator::heal(unsigned int amt) { character->heal(amt); }
 

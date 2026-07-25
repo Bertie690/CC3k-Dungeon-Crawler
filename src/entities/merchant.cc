@@ -18,7 +18,9 @@ export class Merchant : public Enemy {
   }
 
   virtual void onBeingAttacked(Character&, unsigned int) override { hostile = true; }
-  virtual GoldSize getGoldDrop() const override { return GoldSize::MerchantHoard; }
+  virtual GoldDrop getGoldDrop() const override {
+    return NormalGoldDrop{.pileSize = GoldSize::MerchantHoard, .pilesDropped = 1};
+  }
 
  public:
   using Enemy::Enemy;

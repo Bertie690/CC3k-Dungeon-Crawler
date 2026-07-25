@@ -43,10 +43,15 @@ fi
 ok=1
 for x in $(cat "$1"); do
   echo $cxx $cxxflags -c $x
-  if ! $cxx $cxxflags -c $x; then ok=0; fi
+  if ! $cxx $cxxflags -c $x; then
+    ok=0
+    break
+  fi
 done
 
-echo $cxx ./*.o $name $link
-if ! $cxx ./*.o $name $link; then ok=0; fi
+if [ $ok -ne 0 ]; then
+  echo $cxx ./*.o $name $link
+  if ! $cxx ./*.o $name $link; then ok=0; fi
+fi
 rm ./*.o
 exit $((1 - ok))

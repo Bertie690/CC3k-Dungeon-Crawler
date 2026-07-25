@@ -8,13 +8,15 @@ module game;
 #include <variant>
 #include <vector>
 
+#include "../entities/character.cc"
 #include "../entities/enemy.cc"
 #include "../entities/entity.cc"
-#include "../entities/character.cc"
 #include "../entities/player.cc"
 #include "../entities/stats.cc"
+#include "../enums/gold-size.cc"
 #include "../enums/race-type.cc"
 #include "../enums/room-type.cc"
+#include "../events/floor-events.cc"
 #include "../floor/cell.cc"
 #include "../floor/position.cc"
 #include "../floor/preset-floor-generator.cc"
@@ -37,6 +39,8 @@ import racetype;
 import roomtype;
 import cell;
 import position;
+import floorevents;
+import goldsize;
 import presetfloorgenerator;
 import randomfloorgenerator;
 import room;
@@ -45,20 +49,37 @@ import room;
 using namespace std;
 
 namespace {
-  string characterName(const Entity& entity) {
-    const Character* character = dynamic_cast<const Character*>(&entity);
-    if (!character) return "unknown entity";
-    if (isPlayer(character->raceType())) return "PC";
+  constexpr string characterName(const Entity& entity) noexcept {
+    if (const Character* character = dynamic_cast<const Character*>(&entity)) {
+      return characterName(character->raceType());
+    }
+    return "unknown entity";
+  }
 
-    switch (character->raceType()) {
-      case RaceType::Human: return "H";
-      case RaceType::Dwarf: return "W";
-      case RaceType::Elf: return "E";
-      case RaceType::Orc: return "O";
-      case RaceType::Merchant: return "M";
-      case RaceType::Dragon: return "D";
-      case RaceType::Halfling: return "L";
-      default: return "Enemy";
+  constexpr string characterName(const RaceType type) noexcept {
+    try {
+      if (isPlayer(type)) return "PC";
+    } catch (...) {
+      return "unknown entity";
+    }
+
+    switch (type) {
+      case RaceType::Human:
+        return "H";
+      case RaceType::Dwarf:
+        return "W";
+      case RaceType::Elf:
+        return "E";
+      case RaceType::Orc:
+        return "O";
+      case RaceType::Merchant:
+        return "M";
+      case RaceType::Dragon:
+        return "D";
+      case RaceType::Halfling:
+        return "L";
+      default:
+        return "Unknown enemy";
     }
   }
 
@@ -75,10 +96,15 @@ namespace {
     }
     return to.x < from.x ? "west" : "east";
   }
-}
+}  // namespace
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
-    : rng{seed}, scoreboard{}, playerFactory{rng}, renderer{move(renderer)}, floorGenerator{}, floor{} {
+    : rng{seed},
+      scoreboard{},
+      playerFactory{rng},
+      renderer{move(renderer)},
+      floorGenerator{},
+      floor{} {
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
@@ -100,7 +126,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
 }
 
 void Game::newGame(RaceType race) {
-  gameOver = false;
+  pendingGameOver = false;
   scoreboard.score = 0;
   floorTransitionRequested = false;
   floorNumber = 0;
@@ -120,11 +146,8 @@ void Game::newGame(RaceType race) {
 void Game::loadNextFloor() {
   ++floorNumber;
   floor = make_unique<Floor>(floorGenerator->generateFloor());
-  floor->SubjectFor<EntityMoveEvent>::attach(renderer.get());
-  floor->SubjectFor<EntityDeathEvent>::attach(renderer.get());
-  floor->SubjectFor<FloorTransitionEvent>::attach(this);
-  floor->SubjectFor<EntityMoveEvent>::attach(this);
-  floor->SubjectFor<CharacterActionEvent>::attach(this);
+  floor->attach(renderer.get());
+  floor->attach(this);
 
   // Player is added outside of FloorGenerator to share ownership with the Game
   player->position() = floor->playerSpawn;
@@ -136,11 +159,10 @@ void Game::loadNextFloor() {
 
 PlayerDisplayInfo Game::playerDisplayInfo() const {
   return PlayerDisplayInfo{player->raceType(),  player->getGold(), floorNumber,
-                           player->currentHp(), player->stats(), lastAction};
+                           player->currentHp(), player->stats(),   lastAction};
 }
 
 void Game::endGame(bool victory) {
-  gameOver = true;
   scoreboard.score = victory ? player->getGold() * player->getScoreMulti() : 0;
   lastAction = victory ? "Reached the end of the game" : "Player died";
   floorTransitionRequested = false;
@@ -160,8 +182,8 @@ void Game::onNotify(const EntityMoveEvent& event) {
 
   const bool isPlayerMove = &event.entity == player.get();
   const Position& playerPosition = player->position();
-  const bool movedNextToPlayer = !isPlayerMove &&
-      event.to.x >= playerPosition.x - 1 && event.to.x <= playerPosition.x + 1 &&
+  const bool movedNextToPlayer =
+      !isPlayerMove && event.to.x >= playerPosition.x - 1 && event.to.x <= playerPosition.x + 1 &&
       event.to.y >= playerPosition.y - 1 && event.to.y <= playerPosition.y + 1;
 
   if (isPlayerMove || movedNextToPlayer) {
@@ -198,7 +220,7 @@ void Game::onNotify(const PlayerActionEvent& event) {
     newGame(raceSelect->race);
     return;
   }
-  if (gameOver) {
+  if (pendingGameOver) {
     return;
   }
   if (const FreezeEnemies* freeze = get_if<FreezeEnemies>(&event.action)) {
@@ -217,11 +239,6 @@ void Game::runPlayerTurn(const PlayerAction& action) {
   if (holds_alternative<UsePotion>(action)) appendAction("PC uses a potion");
   notify(PlayerActionEvent{action});
   player->act(*floor);
-  if (player->dead()) {
-    endGame(false);
-    return;
-  }
-  player->endTurn();
 
   // Player reached staircase, enemy turn is skipped and next floor is loaded
   if (floorTransitionRequested) {
@@ -235,6 +252,11 @@ void Game::runPlayerTurn(const PlayerAction& action) {
     return;
   }
   runEnemyTurn();
+
+  if (pendingGameOver) {
+    endGame(false);
+    return;
+  }
 }
 
 void Game::runEnemyTurn() {
@@ -253,17 +275,14 @@ void Game::runEnemyTurn() {
   }
 
   // TODO: could possibly be optimized
-  sort(enemies.begin(), enemies.end(), [](const shared_ptr<Character>& a, const shared_ptr<Character>& b) {
-    return a->position() < b->position();
-  });
+  sort(enemies.begin(), enemies.end(),
+       [](const shared_ptr<Character>& a, const shared_ptr<Character>& b) {
+         return a->position() < b->position();
+       });
 
   // Run each Enemy's turn
   for (const shared_ptr<Character>& enemy : enemies) {
     enemy->act(*floor);
-    if (player->dead()) {
-      endGame(false);
-      return;
-    }
   }
   renderer->draw(playerDisplayInfo());
 }
@@ -271,4 +290,37 @@ void Game::runEnemyTurn() {
 void Game::onNotify(const GameQuitEvent& event) {
   // TODO: Display scoreboard and end the game
   // if (event.showScoreboard) {
+}
+
+void Game::onNotify(const CharacterDeathEvent& event) {
+  notify(event);
+
+  const Position& playerPosition = player->position();
+  if (playerPosition == event.position) {
+    // "Game Over, Man! Game Over!"
+    pendingGameOver = true;
+    return;
+  }
+
+  const bool playerKilledEnemy = event.killerPosition == playerPosition;
+  if (!playerKilledEnemy) {
+    return;
+  }
+
+  // handle the gold pickup
+
+  // TODO: move action messages into wherever the action bar is moved
+
+  string message = "PC killed " + characterName(event.entity);
+
+  if (const auto normalGoldDrop = std::get_if<NormalGoldDrop>(&event.goldDrop)) {
+    message += " which drops " + to_string(normalGoldDrop->pilesDropped) + " piles of gold";
+    appendAction(message);
+    return;
+  }
+  const auto& instantGoldDrop = std::get<InstantGoldDrop>(event.goldDrop);
+  message += " which drops " + to_string(instantGoldDrop.amount) + " gold";
+
+  player->addGold(instantGoldDrop.amount);
+  appendAction(message);
 }

@@ -4,8 +4,11 @@ module floor;
 #include <memory>
 #include <stdexcept>
 #include <utility>
+#include <variant>
 #include <vector>
 
+#include "../entities/gold-pile.cc"
+#include "../enums/gold-size.cc"
 #include "../enums/overlap-result.cc"
 #include "../events/floor-events.cc"
 #include "../events/observer.cc"
@@ -15,14 +18,34 @@ import <memory>;
 import <stdexcept>;
 import <utility>;
 import <vector>;
+import <variant>;
 import floorevents;
+import goldsize;
 import observer;
 import overlapresult;
+import goldpile;
 #endif  // __INTELLISENSE__
 
 using namespace std;
 
 Floor::Floor(RNG& rng) : rooms(), rng{rng} {}
+
+void Floor::onNotify(const CharacterDeathEvent& event) {
+  // re-send the event
+  notify(event);
+
+  remove(event.entity);
+
+  // instant gold pickups are handled by the Game class (which subscribes to this)
+  const auto& normalPickup = std::get_if<NormalGoldDrop>(&event.goldDrop);
+  if (!normalPickup) {
+    return;
+  }
+
+  for (int i = 0; i < normalPickup->pilesDropped; ++i) {
+    getCell(event.position).add(make_shared<GoldPile>(event.position, normalPickup->pileSize));
+  }
+}
 
 bool Floor::isInBounds(const Position& position) const {
   return position.x >= 0 && position.y >= 0 && position.x < WIDTH && position.y < HEIGHT;
@@ -119,7 +142,7 @@ void Floor::move(Entity& entity, const Position& to) {
   notify(EntityMoveEvent{entity, fromPosition});
 }
 
-void Floor::remove(Entity& entity) {
+void Floor::remove(const Entity& entity) {
   const Position position = entity.position();
   getCell(position).remove(entity);
   notify(EntityDeathEvent{position});
