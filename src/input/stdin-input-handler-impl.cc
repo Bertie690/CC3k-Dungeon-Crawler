@@ -122,6 +122,24 @@ UIAction StdinInputHandler::readGameCommand() {
   throw invalid_argument{"Invalid command"};
 }
 
+UIAction StdinInputHandler::readGameOverCommand() {
+  cout << "> ";
+  string token;
+  if (!(cin >> token)) {
+    exit(0);
+  }
+  if (token == "q") {
+    return Quit{};
+  }
+  if (token == "r") {
+    awaitingGameOver = false;
+    awaitingRace = true;
+    return Restart{};
+  }
+  throw invalid_argument{"Game is over; enter r to restart or q to quit the game."};
+}
+
 UIAction StdinInputHandler::readCommand() {
+  if (awaitingGameOver) return readGameOverCommand();
   return awaitingRace ? readRaceCommand() : readGameCommand();
 }

@@ -34,5 +34,8 @@ export class StdinInputHandler final : public InputHandler {
   // Read a game command from stdin.
   UIAction readGameCommand();
 
+  // Read a restart or quit command after the game ends.
+  UIAction readGameOverCommand();
+
   virtual UIAction readCommand() override;
 };

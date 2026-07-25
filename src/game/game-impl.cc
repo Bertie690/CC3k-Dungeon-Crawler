@@ -213,6 +213,7 @@ void Game::endGame(bool victory) {
   floorTransitionRequested = false;
   renderer->draw(playerDisplayInfo());
   renderer->drawGameOutcome(victory, scoreboard.score);
+  notify(GameOverEvent{});
 }
 
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }

@@ -51,10 +51,11 @@ import scoreboard;
 using namespace std;
 
 // Game owns and manages the main game objects
-export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent,
-                                    EntityMoveEvent, CharacterAttackEvent, CharacterDeathEvent,
-                                    FreezeEnemiesEvent, RaceSelectEvent>,
-                    public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent> {
+export class Game
+    : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent, EntityMoveEvent,
+                      CharacterAttackEvent, CharacterDeathEvent, FreezeEnemiesEvent,
+                      RaceSelectEvent>,
+      public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent, GameOverEvent> {
   RNG rng;
   Scoreboard scoreboard;
   PlayerFactory playerFactory;

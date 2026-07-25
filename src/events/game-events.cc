@@ -20,6 +20,7 @@ import floor;
 export struct GameQuitEvent {
   bool showScoreboard;
 };
+export struct GameOverEvent {};
 export struct FreezeEnemiesEvent {};
 
 // Notify that Game created a new Floor.

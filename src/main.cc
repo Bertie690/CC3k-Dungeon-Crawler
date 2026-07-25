@@ -151,6 +151,7 @@ int main(int argc, char* argv[]) {
   }
 
   inputHandler->attach(game.get());
+  game->attach(inputHandler.get());
 
   // Main game loop using InputHandler
   while (true) {
