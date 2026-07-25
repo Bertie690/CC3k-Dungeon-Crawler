@@ -15,23 +15,36 @@ import position;
 import racetype;
 #endif  // __INTELLISENSE__
 
+// Do nothing.
 export struct Pass {};
+// Move in the given direction.
 export struct Move {
-  Direction dir;
+  // The direction of movement.
+  const Direction dir;
 };
+// Attack the Character at the given position.
 export struct Attack {
-  Position position;
+  // The absolute position that was attacked
+  const Position position;
 };
+// Attack in the given direction.
 export struct AttackDirection {
-  Direction dir;
+  // The direction of the attack.
+  const Direction dir;
 };
+// Select a race to play as.
 export struct RaceSelect {
-  RaceType race;
+  // The race to play as.
+  const RaceType race;
 };
+// Use a potion in the given direction.
 export struct UsePotion {
-  Direction dir;
+  // The direction of the potion to use.
+  const Direction dir;
 };
+// Freeze all enemies.
 export struct FreezeEnemies {};
+// Quit the game.
 export struct Quit {};
 
 // An action the player can take.

@@ -25,16 +25,16 @@ import overlapresult;
 import position;
 #endif  // __INTELLISENSE__
 
-using namespace std;
+// A pile of gold guarded by a dragon. The player cannot pick up the gold until the dragon is dead.
 export class DragonHoard : public GoldPile, public Observer<EntityDeathEvent> {
   bool guarded = true;
-  shared_ptr<Enemy> dragon;
+  std::shared_ptr<Enemy> dragon;
 
   virtual bool canPickup(Character& character) const override;
   virtual OverlapResult onOverlap(Entity& movingEntity) override;
   virtual void onNotify(const EntityDeathEvent& event) override;
 
  public:
-  DragonHoard(Position position, const shared_ptr<Enemy>& dragon);
+  DragonHoard(Position position, const std::shared_ptr<Enemy>& dragon);
   virtual ~DragonHoard();
 };

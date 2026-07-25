@@ -6,7 +6,7 @@ module goldpile;
 import itemtype;
 #endif  // __INTELLISENSE__
 
-GoldPile::GoldPile(Position position, GoldSize size) noexcept
+GoldPile::GoldPile(const Position position, const GoldSize size) noexcept
     : Item{position, ItemType::GoldPile}, size{size} {}
 
 void GoldPile::applyEffect(Character& character) {
