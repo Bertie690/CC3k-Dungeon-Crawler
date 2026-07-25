@@ -2,11 +2,10 @@ export module stats;
 
 #pragma once
 #ifdef __INTELLISENSE__
-#include <cmath>
+#include <limits>
 #else
-import <cmath>;
+import <limits>;
 #endif  // __INTELLISENSE__
-
 
 // A Stats struct represents the stats of a Character.
 export struct Stats {
@@ -18,9 +17,11 @@ export struct Stats {
   unsigned int def;
 
   Stats& operator+=(const Stats& other) {
-    this->maxHp += other.maxHp;
-    this->atk += other.atk;
-    this->def += other.def;
+    static inline constexpr unsigned int maxUint = std::numeric_limits<unsigned int>::max();
+
+    this->maxHp = this->maxHp + other.maxHp < this->maxHp ? maxUint : this->maxHp + other.maxHp;
+    this->atk = this->atk + other.atk < this->atk ? maxUint : this->atk + other.atk;
+    this->def = this->def + other.def < this->def ? maxUint : this->def + other.def;
     return *this;
   }
   Stats operator+(const Stats& other) const {
@@ -29,11 +30,12 @@ export struct Stats {
     return result;
   }
   Stats operator-(const Stats& other) const {
+    static inline constexpr unsigned int minUint = std::numeric_limits<unsigned int>::min();
     Stats result = *this;
 
-    result.maxHp = std::max(0u, result.maxHp - other.maxHp);
-    result.atk = std::max(0u, result.atk - other.atk);
-    result.def = std::max(0u, result.def - other.def);
+    result.maxHp = result.maxHp < other.maxHp ? minUint : result.maxHp - other.maxHp;
+    result.atk = result.atk < other.atk ? minUint : result.atk - other.atk;
+    result.def = result.def < other.def ? minUint : result.def - other.def;
     return result;
   }
 };
