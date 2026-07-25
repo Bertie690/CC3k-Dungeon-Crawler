@@ -162,7 +162,7 @@ export class CharacterMoveStrategy {
 export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
                                              public Observer<PlayerActionEvent> {
   // The input handler's determined next action.
-  PlayerAction nextAction{Pass{}};
+  Action nextAction{Pass{}};
 
   virtual void onNotify(const PlayerActionEvent& event) override;
   virtual Action getNextMove(Floor& floor, Character& character) override;
@@ -424,7 +424,7 @@ export class GoldOnKillCharacterDecorator final : public CharacterDecorator {
   const unsigned int goldOnKill;
 
  protected:
-  virtual void onKill(const Character& killer) override {
+  virtual void onKill(const Character& killed) override {
     CharacterDecorator::onKill(killed);
     this->addGold(goldOnKill);
   }
@@ -463,15 +463,16 @@ export class DodgeChanceCharacterDecorator final : public CharacterDecorator {
 
 export class GoldOnDeathCharacterDecorator final : public CharacterDecorator {
   const GoldDrop goldOnDeath;
+  bool override = false;
 
  protected:
   virtual GoldDrop getGoldDrop() const override {
-    return CharacterDecorator::getGoldDrop() + goldOnDeath;
+    return override ? goldOnDeath : CharacterDecorator::getGoldDrop() + goldOnDeath;
   }
 
  public:
-  GoldOnDeathCharacterDecorator(std::unique_ptr<Character> character, const GoldDrop goldOnDeath)
-      : CharacterDecorator(std::move(character)), goldOnDeath(goldOnDeath) {}
+  GoldOnDeathCharacterDecorator(std::unique_ptr<Character> character, const GoldDrop goldOnDeath, bool override = false)
+      : CharacterDecorator(std::move(character)), goldOnDeath(goldOnDeath), override(override) {}
   virtual ~GoldOnDeathCharacterDecorator() = default;
 };
 

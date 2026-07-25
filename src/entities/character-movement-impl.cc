@@ -8,10 +8,12 @@ module character;
 #include "../enums/tile-type.cc"
 #include "../floor/cell.cc"
 #include "character.cc"
+#include <utility>
 #else
 import <memory>;
 import <variant>;
 import <vector>;
+import <utility>;
 import action;
 import cell;
 import floor;
@@ -27,16 +29,7 @@ void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent& event) {
 }
 
 Action PlayerInputMoveStrategy::getNextMove(Floor&, Character& character) {
-  Action action = Pass{};
-  if (const Move* move = std::get_if<Move>(&nextAction)) {
-    action = *move;
-  } else if (const AttackDirection* attack = std::get_if<AttackDirection>(&nextAction)) {
-    action = Attack{character.position() + attack->dir};
-  } else if (const UsePotion* potion = std::get_if<UsePotion>(&nextAction)) {
-    action = *potion;
-  }
-  nextAction = Pass{};
-  return action;
+  return std::exchange(nextAction, Pass{});
 }
 
 Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
@@ -59,7 +52,7 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
         const Character* target = dynamic_cast<const Character*>(entity.get());
         if (target && character.canAttack(target->raceType())) {
           // found someone to smack
-          return Attack{character.position() + direction};
+          return Attack{direction};
         }
       }
       continue;
@@ -73,8 +66,7 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
     return Pass{};
   }
 
-  int randomIndex = floor.rng.intRange(static_cast<int>(availableAdjacentCells.size()));
-  return Move{availableAdjacentCells[randomIndex]};
+  return Move{floor.rng.pick(availableAdjacentCells)};
 };
 
 DragonMoveStrategy::DragonMoveStrategy(const Position& goldPos) : goldPos(goldPos) {}
@@ -91,13 +83,16 @@ Action DragonMoveStrategy::getNextMove(Floor& floor, Character& character) {
       const Character* target = dynamic_cast<const Character*>(entity.get());
       if (target && character.canAttack(target->raceType())) {
         // found someone to smack
-        return Attack{character.position() + direction};
+        return Attack{direction};
       }
     }
   }
 
   // check next to gold hoard
   // technically duplicates search range slightly, but it's fiiine
+
+  const Position relativeGoldPos = goldPos - character.position();
+
   for (const Direction direction : room.getAdjacentCells(goldPos)) {
     const Cell& destination = floor.getCell(goldPos + direction);
     if (!destination.isOccupied()) {
@@ -107,7 +102,7 @@ Action DragonMoveStrategy::getNextMove(Floor& floor, Character& character) {
       const Character* target = dynamic_cast<const Character*>(entity.get());
       if (target && character.canAttack(target->raceType())) {
         // found someone to smack
-        return Attack{goldPos + direction};
+        return Attack{relativeGoldPos + direction};
       }
     }
   }

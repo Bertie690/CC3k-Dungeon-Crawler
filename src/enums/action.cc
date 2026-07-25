@@ -20,35 +20,35 @@ export struct Pass {};
 // Move in the given direction.
 export struct Move {
   // The direction of movement.
-  const Direction dir;
+  Direction dir;
 };
-// Attack the Character at the given position.
+
+// Attack the Character at the given position relative to the attacking Character.
 export struct Attack {
-  // The absolute position that was attacked
-  const Position position;
-};
-// Attack in the given direction.
-export struct AttackDirection {
-  // The direction of the attack.
-  const Direction dir;
+  // The RELATIVE position that was attacked.
+  Position position;
+
+  Attack(const Position& position) : position{position} {}
+  Attack(const Direction dir) : position{Position::fromDirection(dir)} {}
+  Attack(const Attack& atk) : position{atk.position} {}
 };
 // Select a race to play as.
 export struct RaceSelect {
   // The race to play as.
-  const RaceType race;
+  RaceType race;
 };
 // Use a potion in the given direction.
 export struct UsePotion {
   // The direction of the potion to use.
-  const Direction dir;
+  Direction dir;
 };
 // Freeze all enemies.
 export struct FreezeEnemies {};
 // Quit the game.
 export struct Quit {};
 
-// An action the player can take.
-export using PlayerAction =
-    std::variant<Pass, Move, AttackDirection, UsePotion, RaceSelect, FreezeEnemies, Quit>;
+// An action the end user can take with respect to the game.
+export using UIAction =
+    std::variant<Pass, Move, Attack, UsePotion, RaceSelect, FreezeEnemies, Quit>;
 // An action any character can take.
 export using Action = std::variant<Pass, Move, Attack, UsePotion>;

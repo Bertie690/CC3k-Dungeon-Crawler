@@ -85,7 +85,7 @@ class Subject : public SubjectFor<Events>... {
     }
   }
 
-  // Pull all relevant methods out from the base classes to avoid unqualified name lookup causing compiler errors
+  // Pull all notify methods out from the base classes to avoid unqualified name lookup causing compiler errors
   // when multiple base classes share the same method names (even if those methods would be unambiguous during actual overload resolution).
  protected:
   using SubjectFor<Events>::notify...;

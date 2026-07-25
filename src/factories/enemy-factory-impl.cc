@@ -86,11 +86,11 @@ shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType ra
       break;
     case RaceType::Human:
       decoratorChain.add<GoldOnDeathCharacterDecorator>(
-          GoldDrop{.pileSize = GoldSize::Normal, .pilesDropped = 2});
+          GoldDrop{.pilesDropped = 2, .pileSize = GoldSize::Normal});
       break;
     case RaceType::Merchant:
       decoratorChain.add<GoldOnDeathCharacterDecorator>(
-          GoldDrop{.pileSize = GoldSize::MerchantHoard, .pilesDropped = 1});
+          GoldDrop{.pilesDropped = 1, .pileSize = GoldSize::MerchantHoard});
     default:
       break;
   }

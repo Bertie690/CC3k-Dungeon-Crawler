@@ -17,10 +17,10 @@ import action;
 import floor;
 #endif  // __INTELLISENSE__
 
-
 export struct GameQuitEvent {
   bool showScoreboard;
 };
+export struct FreezeEnemiesEvent {};
 
 // Notify that Game created a new Floor.
 export struct NewFloorEvent {
@@ -34,5 +34,5 @@ export struct RaceSelectEvent {
 
 export struct PlayerActionEvent {
   // The action that the player has taken.
-  const PlayerAction action;
+  const Action action;
 };

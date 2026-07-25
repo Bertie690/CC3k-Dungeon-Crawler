@@ -20,7 +20,7 @@ export struct Stats {
   unsigned int def;
 
   Stats& operator+=(const Stats& other) {
-    static inline constexpr unsigned int maxUint = std::numeric_limits<unsigned int>::max();
+    static constexpr unsigned int maxUint = std::numeric_limits<unsigned int>::max();
 
     this->maxHp = this->maxHp + other.maxHp < this->maxHp ? maxUint : this->maxHp + other.maxHp;
     this->atk = this->atk + other.atk < this->atk ? maxUint : this->atk + other.atk;
@@ -33,7 +33,7 @@ export struct Stats {
     return result;
   }
   Stats operator-(const Stats& other) const {
-    static inline constexpr unsigned int minUint = std::numeric_limits<unsigned int>::min();
+    static constexpr unsigned int minUint = std::numeric_limits<unsigned int>::min();
     Stats result = *this;
 
     result.maxHp = result.maxHp < other.maxHp ? minUint : result.maxHp - other.maxHp;

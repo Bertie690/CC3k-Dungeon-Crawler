@@ -44,7 +44,8 @@ using namespace std;
 
 // Game owns and manages the main game objects
 export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent,
-                                    EntityMoveEvent, CharacterAttackEvent, CharacterDeathEvent>,
+                                    EntityMoveEvent, CharacterAttackEvent, CharacterDeathEvent,
+                                    FreezeEnemiesEvent, RaceSelectEvent>,
                     public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent> {
   RNG rng;
   Scoreboard scoreboard;
@@ -75,19 +76,19 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   virtual void onNotify(const EntityMoveEvent& event) override;
   virtual void onNotify(const CharacterAttackEvent& event) override;
   virtual void onNotify(const CharacterDeathEvent& event) override;
+  virtual void onNotify(const FreezeEnemiesEvent& event) override;
+  virtual void onNotify(const RaceSelectEvent& event) override;
+
+  // Run a full turn cycle with the specified player action.
+  void runTurnCycle(const Action& playerAction);
+  // Run one turn for every Enemy currently on the Floor.
+  void runEnemyTurn();
+  // Initialize a new game with the Player race.
+  void newGame(RaceType race);
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.
   Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed);
   // Create a new Game with the given Renderer, floor file, and the default RNG seed.
   Game(unique_ptr<Renderer> renderer, const string& floorFile = "");
-
-  // Initialize a new game with the Player race.
-  void newGame(RaceType race);
-  // Run a turn for the Player.
-  void runPlayerTurn(const PlayerAction& action);
-  // Run one turn for every Enemy currently on the Floor.
-  void runEnemyTurn();
-
-  // TODO: add InputHandler
 };

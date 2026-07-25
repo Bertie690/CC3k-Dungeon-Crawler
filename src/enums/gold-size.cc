@@ -4,7 +4,9 @@ export module goldsize;
 
 #ifdef __INTELLISENSE__
 #include <variant>
+#include <stdexcept>
 #else
+import <stdexcept>;
 import <variant>;
 #endif  // __INTELLISENSE__
 

@@ -222,24 +222,23 @@ void Game::onNotify(const CharacterAttackEvent& event) {
   }
 }
 
-void Game::onNotify(const PlayerActionEvent& event) {
-  if (const RaceSelect* raceSelect = get_if<RaceSelect>(&event.action)) {
-    newGame(raceSelect->race);
-    return;
-  }
-  if (pendingGameOver) {
-    return;
-  }
-  if (const FreezeEnemies* freeze = get_if<FreezeEnemies>(&event.action)) {
-    freezeEnemies();
-    lastAction = "PC toggles enemy movement";
-    renderer->draw(playerDisplayInfo());
-    return;
-  }
-  runPlayerTurn(event.action);
+void Game::onNotify(const RaceSelectEvent& event) {
+  if (pendingGameOver) return;
+  newGame(event.raceType);
 }
 
-void Game::runPlayerTurn(const PlayerAction& action) {
+void Game::onNotify(const FreezeEnemiesEvent&) {
+  if (pendingGameOver) return;
+  freezeEnemies();
+  lastAction = "PC toggles enemy movement";
+  renderer->draw(playerDisplayInfo());
+}
+void Game::onNotify(const PlayerActionEvent& event) {
+  if (pendingGameOver) return;
+  runTurnCycle(event.action);
+}
+
+void Game::runTurnCycle(const Action& action) {
   lastAction.clear();
   goldAtTurnStart = player->getGold();
   if (holds_alternative<Pass>(action)) appendAction("PC waits");
