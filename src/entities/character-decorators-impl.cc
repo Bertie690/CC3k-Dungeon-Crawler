@@ -91,7 +91,11 @@ double CharacterDecorator::getScoreMulti() const { return character->getScoreMul
 bool CharacterDecorator::canAttack(const RaceType& defenderType) const {
   return character->canAttack(defenderType);
 }
-#pragma endregion  // Method Forwards
+void CharacterDecorator::addTemporaryStats(int atkDelta, int defDelta) {
+  character->addTemporaryStats(atkDelta, defDelta);
+}
+void CharacterDecorator::resetTemporaryStats() { character->resetTemporaryStats(); }
+#pragma endregion
 
 #pragma region TempCharacterDecorator
 TempCharacterDecorator::TempCharacterDecorator(std::unique_ptr<Character> character,

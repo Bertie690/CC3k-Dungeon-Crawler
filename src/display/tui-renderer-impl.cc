@@ -98,8 +98,7 @@ void TUIRenderer::rebuildGrid() {
 }
 
 string TUIRenderer::getCellText(const Cell& cell) const {
-  if (cell.isOccupied()) {
-    // TODO: This doesn't always work? We need some sort of precedence
+  if (!cell.getEntities().empty()) {
     return getEntitySymbol(*cell.getEntities().back());
   }
 

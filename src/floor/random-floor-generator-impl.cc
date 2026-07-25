@@ -45,7 +45,11 @@ import room;
 using namespace std;
 
 RandomFloorGenerator::RandomFloorGenerator(RNG& rng)
-    : rng{rng}, enemyFactory{rng}, goldFactory{rng}, dragonHoardFactory{rng, enemyFactory} {}
+    : rng{rng},
+      enemyFactory{rng},
+      goldFactory{rng},
+      potionFactory{rng},
+      dragonHoardFactory{rng, enemyFactory} {}
 
 // Selects a random available floor tile and removes it from availableTiles
 // TODO: Assumes there are available tiles to select from, should be updated if we do different Floor layout bonus
@@ -94,7 +98,10 @@ Floor RandomFloorGenerator::generateFloor() {
   Position staircasePosition = takeRandomAvailableFloorTile(availableTiles[staircaseChamber], rng);
   floor.getCell(staircasePosition).add(make_shared<Staircase>(staircasePosition));
 
-  // TODO: spawn potions
+  for (int i = 0; i < 10; ++i) {
+    const int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));
+    potionFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
+  }
 
   for (int i = 0; i < 10; ++i) {
     int chamberIndex = rng.intRange(static_cast<int>(chambers.size()));

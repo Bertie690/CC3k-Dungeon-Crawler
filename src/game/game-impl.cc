@@ -14,8 +14,10 @@ module game;
 #include "../entities/entity.cc"
 #include "../entities/merchant.cc"
 #include "../entities/player.cc"
+#include "../entities/potion.cc"
 #include "../entities/stats.cc"
 #include "../enums/gold-size.cc"
+#include "../enums/potion-type.cc"
 #include "../enums/race-type.cc"
 #include "../enums/room-type.cc"
 #include "../events/floor-events.cc"
@@ -38,6 +40,8 @@ import entity;
 import merchant;
 import character;
 import player;
+import potion;
+import potiontype;
 import stats;
 import racetype;
 import roomtype;
@@ -100,6 +104,24 @@ namespace {
     }
     return to.x < from.x ? "west" : "east";
   }
+
+  constexpr string potionName(const PotionType type) noexcept {
+    switch (type) {
+      case PotionType::RestoreHealth:
+        return "RH";
+      case PotionType::BoostAttack:
+        return "BA";
+      case PotionType::BoostDefense:
+        return "BD";
+      case PotionType::PoisonHealth:
+        return "PH";
+      case PotionType::WoundAttack:
+        return "WA";
+      case PotionType::WoundDefense:
+        return "WD";
+    }
+    return "unknown potion";
+  }
 }  // namespace
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed)
@@ -143,7 +165,8 @@ void Game::newGame(RaceType race) {
   scoreboard.score = 0;
   floorTransitionRequested = false;
   floorNumber = 0;
-  lastAction = "Started a new game";
+  discoveredPotions.clear();
+  actionLog.set("Started a new game");
   Merchant::resetHostility();
   freezeEnemies(false);
   if (floorFile.empty()) {
@@ -163,6 +186,8 @@ void Game::newGame(RaceType race) {
 }
 
 void Game::loadNextFloor() {
+  // Health changes persist, but boost/wound effects expire on a new floor.
+  player->resetTemporaryStats();
   ++floorNumber;
   floor = make_unique<Floor>(floorGenerator->generateFloor());
   floor->attach(renderer.get());
@@ -178,12 +203,12 @@ void Game::loadNextFloor() {
 
 PlayerDisplayInfo Game::playerDisplayInfo() const {
   return PlayerDisplayInfo{player->raceType(),  player->getGold(), floorNumber,
-                           player->currentHp(), player->stats(),   lastAction};
+                           player->currentHp(), player->stats(),   actionLog.text()};
 }
 
 void Game::endGame(bool victory) {
   scoreboard.score = victory ? player->getGold() * player->getScoreMulti() : 0;
-  lastAction = victory ? "Reached the end of the game" : "Player died";
+  actionLog.set(victory ? "Reached the end of the game" : "Player died");
   pendingGameOver = true;
   floorTransitionRequested = false;
   renderer->draw(playerDisplayInfo());
@@ -191,11 +216,6 @@ void Game::endGame(bool victory) {
 }
 
 void Game::onNotify(const FloorTransitionEvent&) { floorTransitionRequested = true; }
-
-void Game::appendAction(const string& message) {
-  if (!lastAction.empty()) lastAction += "; ";
-  lastAction += message;
-}
 
 void Game::onNotify(const EntityMoveEvent& event) {
   if (!dynamic_cast<const Character*>(&event.entity)) return;
@@ -207,10 +227,10 @@ void Game::onNotify(const EntityMoveEvent& event) {
       event.to.y >= playerPosition.y - 1 && event.to.y <= playerPosition.y + 1;
 
   if (isPlayerMove || movedNextToPlayer) {
-    appendAction(characterName(event.entity) + " moves " + directionName(event.from, event.to));
+    actionLog.append(characterName(event.entity) + " moves " + directionName(event.from, event.to));
   }
   if (isPlayerMove && player->getGold() > goldAtTurnStart) {
-    appendAction("PC picks up " + to_string(player->getGold() - goldAtTurnStart) + " gold");
+    actionLog.append("PC picks up " + to_string(player->getGold() - goldAtTurnStart) + " gold");
     goldAtTurnStart = player->getGold();
   }
 }
@@ -220,17 +240,17 @@ void Game::onNotify(const CharacterAttackEvent& event) {
   const string defender = characterName(event.defender);
 
   if (event.result == CharacterAttackEvent::Result::Miss) {
-    appendAction(attacker + " misses " + defender);
+    actionLog.append(attacker + " misses " + defender);
     return;
   }
 
   string message = attacker + " deals " + to_string(event.damage) + " damage to " + defender;
 
   if (event.defeated) message += " and defeats " + defender;
-  appendAction(message);
+  actionLog.append(message);
 
   if (&event.attacker == player.get() && player->getGold() > goldAtTurnStart) {
-    appendAction("PC gains " + to_string(player->getGold() - goldAtTurnStart) + " gold");
+    actionLog.append("PC gains " + to_string(player->getGold() - goldAtTurnStart) + " gold");
     goldAtTurnStart = player->getGold();
   }
 }
@@ -240,7 +260,7 @@ void Game::onNotify(const RaceSelectEvent& event) { newGame(event.raceType); }
 void Game::onNotify(const FreezeEnemiesEvent&) {
   if (pendingGameOver) return;
   freezeEnemies();
-  lastAction = "PC toggles enemy movement";
+  actionLog.set("PC toggles enemy movement");
   renderer->draw(playerDisplayInfo());
 }
 void Game::onNotify(const PlayerActionEvent& event) {
@@ -249,10 +269,22 @@ void Game::onNotify(const PlayerActionEvent& event) {
 }
 
 void Game::runTurnCycle(const Action& action) {
-  lastAction.clear();
+  actionLog.clear();
   goldAtTurnStart = player->getGold();
-  if (holds_alternative<Pass>(action)) appendAction("PC waits");
-  if (holds_alternative<UsePotion>(action)) appendAction("PC uses a potion");
+  if (holds_alternative<Pass>(action)) actionLog.append("PC waits");
+  if (const UsePotion* use = get_if<UsePotion>(&action)) {
+    const Position potionPosition = player->position() + use->dir;
+    if (floor->hasCell(potionPosition)) {
+      for (const auto& entity : floor->getCell(potionPosition).getEntities()) {
+        if (const Potion* potion = dynamic_cast<const Potion*>(entity.get())) {
+          discoveredPotions.insert(potion->potionType);
+          actionLog.append("PC uses " + potionName(potion->potionType));
+          break;
+        }
+      }
+    }
+    if (actionLog.empty()) actionLog.append("PC uses a potion");
+  }
   notify(PlayerActionEvent{action});
   player->act(*floor);
 
@@ -263,7 +295,7 @@ void Game::runTurnCycle(const Action& action) {
       return;
     }
     floorTransitionRequested = false;
-    appendAction("PC descends to the next floor");
+    actionLog.append("PC descends to the next floor");
     loadNextFloor();
     return;
   }
@@ -336,5 +368,5 @@ void Game::onNotify(const CharacterDeathEvent& event) {
     }
   }
 
-  appendAction(message);
+  actionLog.append(message);
 }

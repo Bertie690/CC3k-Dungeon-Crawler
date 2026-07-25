@@ -87,9 +87,19 @@ void Character::act(Floor& floor) {
   }
 
   if (UsePotion* potion = std::get_if<UsePotion>(&nextMove)) {
-    // TODO: Implement potion usage
-    this->onTurnEnd();
-    return;
+    const Position potionPosition = this->position() + potion->dir;
+    if (!floor.hasCell(potionPosition)) {
+      throw std::invalid_argument("No potion in the given direction.");
+    }
+    Cell& cell = floor.getCell(potionPosition);
+    for (const auto& entity : cell.getEntities()) {
+      if (entity->onUse(*this)) {
+        floor.remove(*entity);
+        this->onTurnEnd();
+        return;
+      }
+    }
+    throw std::invalid_argument("No potion in the given direction.");
   }
 
   Attack attack = std::get<Attack>(nextMove);

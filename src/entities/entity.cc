@@ -25,6 +25,8 @@ export class Entity {
 
   // Determine what happens when another Entity attempts to enter this Entity's Cell, and trigger any related effects.
   virtual OverlapResult onOverlap(Entity& movingEntity);
+  // Attempt to use this Entity. Returns true only when it was successfully consumed.
+  virtual bool onUse(Entity& usingEntity);
 };
 
 // A base class for Entities that own their own positions.
@@ -45,6 +47,7 @@ bool Entity::hasCollision() const { return true; }
 OverlapResult Entity::onOverlap(Entity&) {
   return hasCollision() ? OverlapResult::Blocked : OverlapResult::Enter;
 }
+bool Entity::onUse(Entity&) { return false; }
 
 BaseEntity::~BaseEntity() = default;
 Position& BaseEntity::position() noexcept { return this->pos; }

@@ -4,12 +4,15 @@ export module game;
 
 #ifdef __INTELLISENSE__
 #include <memory>
+#include <set>
 #include <string>
 
 #include "../display/renderer.cc"
 #include "../entities/character.cc"
 #include "../entities/player.cc"
+#include "../entities/potion.cc"
 #include "../enums/action.cc"
+#include "../enums/potion-type.cc"
 #include "../enums/race-type.cc"
 #include "../events/floor-events.cc"
 #include "../events/game-events.cc"
@@ -19,13 +22,17 @@ export module game;
 #include "../floor/floor-generator.cc"
 #include "../floor/floor.cc"
 #include "../utils/rng.cc"
+#include "action-log.cc"
 #include "scoreboard.cc"
 #else
 import <memory>;
+import <set>;
 import <string>;
 import character;
 import renderer;
 import player;
+import potion;
+import potiontype;
 import floorevents;
 import gameevents;
 import observer;
@@ -37,6 +44,7 @@ import floorgenerator;
 import floor;
 import floorevents;
 import rng;
+import actionlog;
 import scoreboard;
 #endif  // __INTELLISENSE__
 
@@ -57,7 +65,8 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   unique_ptr<Floor> floor;
   shared_ptr<Character> player = {};
   unsigned int floorNumber = 0;
-  std::string lastAction = "Starting a new game";
+  std::set<PotionType> discoveredPotions;
+  ActionLog actionLog{"Starting a new game"};
   // Whether a game over is pending. Will be checked at the end of every single turn.
   bool pendingGameOver = false;
   int goldAtTurnStart = 0;
@@ -69,7 +78,6 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   // End the game and calculate a score if game was won.
   void endGame(bool victory);
   PlayerDisplayInfo playerDisplayInfo() const;
-  void appendAction(const std::string& message);
 
   virtual void onNotify(const FloorTransitionEvent& event) override;
   virtual void onNotify(const GameQuitEvent& event) override;

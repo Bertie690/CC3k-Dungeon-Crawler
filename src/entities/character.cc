@@ -141,6 +141,10 @@ export class Character : public virtual Entity {
   // Return the multiplier for this Character's score. Unused for enemies (for now...)
   virtual double getScoreMulti() const = 0;
 
+  // Apply attack/defense changes that last until the next floor.
+  virtual void addTemporaryStats(int atkDelta, int defDelta) = 0;
+  virtual void resetTemporaryStats() = 0;
+
   // Return whether this Character can attack a defender of the given type.
   // Intended to be hooked into during command selection, and is entirely unused for player-controlled characters.
   virtual bool canAttack(const RaceType& defenderType) const = 0;
@@ -200,6 +204,8 @@ export class BaseCharacter : public BaseEntity, public Character {
   unsigned int hp;
   // The character's base stats.
   const Stats baseStats;
+  int temporaryAtk = 0;
+  int temporaryDef = 0;
   // The race this character belongs to, for identification & display purposes.
   const RaceType type;
 
@@ -246,6 +252,8 @@ export class BaseCharacter : public BaseEntity, public Character {
   virtual double getScoreMulti() const override;
 
   virtual bool canAttack(const RaceType& defender) const override;
+  virtual void addTemporaryStats(int atkDelta, int defDelta) override final;
+  virtual void resetTemporaryStats() override final;
 };
 
 // Abstract base decorator class for Characters, allowing for temporary or permanent modifications to their behavior.
@@ -291,6 +299,8 @@ class CharacterDecorator : public Character {
   virtual double getScoreMulti() const override;
 
   virtual bool canAttack(const RaceType& defenderType) const override final;
+  virtual void addTemporaryStats(int atkDelta, int defDelta) override;
+  virtual void resetTemporaryStats() override;
 };
 
 // Class for temporary decorators that are automatically removed when a new floor is generated.

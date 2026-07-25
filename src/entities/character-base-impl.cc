@@ -48,7 +48,12 @@ BaseCharacter::BaseCharacter(Position position, Stats baseStats, RaceType raceTy
 bool BaseCharacter::isDead() const { return this->hp <= 0U; }
 unsigned int BaseCharacter::currentHp() const { return std::max(0U, this->hp); }
 
-Stats BaseCharacter::getStats() const { return this->baseStats; }
+Stats BaseCharacter::getStats() const {
+  Stats result = this->baseStats;
+  result.atk = static_cast<unsigned int>(std::max(0, static_cast<int>(result.atk) + temporaryAtk));
+  result.def = static_cast<unsigned int>(std::max(0, static_cast<int>(result.def) + temporaryDef));
+  return result;
+}
 double BaseCharacter::getAccuracy(const Character& defender) const { return 1.0; }
 double BaseCharacter::getEvasion(const Character& attacker) const { return 1.0; }
 unsigned int BaseCharacter::getAttacksPerTurn() const { return 1; }
@@ -67,6 +72,14 @@ double BaseCharacter::getPotionEffectMultiplier() const { return 1.0; }
 double BaseCharacter::getScoreMulti() const { return 1.0; }
 bool BaseCharacter::canAttack(const RaceType& defenderType) const {
   return isPlayer(this->raceType()) != isPlayer(defenderType);
+}
+void BaseCharacter::addTemporaryStats(int atkDelta, int defDelta) {
+  temporaryAtk += atkDelta;
+  temporaryDef += defDelta;
+}
+void BaseCharacter::resetTemporaryStats() {
+  temporaryAtk = 0;
+  temporaryDef = 0;
 }
 RaceType BaseCharacter::raceType() const { return this->type; }
 CharacterMoveStrategy& BaseCharacter::movementStrategy() { return *moveStrategy; }

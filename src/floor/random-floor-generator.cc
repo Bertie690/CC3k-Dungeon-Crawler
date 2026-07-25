@@ -6,6 +6,7 @@ export module randomfloorgenerator;
 #include "../factories/dragon-hoard-factory.cc"
 #include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
+#include "../factories/potion-factory.cc"
 #include "../utils/rng.cc"
 #include "floor-generator.cc"
 #include "floor.cc"
@@ -13,6 +14,7 @@ export module randomfloorgenerator;
 import dragonhoardfactory;
 import enemyfactory;
 import goldfactory;
+import potionfactory;
 import rng;
 import floor;
 import floorgenerator;
@@ -22,6 +24,7 @@ export class RandomFloorGenerator : public FloorGenerator {
   RNG& rng;
   EnemyFactory enemyFactory;
   GoldFactory goldFactory;
+  PotionFactory potionFactory;
   DragonHoardFactory dragonHoardFactory;
 
  public:

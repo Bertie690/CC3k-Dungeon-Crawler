@@ -11,9 +11,11 @@ module presetfloorgenerator;
 #include "../entities/staircase.cc"
 #include "../enums/direction.cc"
 #include "../enums/gold-size.cc"
+#include "../enums/potion-type.cc"
 #include "../factories/dragon-hoard-factory.cc"
 #include "../factories/enemy-factory.cc"
 #include "../factories/gold-factory.cc"
+#include "../factories/potion-factory.cc"
 #include "chamber.cc"
 #include "floor.cc"
 #include "position.cc"
@@ -29,8 +31,10 @@ import <stdexcept>;
 import direction;
 import dragonhoardfactory;
 import goldsize;
+import potiontype;
 import enemyfactory;
 import goldfactory;
+import potionfactory;
 import chamber;
 import position;
 import floor;
@@ -61,9 +65,17 @@ Position findAdjacentHoard(const Floor& floor, const vector<string>& floorLines,
   throw invalid_argument{"No adjacent Dragon Hoard found"};
 }
 
-PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName) : rng{rng}, enemyFactory{rng}, goldFactory{rng}, dragonHoardFactory{rng, enemyFactory}, input{fileName} {}
+PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName)
+    : rng{rng},
+      enemyFactory{rng},
+      goldFactory{rng},
+      potionFactory{rng},
+      dragonHoardFactory{rng, enemyFactory},
+      input{fileName} {}
 
-void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFactory& goldFactory, EnemyFactory& enemyFactory, DragonHoardFactory& dragonHoardFactory) {
+void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFactory& goldFactory,
+                         PotionFactory& potionFactory, EnemyFactory& enemyFactory,
+                         DragonHoardFactory& dragonHoardFactory) {
   vector<Position> claimedDragonHoards;
 
   for (int y = 0; y < Floor::HEIGHT; ++y) {
@@ -97,7 +109,8 @@ void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFac
         case '3':
         case '4':
         case '5':
-          // TODO: create potion: PotionFactory
+          floor.getCell(position).add(
+              potionFactory.create(position, static_cast<PotionType>(c - '0')));
           break;
         case '6':
           floor.getCell(position).add(goldFactory.create(position, GoldSize::Normal));
@@ -122,7 +135,8 @@ Floor PresetFloorGenerator::generateFloor() {
 
   Floor floor = createBaseFloor(rng);
 
-  // TODO: add factories to signature
-  placePresetEntities(floor, floorLines, goldFactory, enemyFactory, dragonHoardFactory);
+  placePresetEntities(floor, floorLines, goldFactory, potionFactory, enemyFactory,
+                      dragonHoardFactory);
   return floor;
+  // TODO: add factories to signature
 }
