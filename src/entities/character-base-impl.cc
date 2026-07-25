@@ -85,6 +85,7 @@ void BaseCharacter::damage(unsigned int amt, bool lethal, Character* source) {
     return;
   }
   if (lethal) {
+    this->hp = 0;
     this->onDeath(source);
   } else {
     this->hp = 1;

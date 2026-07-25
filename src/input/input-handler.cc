@@ -5,6 +5,7 @@ export module inputhandler;
 #ifdef __INTELLISENSE__
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <variant>
 
@@ -16,6 +17,7 @@ export module inputhandler;
 #include "../utils/variant-cast.cc"
 #else
 import <memory>;
+import <stdexcept>;
 import <string>;
 import <variant>;
 import <iostream>;
@@ -41,10 +43,8 @@ export class InputHandler : public Subject<PlayerActionEvent, GameQuitEvent, Rac
 };
 
 void InputHandler::onInvalidInput(const std::string& message) {
-  std::cerr << message << std::endl;
-
-  // TODO: Use better error handling
-  exit(0);
+  // The main input loop catches and prompts for next command
+  throw std::invalid_argument{message};
 }
 
 void InputHandler::processInput() {

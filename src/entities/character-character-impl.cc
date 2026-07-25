@@ -54,11 +54,21 @@ void Character::attack(Character& defender, Floor& floor) {
     floor.reportCharacterAction(CharacterAttackEvent{
         *this, defender, CharacterAttackEvent::Result::Hit, damageDealt, defender.dead()});
 
+    if (dead()) {
+      // vampire atacks dwarf and dies edge case
+      floor.reportCharacterDeath(
+          CharacterDeathEvent{*this, defender.position(), raceType(), getGoldDrop()});
+    }
+
     if (defender.dead()) {
       // TODO: Push action from onDeath function if possible
       floor.reportCharacterDeath(
           CharacterDeathEvent{defender, position(), defender.raceType(), defender.getGoldDrop()});
+      // Defender was removed, so Elves shouldn't attack again
+      return;
     }
+    // if vampire dies, wait to check if dwarf is dead before returning
+    if (dead()) return;
   }
 }
 
@@ -102,7 +112,6 @@ void Character::act(Floor& floor) {
 }
 
 void Character::drain(Character& defender, unsigned int hp) {
-  defender.damage(hp);
   if (const double mult = defender.getDrainMulti(*this); mult > 0.0) {
     this->heal(hp * mult);
   } else {

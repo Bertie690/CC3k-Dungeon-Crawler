@@ -189,7 +189,7 @@ void TUIRenderer::drawGameOutcome(bool victory, double score) {
   } else {
     cout << endl << "----------GAME OVER----------" << endl;
     cout << "Your player has died." << endl;
-    cout << "Score: " << score << endl;
+    // Don't display score as per assignment instructions
   }
   cout << "Enter r to restart or q to quit the game." << endl;
 }

@@ -2,6 +2,7 @@ module game;
 
 #ifdef __INTELLISENSE__
 #include <algorithm>
+#include <cstdlib>
 #include <memory>
 #include <string>
 #include <utility>
@@ -25,6 +26,7 @@ module game;
 #include "game.cc"
 #else
 import <algorithm>;
+import <cstdlib>;
 import <memory>;
 import <string>;
 import <utility>;
@@ -293,9 +295,9 @@ void Game::runEnemyTurn() {
   renderer->draw(playerDisplayInfo());
 }
 
-void Game::onNotify(const GameQuitEvent& event) {
-  // TODO: Display scoreboard and end the game
-  // if (event.showScoreboard) {
+void Game::onNotify(const GameQuitEvent&) {
+  // TODO any quit behaviour here?
+  std::exit(0);
 }
 
 void Game::onNotify(const CharacterDeathEvent& event) {

@@ -74,8 +74,7 @@ UIAction StdinInputHandler::readRaceCommand() {
       exit(0);
     }
     if (token == "q") {
-      // TODO: End screen
-      exit(0);
+      return Quit{};
     }
 
     if (token.length() == 1) {
@@ -84,7 +83,7 @@ UIAction StdinInputHandler::readRaceCommand() {
         awaitingRace = false;
         return RaceSelect{*raceOpt};
       }
-      this->onInvalidInput("Invalid race selection command. Please enter a valid race character.");
+      cerr << "Invalid race selection command. Please enter a valid race character." << endl;
     }
   }
 }
@@ -97,7 +96,7 @@ UIAction StdinInputHandler::readGameCommand() {
     exit(0);
   }
 
-  if (token == "q") exit(0);
+  if (token == "q") return Quit{};
 
   if (token == "f") return FreezeEnemies{};
 
