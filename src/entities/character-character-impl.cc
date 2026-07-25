@@ -92,7 +92,7 @@ void Character::act(Floor& floor) {
   }
 
   Attack attack = std::get<Attack>(nextMove);
-  const Cell& c = floor.getCell(this->position() + attack.dir);
+  const Cell& c = floor.getCell(attack.position);
 
   Character* character = nullptr;
   for (const auto& entity : c.getEntities()) {

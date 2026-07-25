@@ -141,7 +141,7 @@ export class StdinInputHandler : public InputHandler {
         exit(0);
       }
       if (parseDirection(dirToken, dir)) {
-        if (token == "a") return Attack{dir};
+        if (token == "a") return AttackDirection{dir};
         return UsePotion{dir};
       }
     }

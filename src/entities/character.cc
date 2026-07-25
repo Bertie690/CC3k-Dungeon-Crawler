@@ -151,7 +151,7 @@ export class CharacterMoveStrategy {
 export class PlayerInputMoveStrategy final : public CharacterMoveStrategy,
                                              public Observer<PlayerActionEvent> {
   // The input handler's determined next action.
-  Action nextAction{Pass{}};
+  PlayerAction nextAction{Pass{}};
 
   virtual void onNotify(const PlayerActionEvent& event) override;
   virtual Action getNextMove(Floor& floor, Character& character) override;

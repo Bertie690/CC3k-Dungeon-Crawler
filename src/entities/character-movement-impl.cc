@@ -23,19 +23,18 @@ import tiletype;
 #endif  // __INTELLISENSE__
 
 void PlayerInputMoveStrategy::onNotify(const PlayerActionEvent& event) {
-  if (const Move* move = std::get_if<Move>(&event.action)) {
-    nextAction = *move;
-  } else if (const Attack* attack = std::get_if<Attack>(&event.action)) {
-    nextAction = *attack;
-  } else if (const UsePotion* potion = std::get_if<UsePotion>(&event.action)) {
-    nextAction = *potion;
-  } else {
-    nextAction = Pass{};
-  }
+  nextAction = event.action;
 }
 
-Action PlayerInputMoveStrategy::getNextMove(Floor&, Character&) {
-  Action action = nextAction;
+Action PlayerInputMoveStrategy::getNextMove(Floor&, Character& character) {
+  Action action = Pass{};
+  if (const Move* move = std::get_if<Move>(&nextAction)) {
+    action = *move;
+  } else if (const AttackDirection* attack = std::get_if<AttackDirection>(&nextAction)) {
+    action = Attack{character.position() + attack->dir};
+  } else if (const UsePotion* potion = std::get_if<UsePotion>(&nextAction)) {
+    action = *potion;
+  }
   nextAction = Pass{};
   return action;
 }
@@ -60,7 +59,7 @@ Action RandomMoveStrategy::getNextMove(Floor& floor, Character& character) {
         const Character* target = dynamic_cast<const Character*>(entity.get());
         if (target && character.canAttack(target->raceType())) {
           // found someone to smack
-          return Attack{direction};
+          return Attack{character.position() + direction};
         }
       }
       continue;
@@ -92,7 +91,7 @@ Action DragonMoveStrategy::getNextMove(Floor& floor, Character& character) {
       const Character* target = dynamic_cast<const Character*>(entity.get());
       if (target && character.canAttack(target->raceType())) {
         // found someone to smack
-        return Attack{direction};
+        return Attack{character.position() + direction};
       }
     }
   }
@@ -108,7 +107,7 @@ Action DragonMoveStrategy::getNextMove(Floor& floor, Character& character) {
       const Character* target = dynamic_cast<const Character*>(entity.get());
       if (target && character.canAttack(target->raceType())) {
         // found someone to smack
-        return Attack{direction};
+        return Attack{goldPos + direction};
       }
     }
   }
