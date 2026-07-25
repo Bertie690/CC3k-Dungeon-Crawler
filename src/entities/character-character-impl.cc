@@ -36,7 +36,7 @@ void Character::attack(Character& defender, Floor& floor) {
 
     if (floor.rng.randDouble() > (accuracy / evasion)) {
       floor.reportCharacterAction(
-          CharacterActionEvent{*this, defender, CharacterActionEvent::Result::Miss});
+          CharacterAttackEvent{*this, defender, CharacterAttackEvent::Result::Miss});
       continue;
     }
 
@@ -51,8 +51,8 @@ void Character::attack(Character& defender, Floor& floor) {
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
 
-    floor.reportCharacterAction(CharacterActionEvent{
-        *this, defender, CharacterActionEvent::Result::Hit, damageDealt, defender.dead()});
+    floor.reportCharacterAction(CharacterAttackEvent{
+        *this, defender, CharacterAttackEvent::Result::Hit, damageDealt, defender.dead()});
 
     if (defender.dead()) {
       // TODO: Push action from onDeath function if possible

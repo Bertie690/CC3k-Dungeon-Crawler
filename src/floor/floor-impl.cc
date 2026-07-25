@@ -125,7 +125,7 @@ void Floor::remove(const Entity& entity) {
   notify(EntityDeathEvent{position});
 }
 
-void Floor::reportCharacterAction(const CharacterActionEvent& event) { notify(event); }
+void Floor::reportCharacterAction(const CharacterAttackEvent& event) { notify(event); }
 
 void Floor::reportCharacterDeath(const CharacterDeathEvent& event) {
   notify(event);

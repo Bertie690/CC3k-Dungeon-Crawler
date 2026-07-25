@@ -202,11 +202,11 @@ void Game::onNotify(const EntityMoveEvent& event) {
   }
 }
 
-void Game::onNotify(const CharacterActionEvent& event) {
+void Game::onNotify(const CharacterAttackEvent& event) {
   const string attacker = characterName(event.attacker);
   const string defender = characterName(event.defender);
 
-  if (event.result == CharacterActionEvent::Result::Miss) {
+  if (event.result == CharacterAttackEvent::Result::Miss) {
     appendAction(attacker + " misses " + defender);
     return;
   }

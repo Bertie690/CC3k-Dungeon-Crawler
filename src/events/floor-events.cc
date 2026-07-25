@@ -28,7 +28,8 @@ export struct EntityMoveEvent {
   EntityMoveEvent(const Entity& entity, const Position& from) : entity(entity), from(from) {}
 };
 
-export struct CharacterActionEvent {
+// Event used for characters attacking one another.
+export struct CharacterAttackEvent {
   enum class Result {
     Hit,
     Miss,
@@ -40,7 +41,7 @@ export struct CharacterActionEvent {
   const unsigned int damage;
   const bool defeated;
 
-  CharacterActionEvent(const Entity& attacker, const Entity& defender, Result result,
+  CharacterAttackEvent(const Entity& attacker, const Entity& defender, Result result,
                        unsigned int damage = 0, bool defeated = false)
       : attacker(attacker),
         defender(defender),

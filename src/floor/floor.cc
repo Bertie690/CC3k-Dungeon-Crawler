@@ -27,7 +27,7 @@ import observer;
 import floorevents;
 #endif  // __INTELLISENSE__
 
-export class Floor : public Subject<CharacterActionEvent, EntityMoveEvent, FloorTransitionEvent,
+export class Floor : public Subject<CharacterAttackEvent, EntityMoveEvent, FloorTransitionEvent,
                                     EntityDeathEvent, CharacterDeathEvent> {
   std::vector<std::unique_ptr<Room>> rooms;
 
@@ -76,7 +76,7 @@ export class Floor : public Subject<CharacterActionEvent, EntityMoveEvent, Floor
   void remove(const Entity& entity);
 
   // Publish a combat outcome for the action log.
-  void reportCharacterAction(const CharacterActionEvent& event);
+  void reportCharacterAction(const CharacterAttackEvent& event);
 
   // Publish a Character death and remove it from the Floor.
   void reportCharacterDeath(const CharacterDeathEvent& event);

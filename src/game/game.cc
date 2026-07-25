@@ -44,7 +44,7 @@ using namespace std;
 
 // Game owns and manages the main game objects
 export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent,
-                                    EntityMoveEvent, CharacterActionEvent, CharacterDeathEvent>,
+                                    EntityMoveEvent, CharacterAttackEvent, CharacterDeathEvent>,
                     public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent> {
   RNG rng;
   Scoreboard scoreboard;
@@ -73,7 +73,7 @@ export class Game : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerA
   virtual void onNotify(const GameQuitEvent& event) override;
   virtual void onNotify(const PlayerActionEvent& event) override;
   virtual void onNotify(const EntityMoveEvent& event) override;
-  virtual void onNotify(const CharacterActionEvent& event) override;
+  virtual void onNotify(const CharacterAttackEvent& event) override;
   virtual void onNotify(const CharacterDeathEvent& event) override;
 
  public:
