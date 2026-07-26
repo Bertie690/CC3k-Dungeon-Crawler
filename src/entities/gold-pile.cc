@@ -16,10 +16,10 @@ import position;
 
 // A pile of gold that can be picked up by the player.
 export class GoldPile : public Item {
-  const GoldSize size;
-
   virtual void applyEffect(Character& character) override final;
 
  public:
+  const GoldSize size;
+
   GoldPile(const Position position, const GoldSize size) noexcept;
 };

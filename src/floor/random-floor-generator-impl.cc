@@ -105,12 +105,11 @@ Floor RandomFloorGenerator::generateFloor() {
 
   for (int i = 0; i < RandomFloorGenerator::NUM_GOLD_PILES_SPAWNED; ++i) {
     std::size_t chamberIndex = rng.intRange(chambers.size());
-    GoldSize size = goldFactory.randomGoldSize();
-    if (size == GoldSize::DragonHoard) {
-      dragonHoardFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
-    } else {
-      goldFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex], size);
-    }
+    goldFactory.process(*chambers[chamberIndex], availableTiles[chamberIndex]);
+  }
+
+  for (std::size_t i = 0; i < chambers.size(); ++i) {
+    dragonHoardFactory.process(*chambers[i], availableTiles[i]);
   }
 
   for (int i = 0; i < RandomFloorGenerator::NUM_ENEMIES_SPAWNED; ++i) {

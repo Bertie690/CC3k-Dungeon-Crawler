@@ -20,7 +20,6 @@ import room;
 #endif  // __INTELLISENSE__
 
 // A DragonHoardFactory creates and links a Dragon and its DragonHoard.
-// Unlike the other factories, DragonHoardFactory also handles determining where and placing the entities in the room.
 export class DragonHoardFactory : public FactoryBase {
   EnemyFactory& enemyFactory;
 
@@ -29,7 +28,7 @@ export class DragonHoardFactory : public FactoryBase {
  public:
   DragonHoardFactory(RNG& rng, EnemyFactory& enemyFactory);
 
-  // Randomly place a Dragon and its DragonHoard together on availablePositions within the Room.
+  // Replace Dragon Hoard placeholders in the Room and place their Dragons.
   virtual void process(Room& room, std::vector<Position>& availablePositions) override;
   // Place a predetermined positioned Dragon and its DragonHoard within the Room.
   void process(Room& room, const Position& hoardPosition, const Position& dragonPosition);
