@@ -27,6 +27,7 @@ module game;
 #include "../floor/preset-floor-generator.cc"
 #include "../floor/random-floor-generator.cc"
 #include "../floor/room.cc"
+#include "feature-flags.cc"
 #include "game.cc"
 #else
 import <algorithm>;
@@ -54,6 +55,7 @@ import goldsize;
 import presetfloorgenerator;
 import randomfloorgenerator;
 import room;
+import featureflags;
 #endif  // __INTELLISENSE__
 
 using namespace std;
@@ -136,8 +138,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
       floorGenerator{},
       floor{} {
   if (floorFile.empty()) {
-    floorGenerator =
-        make_unique<RandomFloorGenerator>(rng, FeatureFlags::enableImprovedHoardPlacement);
+    floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
     floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile,
                                                        FeatureFlags::enableImprovedHoardPlacement);
@@ -157,8 +158,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
       floorGenerator{},
       floor{} {
   if (floorFile.empty()) {
-    floorGenerator =
-        make_unique<RandomFloorGenerator>(rng, FeatureFlags::enableImprovedHoardPlacement);
+    floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
     floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile,
                                                        FeatureFlags::enableImprovedHoardPlacement);

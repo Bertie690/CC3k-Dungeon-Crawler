@@ -29,11 +29,11 @@ std::shared_ptr<GoldPile> GoldFactory::create(const Position& position, GoldSize
 }
 
 // TODO: Move the RNG step into the factory and remove throw
-void GoldFactory::process(Chamber&, std::vector<Position>&) {
+void GoldFactory::process(Room&, std::vector<Position>&) {
   throw std::logic_error{"GoldFactory::process requires an explicit GoldSize"};
 }
 
-void GoldFactory::process(Chamber& chamber, std::vector<Position>& availablePositions, GoldSize size) {
+void GoldFactory::process(Room& room, std::vector<Position>& availablePositions, GoldSize size) {
   int selectedIndex = rng.intRange(static_cast<int>(availablePositions.size()));
   Position position = availablePositions[selectedIndex];
   availablePositions[selectedIndex] = availablePositions.back();

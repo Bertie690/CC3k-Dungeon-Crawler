@@ -33,7 +33,7 @@ export class GoldFactory : public StandardFactory<GoldPile> {
   // Create a GoldPile of the given size at position.
   std::shared_ptr<GoldPile> create(const Position& position, GoldSize size);
   // Gold placement requires a size selected by the floor generator.
-  void process(Chamber& chamber, std::vector<Position>& availablePositions) override;
+  void process(Room& room, std::vector<Position>& availablePositions) override;
   // Place a GoldPile of the given size in the availablePositions.
   // Necessary since gold type must be chosen before placement in random generation.
   void process(Room& room, std::vector<Position>& availablePositions, GoldSize size);

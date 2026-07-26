@@ -44,10 +44,10 @@ export class PresetFloorGenerator;
 class HoardPlacementStrategy {
   friend class PresetFloorGenerator;
 
+ protected:
   HoardPlacementStrategy(DragonHoardFactory& dragonHoardFactory, GoldFactory& goldFactory)
       : dragonHoardFactory{dragonHoardFactory}, goldFactory{goldFactory} {}
 
- protected:
   DragonHoardFactory& dragonHoardFactory;
   GoldFactory& goldFactory;
 
@@ -58,10 +58,21 @@ class HoardPlacementStrategy {
 };
 
 class DefaultHoardPlacementStrategy final : public HoardPlacementStrategy {
+ public:
+  DefaultHoardPlacementStrategy(DragonHoardFactory& dragonHoardFactory, GoldFactory& goldFactory)
+      : HoardPlacementStrategy{dragonHoardFactory, goldFactory} {}
+
+ private:
   virtual void placeDragonHoards(Floor& floor, const std::vector<Position>& hoardPositions,
                                  const std::vector<Position>& dragonPositions) override;
 };
 class PerfectMatchHoardPlacementStrategy final : public HoardPlacementStrategy {
+ public:
+  PerfectMatchHoardPlacementStrategy(DragonHoardFactory& dragonHoardFactory,
+                                     GoldFactory& goldFactory)
+      : HoardPlacementStrategy{dragonHoardFactory, goldFactory} {}
+
+ private:
   struct Result {
     std::map<Position, Position> matches;
     std::set<Position> unmatchedHoards;
