@@ -40,6 +40,8 @@ namespace Color {
 }  // namespace Color
 
 namespace {
+  void clearConsole() { std::cout << "\033[2J\033[1;1H"; }
+
   string raceName(RaceType race) {
     switch (race) {
       case RaceType::Shade:
@@ -170,6 +172,7 @@ void TUIRenderer::draw(const PlayerDisplayInfo& info) {
     return;
   }
 
+  clearConsole();
   for (const vector<string>& row : displayGrid) {
     for (const string& cell : row) {
       cout << cell;
