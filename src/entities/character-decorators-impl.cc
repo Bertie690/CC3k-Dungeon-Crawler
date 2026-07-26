@@ -102,7 +102,7 @@ TempCharacterDecorator::TempCharacterDecorator(std::unique_ptr<Character> charac
                                                std::unique_ptr<Character>* ownerSlot)
     : CharacterDecorator(std::move(character)), prev(ownerSlot) {}
 
-// destructor just deletes next ptr like normal
+// destructor just d-e-l-e-t-e-s next ptr like normal
 TempCharacterDecorator::~TempCharacterDecorator() = default;
 
 void TempCharacterDecorator::unlink() {
