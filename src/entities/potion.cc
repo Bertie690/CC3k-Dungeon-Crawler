@@ -21,9 +21,9 @@ import position;
 #endif
 
 export class Potion final : public Item {
-  // Potions are used from an adjacent cell; walking onto one must not consume it.
-  virtual bool hasCollision() const override { return false; }
-  virtual OverlapResult onOverlap(Entity&) override { return OverlapResult::Enter; }
+  // Potions are used from an adjacent cell; we block entities from entering their cell.
+  virtual bool hasCollision() const override { return true; }
+  virtual OverlapResult onOverlap(Entity&) override { return OverlapResult::Blocked; }
   virtual bool onUse(Entity& usingEntity) override;
 
  public:
