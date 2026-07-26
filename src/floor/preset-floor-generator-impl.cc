@@ -68,6 +68,7 @@ PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
                    : static_cast<std::unique_ptr<HoardPlacementStrategy>>(
                          make_unique<PerfectMatchHoardPlacementStrategy>(dragonHoardFactory,
                                                                          goldFactory))},
+      potionFactory{rng},
       input{fileName} {}
 
 void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string>& floorLines) {
