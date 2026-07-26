@@ -192,15 +192,14 @@ observers</panel_attributes>
       <x>144</x>
       <y>1056</y>
       <w>120</w>
-      <h>66</h>
+      <h>54</h>
     </coordinates>
     <panel_attributes>/TempCharacterDecorator/
 --
 -prev: Character
 -unlinked: bool
 --
--unlink()
-/-onNotify(NewFloorEvent)/</panel_attributes>
+-unlink()</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -292,7 +291,7 @@ observers</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>258</x>
-      <y>1104</y>
+      <y>1098</y>
       <w>66</w>
       <h>24</h>
     </coordinates>
@@ -401,7 +400,7 @@ m2=0..1</panel_attributes>
       <x>948</x>
       <y>1344</y>
       <w>150</w>
-      <h>72</h>
+      <h>66</h>
     </coordinates>
     <panel_attributes>DragonHoard
 --
@@ -409,8 +408,7 @@ m2=0..1</panel_attributes>
 -dragon: Enemy
 --
 /-canPickup(Character): bool/
-/-onOverlap(Entity): OverlapResult/
-/-onNotify(EntityDeathEvent)/</panel_attributes>
+/-onOverlap(Entity): OverlapResult/</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -876,7 +874,8 @@ m2=0..n</panel_attributes>
 TileType
 --
 Floor
-Wall
+VerticalWall
+HorizontalWall
 Door
 Passage</panel_attributes>
     <additional_attributes/>
@@ -1189,7 +1188,7 @@ cbase=rd</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>1182</x>
-      <y>714</y>
+      <y>732</y>
       <w>168</w>
       <h>54</h>
     </coordinates>
@@ -1204,14 +1203,14 @@ cbase=rd</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1104</x>
-      <y>738</y>
-      <w>90</w>
-      <h>24</h>
+      <x>1092</x>
+      <y>756</y>
+      <w>102</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
 &lt;Character&gt;</panel_attributes>
-    <additional_attributes>10.0;20.0;130.0;20.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0;150.0;30.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -1765,7 +1764,7 @@ bg=blue</panel_attributes>
     <panel_attributes>&lt;&lt;enumeration&gt;&gt;
 CharacterMoveStrategyType
 --
-Player
+PlayerInput
 Random
 Dragon</panel_attributes>
     <additional_attributes/>
@@ -1989,13 +1988,13 @@ DragonHoard</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>150</x>
-      <y>1116</y>
+      <y>1104</y>
       <w>60</w>
-      <h>108</h>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
 </panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0;80.0;130.0;80.0;160.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;80.0;150.0;80.0;180.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -2419,12 +2418,12 @@ goldFactory</panel_attributes>
       <x>924</x>
       <y>168</y>
       <w>432</w>
-      <h>558</h>
+      <h>576</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
 playerFactory</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;150.0;610.0;150.0;610.0;910.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;610.0;150.0;610.0;940.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -2808,14 +2807,14 @@ Miss</panel_attributes>
     <coordinates>
       <x>1224</x>
       <y>582</y>
-      <w>204</w>
+      <w>270</w>
       <h>372</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
 cbase=r
 strategy</panel_attributes>
-    <additional_attributes>10.0;10.0;210.0;10.0;210.0;190.0;290.0;190.0;290.0;600.0</additional_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0;210.0;190.0;280.0;190.0;280.0;550.0;420.0;550.0;420.0;600.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -2884,5 +2883,119 @@ cbase=l</panel_attributes>
 
 cbase=l</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0;90.0;60.0;90.0;180.0;40.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1368</x>
+      <y>162</y>
+      <w>66</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+ItemType
+--
+Potion
+GoldPile</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1446</x>
+      <y>126</y>
+      <w>72</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+PotionType
+--
+RestoreHealth
+BoostAttack
+BoostDefense
+PoisonHealth
+WoundAttack
+WoundDefense</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1536</x>
+      <y>144</y>
+      <w>72</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+OverlapResult
+--
+Blocked
+Enter
+Consumed
+FloorTransition</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1626</x>
+      <y>108</y>
+      <w>72</w>
+      <h>102</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+Direction
+--
+North
+East
+South
+West
+NorthEast
+SouthEast
+SouthWest
+NorthWest</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>366</x>
+      <y>300</y>
+      <w>96</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>GoldDrop
+--
++instantAmount: uint
++pilesDropped: uint
++pileSize: GoldSize</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1260</x>
+      <y>678</y>
+      <w>216</w>
+      <h>276</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+m1=dragonHoardFactory</panel_attributes>
+    <additional_attributes>200.0;440.0;200.0;70.0;10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1200</x>
+      <y>936</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1
+m1=goldfactory
+m1pos=5,5</panel_attributes>
+    <additional_attributes>180.0;70.0;10.0;70.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
