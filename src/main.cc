@@ -154,9 +154,10 @@ int main(int argc, char* argv[]) {
   game->attach(inputHandler.get());
 
   // Main game loop using InputHandler
-  while (true) {
+  bool running = true;
+  while (running) {
     try {
-      inputHandler->processInput();
+      running = inputHandler->processInput();
     } catch (const exception& e) {
       cerr << "Input error: " << e.what() << endl;
     }

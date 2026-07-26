@@ -359,10 +359,7 @@ void Game::runEnemyTurn() {
   renderer->draw(playerDisplayInfo());
 }
 
-void Game::onNotify(const GameQuitEvent&) {
-  // TODO any quit behaviour here?
-  std::exit(0);
-}
+void Game::onNotify(const GameQuitEvent&) {}
 
 void Game::onNotify(const CharacterDeathEvent& event) {
   notify(event);

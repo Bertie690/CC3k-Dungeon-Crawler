@@ -71,7 +71,7 @@ UIAction StdinInputHandler::readRaceCommand() {
     cout << "Select your race (s=Shade, d=Drow, v=Vampire, g=Goblin, t=Troll) or q to quit: ";
     string token;
     if (!(cin >> token)) {
-      exit(0);
+      return Quit{};
     }
     if (token == "q") {
       return Quit{};
@@ -93,7 +93,7 @@ UIAction StdinInputHandler::readGameCommand() {
 
   string token;
   if (!(cin >> token)) {
-    exit(0);
+    return Quit{};
   }
 
   if (token == "q") return Quit{};
@@ -112,7 +112,7 @@ UIAction StdinInputHandler::readGameCommand() {
   if (token == "a" || token == "u") {
     string dirToken;
     if (!(cin >> dirToken)) {
-      exit(0);
+      return Quit{};
     }
     if (const auto& d = parseDirection(dirToken)) {
       if (token == "a") return Attack{*d};
@@ -126,7 +126,7 @@ UIAction StdinInputHandler::readGameOverCommand() {
   cout << "> ";
   string token;
   if (!(cin >> token)) {
-    exit(0);
+    return Quit{};
   }
   if (token == "q") {
     return Quit{};

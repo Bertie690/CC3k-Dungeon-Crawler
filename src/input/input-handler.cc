@@ -41,7 +41,7 @@ export class InputHandler
   virtual void onNotify(const GameOverEvent& event) override;
 
  public:
-  void processInput();
+  bool processInput();
 
   virtual ~InputHandler() = default;
 };
@@ -53,7 +53,7 @@ void InputHandler::onInvalidInput(const std::string& message) {
 
 void InputHandler::onNotify(const GameOverEvent&) { awaitingGameOver = true; }
 
-void InputHandler::processInput() {
+bool InputHandler::processInput() {
   const UIAction action = readCommand();
   if (const RaceSelect* raceSelect = std::get_if<RaceSelect>(&action)) {
     notify(RaceSelectEvent{raceSelect->race});
@@ -61,10 +61,12 @@ void InputHandler::processInput() {
     notify(FreezeEnemiesEvent{});
   } else if (std::holds_alternative<Restart>(action)) {
     // doesn't emit PlayerActionEvent since we shouldn't run enemy turns
-    return;
+    return true;
   } else if (std::holds_alternative<Quit>(action)) {
     notify(GameQuitEvent{true});
+    return false;
   } else {
     notify(PlayerActionEvent{variantCast<Action>(action)});
   }
+  return true;
 }
