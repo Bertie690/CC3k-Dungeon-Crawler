@@ -5,19 +5,20 @@ export module goldfactory;
 #ifdef __INTELLISENSE__
 #include <memory>
 #include <vector>
+
 #include "../entities/gold-pile.cc"
 #include "../enums/gold-size.cc"
-#include "../floor/chamber.cc"
 #include "../floor/position.cc"
+#include "../floor/room.cc"
 #include "standard-factory.cc"
 #else
 import <memory>;
 import <stdexcept>;
 import <vector>;
-import chamber;
 import goldpile;
 import goldsize;
 import position;
+import room;
 import standardfactory;
 #endif  // __INTELLISENSE__
 
@@ -35,6 +36,5 @@ export class GoldFactory : public StandardFactory<GoldPile> {
   void process(Chamber& chamber, std::vector<Position>& availablePositions) override;
   // Place a GoldPile of the given size in the availablePositions.
   // Necessary since gold type must be chosen before placement in random generation.
-  void process(Chamber& chamber, std::vector<Position>& availablePositions,
-               GoldSize size);
+  void process(Room& room, std::vector<Position>& availablePositions, GoldSize size);
 };

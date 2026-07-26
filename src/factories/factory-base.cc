@@ -5,13 +5,13 @@ export module factorybase;
 #ifdef __INTELLISENSE__
 #include <vector>
 
-#include "../floor/chamber.cc"
 #include "../floor/position.cc"
+#include "../floor/room.cc"
 #include "../utils/rng.cc"
 #else
 import <vector>;
-import chamber;
 import position;
+import room;
 import rng;
 #endif  // __INTELLISENSE__
 
@@ -24,7 +24,6 @@ export class FactoryBase {
   FactoryBase(RNG& rng) : rng{rng} {}
   virtual ~FactoryBase() = default;
 
-  // Process the given Chamber. The provided list of availablePositions is used to improve caching purposes.
-  virtual void process(Chamber& chamber,
-                       std::vector<Position>& availablePositions) = 0;
+  // Process the given Room. The provided list of availablePositions is used to improve caching purposes.
+  virtual void process(Room& room, std::vector<Position>& availablePositions) = 0;
 };

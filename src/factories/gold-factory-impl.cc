@@ -17,17 +17,18 @@ GoldSize GoldFactory::randomGoldSize() {
   } else if (randomGoldSizeSelection < 7) {
     return GoldSize::Small;
   } else {
-    return GoldSize::DragonHoard; // randomGoldSizeSelection == 7
+    return GoldSize::DragonHoard;  // randomGoldSizeSelection == 7
   }
 }
 
 std::shared_ptr<GoldPile> GoldFactory::create(const Position& position) {
-  return create(position, randomGoldSize()); 
+  return create(position, randomGoldSize());
 }
 std::shared_ptr<GoldPile> GoldFactory::create(const Position& position, GoldSize size) {
   return std::make_shared<GoldPile>(position, size);
 }
 
+// TODO: Move the RNG step into the factory and remove throw
 void GoldFactory::process(Chamber&, std::vector<Position>&) {
   throw std::logic_error{"GoldFactory::process requires an explicit GoldSize"};
 }
@@ -37,5 +38,5 @@ void GoldFactory::process(Chamber& chamber, std::vector<Position>& availablePosi
   Position position = availablePositions[selectedIndex];
   availablePositions[selectedIndex] = availablePositions.back();
   availablePositions.pop_back();
-  chamber[position].add(create(position, size));
+  room[position].add(create(position, size));
 }

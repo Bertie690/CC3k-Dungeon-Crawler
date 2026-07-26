@@ -2,11 +2,13 @@ module position;
 
 #ifdef __INTELLISENSE__
 #include <compare>
+#include <string>
 
 #include "../enums/direction.cc"
 #include "position.cc"
 #else
 import <compare>;
+import <string>;
 import direction;
 #endif  // __INTELLISENSE__
 
@@ -41,3 +43,7 @@ Position Position::operator-(const Direction dir) const noexcept {
 }
 Position& Position::operator+=(const Direction dir) noexcept { return *this += fromDirection(dir); }
 Position& Position::operator-=(const Direction dir) noexcept { return *this -= fromDirection(dir); }
+
+Position::operator std::string() const {
+  return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+}

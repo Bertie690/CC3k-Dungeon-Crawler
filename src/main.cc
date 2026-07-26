@@ -6,14 +6,15 @@
 #include <string>
 #include <vector>
 
-#include "display/tui-renderer.cc"
 #include "display/renderer.cc"
+#include "display/tui-renderer.cc"
 #include "enums/action.cc"
 #include "enums/direction.cc"
 #include "enums/race-type.cc"
+#include "game/feature-flags.cc"
 #include "game/game.cc"
-#include "input/stdin-input-handler.cc"
 #include "input/input-handler.cc"
+#include "input/stdin-input-handler.cc"
 #else
 import <iostream>;
 import <memory>;
@@ -29,16 +30,10 @@ import racetype;
 import game;
 import stdininputhandler;
 import inputhandler;
+import featureflags;
 #endif  // __INTELLISENSE__
 
 using namespace std;
-
-struct FeatureFlags {  // TODO : Implement feature flags in the game logic
-  bool enableDebugMode = false;
-  bool enableSlowMode = false;
-  bool enableEnhancedGraphics = false;
-  bool enableSoundEffects = false;
-};
 
 string parseFloorFile(int argc, char* argv[]) {
   for (int i = 1; i < argc; ++i) {
@@ -73,22 +68,21 @@ unsigned int parseSeed(int argc, char* argv[]) {
   return 0;
 }
 
-FeatureFlags parseFeatureFlags(int argc, char* argv[]) {
-  FeatureFlags flags;
-
+void parseFeatureFlags(int argc, char* argv[]) {
   for (int i = 1; i < argc; ++i) {
     string arg = argv[i];
     if (arg == "--debug") {
-      flags.enableDebugMode = true;
+      FeatureFlags::enableDebugMode = true;
     } else if (arg == "--slow") {
-      flags.enableSlowMode = true;
+      FeatureFlags::enableSlowMode = true;
     } else if (arg == "--enhanced-graphics") {
-      flags.enableEnhancedGraphics = true;
+      FeatureFlags::enableEnhancedGraphics = true;
     } else if (arg == "--sound") {
-      flags.enableSoundEffects = true;
+      FeatureFlags::enableSoundEffects = true;
+    } else if (arg == "--improved-hoard-placement") {
+      FeatureFlags::enableImprovedHoardPlacement = true;
     }
   }
-  return flags;
 }
 
 char convertNumberToItem(int number) {
@@ -121,22 +115,25 @@ char convertNumberToItem(int number) {
 int main(int argc, char* argv[]) {
   string floorFile = parseFloorFile(argc, argv);
   unsigned int seed = parseSeed(argc, argv);
-  FeatureFlags flags = parseFeatureFlags(argc, argv);
+  parseFeatureFlags(argc, argv);
 
-  if (flags.enableDebugMode) {
+  if (FeatureFlags::enableDebugMode) {
     cout << "Debug mode enabled" << endl;
   }
 
-  if (flags.enableSlowMode) {
+  if (FeatureFlags::enableSlowMode) {
     cout << "Slow mode enabled" << endl;
   }
 
-  if (flags.enableEnhancedGraphics) {
+  if (FeatureFlags::enableEnhancedGraphics) {
     cout << "Enhanced graphics enabled" << endl;
   }
 
-  if (flags.enableSoundEffects) {
+  if (FeatureFlags::enableSoundEffects) {
     cout << "Sound effects enabled" << endl;
+  }
+  if (FeatureFlags::enableImprovedHoardPlacement) {
+    cout << "Improved hoard placement algorithm enabled" << endl;
   }
 
   unique_ptr<InputHandler> inputHandler = make_unique<StdinInputHandler>();

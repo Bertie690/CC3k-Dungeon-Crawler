@@ -1,7 +1,6 @@
 module presetfloorgenerator;
 
 #ifdef __INTELLISENSE__
-#include <algorithm>
 #include <fstream>
 #include <memory>
 #include <stdexcept>
@@ -22,7 +21,6 @@ module presetfloorgenerator;
 #include "preset-floor-generator.cc"
 #include "room.cc"
 #else
-import <algorithm>;
 import <fstream>;
 import <string>;
 import <vector>;
@@ -43,90 +41,88 @@ import staircase;
 #endif  // __INTELLISENSE__
 
 using namespace std;
+using namespace PresetSymbols;
 
 vector<string> readFloorLines(ifstream& input) {
   vector<string> floorLines;
   for (int y = 0; y < Floor::HEIGHT; ++y) {
     // TODO: invalid input handling necessary? Probably not..
+    if (input.eof()) {
+      throw invalid_argument{"Unexpected end of file while reading floor layout!"};
+    }
     floorLines.emplace_back();
     getline(input, floorLines.back());
   }
   return floorLines;
 }
-Position findAdjacentHoard(const Floor& floor, const vector<string>& floorLines, const Position& dragonPosition, const vector<Position>& claimedDragonHoards) {
-  const Room& chamber = floor.getRoomAt(dragonPosition);
-  for (const Direction direction : chamber.getAdjacentCells(dragonPosition)) {
-    Position candidate = dragonPosition + direction;
-    // Check if candidate is a Dragon Hoard and not already claimed
-    if (floorLines[candidate.y][candidate.x] == '9' && find(claimedDragonHoards.begin(), claimedDragonHoards.end(), candidate) == claimedDragonHoards.end()) {
-      return candidate;
-    }
-  }
-  throw invalid_argument{"No adjacent Dragon Hoard found"};
-}
 
-PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName)
+PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
+                                           bool allowAmbiguousDragonPlacement)
     : rng{rng},
       enemyFactory{rng},
       goldFactory{rng},
-      potionFactory{rng},
       dragonHoardFactory{rng, enemyFactory},
+      strategy{allowAmbiguousDragonPlacement
+                   ? static_cast<std::unique_ptr<HoardPlacementStrategy>>(
+                         make_unique<DefaultHoardPlacementStrategy>(dragonHoardFactory))
+                   : static_cast<std::unique_ptr<HoardPlacementStrategy>>(
+                         make_unique<PerfectMatchHoardPlacementStrategy>(dragonHoardFactory,
+                                                                         goldFactory))},
       input{fileName} {}
 
-void placePresetEntities(Floor& floor, const vector<string>& floorLines, GoldFactory& goldFactory,
-                         PotionFactory& potionFactory, EnemyFactory& enemyFactory,
-                         DragonHoardFactory& dragonHoardFactory) {
-  vector<Position> claimedDragonHoards;
+void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string>& floorLines) {
+  vector<Position> dragonHoards;
+  vector<Position> dragons;
 
   for (int y = 0; y < Floor::HEIGHT; ++y) {
     for (int x = 0; x < Floor::WIDTH; ++x) {
       const char c = floorLines[y][x];
       const Position position{x, y};
       switch (c) {
-        case '\\':
+        case STAIRCASE_SYMBOL:
           floor.getCell(position).add(make_shared<Staircase>(position));
           break;
-        case '@':
+        case PLAYER_SPAWN_SYMBOL:
           floor.playerSpawn = position;
           break;
-        case 'H':
-        case 'W':
-        case 'E':
-        case 'O':
-        case 'M':
-        case 'L':
+        case HUMAN_SYMBOL:
+        case DWARF_SYMBOL:
+        case ELF_SYMBOL:
+        case ORC_SYMBOL:
+        case MERCHANT_SYMBOL:
+        case HALFLING_SYMBOL:
           floor.getCell(position).add(enemyFactory.create(position, c));
           break;
-        case 'D': {
-          Position hoardPosition = findAdjacentHoard(floor, floorLines, position, claimedDragonHoards);
-          claimedDragonHoards.push_back(hoardPosition);
-          dragonHoardFactory.process(static_cast<Chamber&>(floor.getRoomAt(hoardPosition)), hoardPosition, position);
-          break;
-        }
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
+        case RH_POTION_SYMBOL:
+        case BA_POTION_SYMBOL:
+        case BD_POTION_SYMBOL:
+        case PH_POTION_SYMBOL:
+        case WA_POTION_SYMBOL:
+        case WD_POTION_SYMBOL:
           floor.getCell(position).add(
               potionFactory.create(position, static_cast<PotionType>(c - '0')));
           break;
-        case '6':
+        case NORMAL_GOLD_SYMBOL:
           floor.getCell(position).add(goldFactory.create(position, GoldSize::Normal));
           break;
-        case '7':
+        case SMALL_HOARD_SYMBOL:
           floor.getCell(position).add(goldFactory.create(position, GoldSize::Small));
           break;
-        case '8':
+        case MERCHANT_HOARD_SYMBOL:
           floor.getCell(position).add(goldFactory.create(position, GoldSize::MerchantHoard));
           break;
-        case '9':
-          // Gets placed by dragonHoardFactory
+        // Get placed later on
+        case DRAGON_SYMBOL:
+          dragons.push_back(position);
+          break;
+        case DRAGON_HOARD_SYMBOL:
+          dragonHoards.push_back(position);
           break;
       }
     }
   }
+
+  this->strategy->placeDragonHoards(floor, dragonHoards, dragons);
 }
 
 Floor PresetFloorGenerator::generateFloor() {
@@ -135,8 +131,6 @@ Floor PresetFloorGenerator::generateFloor() {
 
   Floor floor = createBaseFloor(rng);
 
-  placePresetEntities(floor, floorLines, goldFactory, potionFactory, enemyFactory,
-                      dragonHoardFactory);
+  placePresetEntities(floor, floorLines);
   return floor;
-  // TODO: add factories to signature
 }

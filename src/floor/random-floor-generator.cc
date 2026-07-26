@@ -21,6 +21,10 @@ import floorgenerator;
 #endif  // __INTELLISENSE__
 
 export class RandomFloorGenerator : public FloorGenerator {
+  static inline const int NUM_POTIONS_SPAWNED = 10;
+  static inline const int NUM_GOLD_PILES_SPAWNED = 10;
+  static inline const int NUM_ENEMIES_SPAWNED = 20;
+
   RNG& rng;
   EnemyFactory enemyFactory;
   GoldFactory goldFactory;

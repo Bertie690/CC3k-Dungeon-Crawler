@@ -4,9 +4,11 @@ export module position;
 
 #ifdef __INTELLISENSE__
 #include <compare>
+#include <string>
 
 #include "../enums/direction.cc"
 #else
+import <string>;
 import <compare>;
 import direction;
 #endif  // __INTELLISENSE__
@@ -53,6 +55,8 @@ export struct Position {
 
   // Convert a Direction to a Position offset.
   static constexpr Position fromDirection(const Direction dir) noexcept;
+
+  operator std::string() const;
 };
 
 // needs to be in same file
