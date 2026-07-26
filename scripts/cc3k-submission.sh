@@ -9,6 +9,13 @@ output="$project/cc3k.zip"
 
 trap 'rm -rf "$stage"' EXIT
 
+missing_newlines="$(cd "$project" && find src -name '*.cc' -type f -exec sh -c 'for file do [ -s "$file" ] && [ -n "$(tail -c 1 "$file")" ] && echo "$file"; done; exit 0' sh {} +)"
+
+if [[ -n "$missing_newlines" ]]; then
+  echo "$missing_newlines"
+  exit 1
+fi
+
 find "$project/src" -name '*.cc' -exec cp {} "$stage" \;
 
 cd "$stage"
