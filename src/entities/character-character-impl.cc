@@ -95,6 +95,12 @@ void Character::act(Floor& floor) {
     for (const auto& entity : cell.getEntities()) {
       if (entity->onUse(*this)) {
         floor.remove(*entity);
+        if (dead()) {
+          // Necessary for potion death
+          floor.reportCharacterDeath(
+              CharacterDeathEvent{*this, position(), raceType(), getGoldDrop()});
+          return;
+        }
         this->onTurnEnd();
         return;
       }

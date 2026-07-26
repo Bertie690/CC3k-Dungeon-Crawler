@@ -16,6 +16,7 @@ module game;
 #include "../entities/player.cc"
 #include "../entities/potion.cc"
 #include "../entities/stats.cc"
+#include "../enums/direction.cc"
 #include "../enums/gold-size.cc"
 #include "../enums/potion-type.cc"
 #include "../enums/race-type.cc"
@@ -42,6 +43,7 @@ import character;
 import player;
 import potion;
 import potiontype;
+import direction;
 import stats;
 import racetype;
 import roomtype;
@@ -234,6 +236,21 @@ void Game::onNotify(const EntityMoveEvent& event) {
     actionLog.append("PC picks up " + to_string(player->getGold() - goldAtTurnStart) + " gold");
     goldAtTurnStart = player->getGold();
   }
+  if (isPlayerMove) {
+    for (const Direction direction : allDirections) {
+      const Position potionPosition = playerPosition + direction;
+      if (!floor->hasCell(potionPosition)) continue;
+      for (const shared_ptr<Entity>& entity : floor->getCell(potionPosition).getEntities()) {
+        const Potion* potion = dynamic_cast<const Potion*>(entity.get());
+        if (!potion) continue;
+        if (discoveredPotions.find(potion->potionType) == discoveredPotions.end()) {
+          actionLog.append("PC sees an unknown potion");
+        } else {
+          actionLog.append("PC sees " + potionName(potion->potionType));
+        }
+      }
+    }
+  }
 }
 
 void Game::onNotify(const CharacterAttackEvent& event) {
@@ -247,6 +264,12 @@ void Game::onNotify(const CharacterAttackEvent& event) {
 
   string message = attacker + " deals " + to_string(event.damage) + " damage to " + defender;
 
+  if (&event.attacker == player.get() && !event.defeated) {
+    const Character* defendingCharacter = dynamic_cast<const Character*>(&event.defender);
+    if (defendingCharacter) {
+      message += " (" + to_string(defendingCharacter->currentHp()) + " HP)";
+    }
+  }
   if (event.defeated) message += " and defeats " + defender;
   actionLog.append(message);
 
