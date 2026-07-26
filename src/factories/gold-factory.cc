@@ -12,6 +12,7 @@ export module goldfactory;
 #include "standard-factory.cc"
 #else
 import <memory>;
+import <stdexcept>;
 import <vector>;
 import chamber;
 import goldpile;
@@ -30,6 +31,8 @@ export class GoldFactory : public StandardFactory<GoldPile> {
   virtual std::shared_ptr<GoldPile> create(const Position& position) override;
   // Create a GoldPile of the given size at position.
   std::shared_ptr<GoldPile> create(const Position& position, GoldSize size);
+  // Gold placement requires a size selected by the floor generator.
+  void process(Chamber& chamber, std::vector<Position>& availablePositions) override;
   // Place a GoldPile of the given size in the availablePositions.
   // Necessary since gold type must be chosen before placement in random generation.
   void process(Chamber& chamber, std::vector<Position>& availablePositions,

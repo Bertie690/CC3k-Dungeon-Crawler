@@ -28,6 +28,10 @@ std::shared_ptr<GoldPile> GoldFactory::create(const Position& position, GoldSize
   return std::make_shared<GoldPile>(position, size);
 }
 
+void GoldFactory::process(Chamber&, std::vector<Position>&) {
+  throw std::logic_error{"GoldFactory::process requires an explicit GoldSize"};
+}
+
 void GoldFactory::process(Chamber& chamber, std::vector<Position>& availablePositions, GoldSize size) {
   int selectedIndex = rng.intRange(static_cast<int>(availablePositions.size()));
   Position position = availablePositions[selectedIndex];
