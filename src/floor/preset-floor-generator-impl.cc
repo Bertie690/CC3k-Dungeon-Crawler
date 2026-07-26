@@ -57,10 +57,12 @@ vector<string> readFloorLines(ifstream& input) {
 }
 
 PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
+                                           unsigned int floorNumber,
                                            bool allowAmbiguousDragonPlacement)
     : rng{rng},
       enemyFactory{rng},
       goldFactory{rng},
+      nextFloor{floorNumber + 1U},
       potionFactory{rng},
       dragonHoardFactory{rng, enemyFactory},
       strategy{allowAmbiguousDragonPlacement ? static_cast<std::unique_ptr<HoardPlacementStrategy>>(

@@ -183,19 +183,27 @@ void Game::newGame(RaceType race) {
     floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile);
   }
   if (player) {
-    detach(player->inputObserver());
+    if (Observer<PlayerActionEvent>* observer = player->inputObserver()) {
+      detach(observer);
+    }
+    if (Observer<NewFloorEvent>* observer = player->newFloorObserver()) {
+      detach(observer);
+    }
   }
   // (0,0) position outside of Chambers until we place Player on the first Floor
   player = playerFactory.create(Position{0, 0}, race);
   goldAtTurnStart = player->getGold();
-  attach(player->inputObserver());
+  if (Observer<PlayerActionEvent>* observer = player->inputObserver()) {
+    attach(observer);
+  }
+  if (Observer<NewFloorEvent>* observer = player->newFloorObserver()) {
+    attach(observer);
+  }
   loadNextFloor();
   // TODO: start turns
 }
 
 void Game::loadNextFloor() {
-  // Health changes persist, but boost/wound effects expire on a new floor.
-  player->resetTemporaryStats();
   ++floorNumber;
   floor = make_unique<Floor>(floorGenerator->generateFloor());
   floor->attach(renderer.get());
@@ -210,8 +218,8 @@ void Game::loadNextFloor() {
 }
 
 PlayerDisplayInfo Game::playerDisplayInfo() const {
-  return PlayerDisplayInfo{player->raceType(),  player->getGold(), floorNumber,
-                           player->currentHp(), player->stats(),   actionLog.text()};
+  return PlayerDisplayInfo{player->raceType(),  player->getGold(),  floorNumber,
+                           player->currentHp(), player->getStats(), actionLog.text()};
 }
 
 void Game::endGame(bool victory) {
@@ -322,7 +330,7 @@ void Game::runTurnCycle(const Action& action) {
 
   // Player reached staircase, enemy turn is skipped and next floor is loaded
   if (floorTransitionRequested) {
-    if (floorNumber == 5) {
+    if (floorNumber == MAX_NUM_FLOORS) {
       endGame(true);
       return;
     }
@@ -362,7 +370,7 @@ void Game::runEnemyTurn() {
 
   // Run each Enemy's turn
   for (const shared_ptr<Character>& enemy : enemies) {
-    if (player->dead() || pendingGameOver) break;
+    if (player->isDead() || pendingGameOver) break;
     enemy->act(*floor);
   }
   renderer->draw(playerDisplayInfo());

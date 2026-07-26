@@ -59,9 +59,6 @@ export class Character : public virtual Entity {
   // Drain the given amount of HP from the defender, healing this Character for the same amount.
   void drain(Character& defender, unsigned int hp);
 
-  // Return whether this Character is dead.
-  virtual bool isDead() const = 0;
-
   // Attempt to attack another Character.
   void attack(Character& defender, Floor& floor);
 
@@ -69,8 +66,6 @@ export class Character : public virtual Entity {
 
   // TODO: See if we can make some of these private inside this/CharacterBase (still exposing them as protected inside decorator)
 
-  // Return this Character's current stats.
-  virtual Stats getStats() const = 0;
   // Return this Character's current accuracy multiplier against the given defender.
   virtual double getAccuracy(const Character& defender) const = 0;
   // Return this Character's current evasion multiplier against the given attacker.
@@ -102,25 +97,29 @@ export class Character : public virtual Entity {
  public:
   virtual ~Character() = default;
 
+#pragma region Getters
+  // Return this Character's race type.
   virtual RaceType raceType() const = 0;
 
-  // Player fields for decorators
-  // Expose the Player's strategy so the input handler can use it as an observer.
+  // Return a pointer to the observer that will receive PlayerActionEvents for this Character, if applicable.
+  // Used to allow attaching the input handler to the Player Character from Game.
   virtual Observer<PlayerActionEvent>* inputObserver();
-  // Return Player's gold.
+  // Return a pointer to the observer that will receive NewFloorEvents for this Character, if applicable.
+  // Used to allow the Player to react to floor transitions through the observer system.
+  virtual Observer<NewFloorEvent>* newFloorObserver();
+  // Return the current amount of gold this Character has.
   virtual int getGold() const;
-  // Add amount to Player's gold.
+  // Add the given amount to this Character's gold reserves.
   virtual void addGold(int amount);
-
-#pragma region Getters
 
   // Return this Character's current HP.
   // This tracker's initial value must be set to the specified base maximum HP upon creation
   // (regardless of whether it is modified by decorators), and must never exceed the current maximum HP.
   virtual unsigned int currentHp() const = 0;
-  // TODO: remove these
-  Stats stats() const;
-  bool dead() const;
+  // Return this Character's current stats.
+  virtual Stats getStats() const = 0;
+  // Return whether this Character is dead.
+  virtual bool isDead() const = 0;
 #pragma endregion Getters
 
   // Perform an action for the turn.
@@ -143,11 +142,15 @@ export class Character : public virtual Entity {
 
   // Apply attack/defense changes that last until the next floor.
   virtual void addTemporaryStats(int atkDelta, int defDelta) = 0;
-  virtual void resetTemporaryStats() = 0;
 
   // Return whether this Character can attack a defender of the given type.
   // Intended to be hooked into during command selection, and is entirely unused for player-controlled characters.
   virtual bool canAttack(const RaceType& defenderType) const = 0;
+
+ private:
+  // Reset all pending temporary stat changes to 0.
+  // Internal-only: this should be triggered by NewFloorEvent observers rather than direct external calls.
+  virtual void resetTemporaryStats() = 0;
 };
 
 #pragma region Movement Strategies
@@ -213,11 +216,7 @@ export class BaseCharacter : public BaseEntity, public Character {
   // A new copy is created upon class creation.
   std::unique_ptr<CharacterMoveStrategy> moveStrategy;
 
-  virtual bool isDead() const override final;
-
  protected:
-  virtual Stats getStats() const override final;
-
   virtual Action getNextMove(Floor& floor) override final;
 
   CharacterMoveStrategy& movementStrategy();
@@ -233,6 +232,7 @@ export class BaseCharacter : public BaseEntity, public Character {
   virtual void onTurnEnd() override;
   virtual void onDeath(Character* killer) override;
   virtual void onKill(const Character& killer) override;
+  virtual void resetTemporaryStats() override final;
 
  public:
   BaseCharacter(Position position, Stats baseStats, RaceType raceType,
@@ -247,24 +247,21 @@ export class BaseCharacter : public BaseEntity, public Character {
                       Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
   virtual unsigned int currentHp() const override final;
+  virtual Stats getStats() const override final;
+  virtual bool isDead() const override final;
 
   virtual double getPotionEffectMultiplier() const override;
   virtual double getScoreMulti() const override;
 
   virtual bool canAttack(const RaceType& defender) const override;
   virtual void addTemporaryStats(int atkDelta, int defDelta) override final;
-  virtual void resetTemporaryStats() override final;
 };
 
 // Abstract base decorator class for Characters, allowing for temporary or permanent modifications to their behavior.
 class CharacterDecorator : public Character {
  protected:
   std::unique_ptr<Character> character;
-  virtual bool isDead() const override final;
-
   virtual Action getNextMove(Floor& floor) override final;
-
-  virtual Stats getStats() const override;
   virtual double getAccuracy(const Character& defender) const override;
   virtual double getEvasion(const Character& attacker) const override;
   virtual unsigned int getAttacksPerTurn() const override;
@@ -287,6 +284,7 @@ class CharacterDecorator : public Character {
 
   virtual RaceType raceType() const override final;
   virtual Observer<PlayerActionEvent>* inputObserver() override;
+  virtual Observer<NewFloorEvent>* newFloorObserver() override;
   virtual int getGold() const override;
   virtual void addGold(int amount) override;
 
@@ -294,28 +292,17 @@ class CharacterDecorator : public Character {
                       Character* source = nullptr) override final;
   virtual void heal(unsigned int amt) override final;
   virtual unsigned int currentHp() const override;
+  virtual Stats getStats() const override;
+  virtual bool isDead() const override final;
 
   virtual double getPotionEffectMultiplier() const override;
   virtual double getScoreMulti() const override;
 
   virtual bool canAttack(const RaceType& defenderType) const override final;
   virtual void addTemporaryStats(int atkDelta, int defDelta) override;
+
+ protected:
   virtual void resetTemporaryStats() override;
-};
-
-// Class for temporary decorators that are automatically removed when a new floor is generated.
-class TempCharacterDecorator : public CharacterDecorator, public Observer<NewFloorEvent> {
-  std::unique_ptr<Character>* prev = nullptr;
-  bool unlinked = false;
-
-  void unlink();
-
-  virtual void onNotify(const NewFloorEvent&) override final;
-
- public:
-  TempCharacterDecorator(std::unique_ptr<Character> character,
-                         std::unique_ptr<Character>* ownerSlot);
-  virtual ~TempCharacterDecorator() = 0;
 };
 
 #pragma region Concrete Decorators
@@ -481,29 +468,10 @@ export class GoldOnDeathCharacterDecorator final : public CharacterDecorator {
   }
 
  public:
-  GoldOnDeathCharacterDecorator(std::unique_ptr<Character> character, const GoldDrop goldOnDeath, bool override = false)
+  GoldOnDeathCharacterDecorator(std::unique_ptr<Character> character, const GoldDrop goldOnDeath,
+                                bool override = false)
       : CharacterDecorator(std::move(character)), goldOnDeath(goldOnDeath), override(override) {}
   virtual ~GoldOnDeathCharacterDecorator() = default;
-};
-
-export class TempStatChangeCharacterDecorator final : public TempCharacterDecorator {
-  const Stats statDelta;
-  const bool increase;
-
- protected:
-  virtual Stats getStats() const override {
-    return increase ? CharacterDecorator::getStats() + statDelta
-                    : CharacterDecorator::getStats() - statDelta;
-  }
-
- public:
-  TempStatChangeCharacterDecorator(std::unique_ptr<Character> character,
-                                   std::unique_ptr<Character>* ownerSlot, Stats statDelta,
-                                   bool increase = true)
-      : TempCharacterDecorator(std::move(character), ownerSlot),
-        statDelta(statDelta),
-        increase(increase) {}
-  virtual ~TempStatChangeCharacterDecorator() = default;
 };
 
 #pragma endregion  // Concrete Decorators

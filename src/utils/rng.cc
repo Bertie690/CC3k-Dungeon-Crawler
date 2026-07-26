@@ -4,10 +4,12 @@ export module rng;
 
 #ifdef __INTELLISENSE__
 #include <chrono>
+#include <limits>
 #include <random>
 #include <type_traits>
 #else
 import <random>;
+import <limits>;
 import <chrono>;
 import <type_traits>;
 #endif  // __INTELLISENSE__
@@ -32,9 +34,10 @@ export class RNG {
   RNG(int seed = std::chrono::system_clock::now().time_since_epoch().count());
 
   // Generate a uniformly chosen integer in the interval [start, start + range).
+  // Works with any signed or unsigned integer type, and throws `std::out_of_range` if the above interval is empty or results in overflow.
   template <typename T>
     requires std::is_integral_v<T>
-  T intRange(T range, T start = 0);
+  T intRange(const T range, const T start = 0);
 
   // Return a uniformly chosen real number in the interval [0, 1).
   double randDouble();
@@ -70,11 +73,20 @@ export class RNG {
 };
 
 #pragma region Implementation
+// NB: This all has to be in the same file since the linker throws a temper tantrum if it's separated
+
 RNG::RNG(int seed) : twister(seed) {}
 
 template <typename T>
   requires std::is_integral_v<T>
-T RNG::intRange(T range, T start) {
+T RNG::intRange(const T range, const T start) {
+  if (range <= 0) {
+    throw std::out_of_range("Cannot generate a random integer from an empty range!");
+  }
+  if (range > std::numeric_limits<T>::max() - start) {
+    throw std::out_of_range("Range results in integer overflow!");
+  }
+  // subtract 1 due to inclusivity
   std::uniform_int_distribution<T> dist(start, start + range - 1);
   return dist(twister);
 }

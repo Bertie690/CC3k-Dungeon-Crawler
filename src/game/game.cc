@@ -44,28 +44,33 @@ import floorgenerator;
 import floor;
 import floorevents;
 import rng;
+import featureflags;
 import actionlog;
 import scoreboard;
 #endif  // __INTELLISENSE__
 
-using namespace std;
-
-// Game owns and manages the main game objects
+// Game owns and manages the main game objects, alongside miscellaneous tasks that cannot be performed lower down the chain of command.
+// It also forwards a large quantity of events to various UI components.
 export class Game
     : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent, EntityMoveEvent,
                       CharacterAttackEvent, CharacterDeathEvent, FreezeEnemiesEvent,
                       RaceSelectEvent, RestartEvent>,
       public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent, GameOverEvent> {
+  static inline const unsigned int MAX_NUM_FLOORS = 5;
+
+  // The global RNG instance. Used for all random number generation in the game.
   RNG rng;
   Scoreboard scoreboard;
   PlayerFactory playerFactory;
   GoldFactory goldFactory;
-  const string floorFile;
-  unique_ptr<Renderer> renderer;
-  unique_ptr<FloorGenerator> floorGenerator;
-  unique_ptr<Floor> floor;
-  shared_ptr<Character> player = {};
-  unsigned int floorNumber = 0;
+  const std::string floorFile;
+  std::unique_ptr<Renderer> renderer;
+  std::unique_ptr<FloorGenerator> floorGenerator;
+  std::unique_ptr<Floor> floor;
+  std::shared_ptr<Character> player = {};
+
+  unsigned int floorNumber = FeatureFlags::enableDebugMode ? MAX_NUM_FLOORS : 0;
+
   std::set<PotionType> discoveredPotions;
   ActionLog actionLog{"Starting a new game"};
   // Whether a game over is pending. Will be checked at the end of every single turn.
@@ -99,7 +104,7 @@ export class Game
 
  public:
   // Create a new Game with the given Renderer, floor file, and RNG seed.
-  Game(unique_ptr<Renderer> renderer, const string& floorFile, const int seed);
+  Game(std::unique_ptr<Renderer> renderer, const std::string& floorFile, const int seed);
   // Create a new Game with the given Renderer, floor file, and the default RNG seed.
-  Game(unique_ptr<Renderer> renderer, const string& floorFile = "");
+  Game(std::unique_ptr<Renderer> renderer, const std::string& floorFile = "");
 };

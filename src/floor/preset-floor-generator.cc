@@ -128,13 +128,12 @@ export class PresetFloorGenerator : public FloorGenerator {
   std::unique_ptr<HoardPlacementStrategy> strategy;
 
   std::ifstream input;
-  int nextFloor = 1;
+  unsigned int nextFloor;
 
   void placePresetEntities(Floor& floor, const std::vector<std::string>& floorLines);
 
  public:
-  // Generates Floor using file input provided entity placements
-  PresetFloorGenerator(RNG& rng, const std::string& fileName,
+  PresetFloorGenerator(RNG& rng, const std::string& fileName, unsigned int floorNumber = 0,
                        bool allowAmbiguousDragonPlacement = false);
   Floor generateFloor() override;
 };

@@ -26,8 +26,8 @@ import room;
 #endif  // __INTELLISENSE__
 
 // A StandardFactory is a class used for placing Entities on the Floor.
-export template<typename T>
-  // Only allow T if it inherits from or is of type Entity.
+export template <typename T>
+// Only allow T if it inherits from or is of type Entity.
   requires std::is_base_of_v<Entity, T>
 class StandardFactory : public FactoryBase {
   // Create an Entity at the given position.

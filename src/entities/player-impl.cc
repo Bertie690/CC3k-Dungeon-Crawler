@@ -11,5 +11,9 @@ Observer<PlayerActionEvent>* Player::inputObserver() {
   return &static_cast<PlayerInputMoveStrategy&>(movementStrategy());
 }
 
+Observer<NewFloorEvent>* Player::newFloorObserver() { return this; }
+
+void Player::onNotify(const NewFloorEvent&) { resetTemporaryStats(); }
+
 int Player::getGold() const { return gold; }
 void Player::addGold(int amount) { gold += amount; }

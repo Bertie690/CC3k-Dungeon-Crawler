@@ -20,16 +20,15 @@ import floorevents;
 unsigned int Character::atk() const { return this->getStats().atk; }
 unsigned int Character::def() const { return this->getStats().def; }
 unsigned int Character::maxHp() const { return this->getStats().maxHp; }
-Stats Character::stats() const { return this->getStats(); }
-bool Character::dead() const { return this->isDead(); }
 
 // defaults for non-player characters
 Observer<PlayerActionEvent>* Character::inputObserver() { return nullptr; }
+Observer<NewFloorEvent>* Character::newFloorObserver() { return nullptr; }
 int Character::getGold() const { return 0; }
 void Character::addGold(int) {}
 
 void Character::attack(Character& defender, Floor& floor) {
-  if (dead() || defender.dead()) return;
+  if (isDead() || defender.isDead()) return;
 
   const unsigned int attacks = this->getAttacksPerTurn();
   for (unsigned int i = 0; i < attacks; i++) {
@@ -55,15 +54,15 @@ void Character::attack(Character& defender, Floor& floor) {
     defender.onBeingAttacked(*this, damage);
 
     floor.reportCharacterAction(CharacterAttackEvent{
-        *this, defender, CharacterAttackEvent::Result::Hit, damageDealt, defender.dead()});
+        *this, defender, CharacterAttackEvent::Result::Hit, damageDealt, defender.isDead()});
 
-    if (dead()) {
+    if (isDead()) {
       // vampire atacks dwarf and dies edge case
       floor.reportCharacterDeath(
           CharacterDeathEvent{*this, defender.position(), raceType(), getGoldDrop()});
     }
 
-    if (defender.dead()) {
+    if (defender.isDead()) {
       // TODO: Push action from onDeath function if possible
       floor.reportCharacterDeath(
           CharacterDeathEvent{defender, position(), defender.raceType(), defender.getGoldDrop()});
@@ -71,7 +70,7 @@ void Character::attack(Character& defender, Floor& floor) {
       return;
     }
     // if vampire dies, wait to check if dwarf is dead before returning
-    if (dead()) return;
+    if (isDead()) return;
   }
 }
 
@@ -98,7 +97,7 @@ void Character::act(Floor& floor) {
     for (const auto& entity : cell.getEntities()) {
       if (entity->onUse(*this)) {
         floor.remove(*entity);
-        if (dead()) {
+        if (isDead()) {
           // Necessary for potion death
           floor.reportCharacterDeath(
               CharacterDeathEvent{*this, position(), raceType(), getGoldDrop()});

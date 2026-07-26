@@ -18,7 +18,7 @@ import racetype;
 import stats;
 #endif  // __INTELLISENSE__
 
-export class Player : public BaseCharacter {
+export class Player : public BaseCharacter, public Observer<NewFloorEvent> {
  public:
   // Explicit constructor to guarantee Player strategy type.
 
@@ -26,6 +26,8 @@ export class Player : public BaseCharacter {
 
   // Expose the Player's strategy so the input handler can use it as an observer.
   virtual Observer<PlayerActionEvent>* inputObserver() override;
+  // Expose the Player's floor transition observer so Game can attach it.
+  virtual Observer<NewFloorEvent>* newFloorObserver() override;
   // Return Player's gold.
   virtual int getGold() const override;
   // Add amount to Player's gold.
@@ -33,4 +35,7 @@ export class Player : public BaseCharacter {
 
   int gold = 0;
   // TODO: Add game over handling
+
+ private:
+  virtual void onNotify(const NewFloorEvent& event) override;
 };

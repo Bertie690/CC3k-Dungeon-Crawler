@@ -111,9 +111,5 @@ void BaseCharacter::heal(unsigned int amt) {
   if (this->isDead()) {
     throw std::runtime_error("Cannot heal a dead character.");
   }
-  if (raceType() == RaceType::Vampire) {
-    this->hp += amt;
-    return;
-  }
   this->hp = std::min(this->maxHp(), this->hp + amt);
 }

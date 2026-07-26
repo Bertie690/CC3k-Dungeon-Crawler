@@ -73,12 +73,8 @@ void parseFeatureFlags(int argc, char* argv[]) {
     string arg = argv[i];
     if (arg == "--debug") {
       FeatureFlags::enableDebugMode = true;
-    } else if (arg == "--slow") {
-      FeatureFlags::enableSlowMode = true;
     } else if (arg == "--enhanced-graphics") {
       FeatureFlags::enableEnhancedGraphics = true;
-    } else if (arg == "--sound") {
-      FeatureFlags::enableSoundEffects = true;
     } else if (arg == "--improved-hoard-placement") {
       FeatureFlags::enableImprovedHoardPlacement = true;
     }
@@ -121,17 +117,10 @@ int main(int argc, char* argv[]) {
     cout << "Debug mode enabled" << endl;
   }
 
-  if (FeatureFlags::enableSlowMode) {
-    cout << "Slow mode enabled" << endl;
-  }
-
   if (FeatureFlags::enableEnhancedGraphics) {
     cout << "Enhanced graphics enabled" << endl;
   }
 
-  if (FeatureFlags::enableSoundEffects) {
-    cout << "Sound effects enabled" << endl;
-  }
   if (FeatureFlags::enableImprovedHoardPlacement) {
     cout << "Improved hoard placement algorithm enabled" << endl;
   }
@@ -156,7 +145,7 @@ int main(int argc, char* argv[]) {
     try {
       running = inputHandler->processInput();
     } catch (const exception& e) {
-      cerr << "Input error: " << e.what() << endl;
+      cerr << "Error while running game: " << e.what() << endl;
     }
   }
   return 0;

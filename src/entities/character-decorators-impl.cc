@@ -32,6 +32,9 @@ const Position& CharacterDecorator::position() const noexcept { return character
 Observer<PlayerActionEvent>* CharacterDecorator::inputObserver() {
   return character->inputObserver();
 }
+Observer<NewFloorEvent>* CharacterDecorator::newFloorObserver() {
+  return character->newFloorObserver();
+}
 int CharacterDecorator::getGold() const { return character->getGold(); }
 void CharacterDecorator::addGold(int amount) { character->addGold(amount); }
 
@@ -96,28 +99,3 @@ void CharacterDecorator::addTemporaryStats(int atkDelta, int defDelta) {
 }
 void CharacterDecorator::resetTemporaryStats() { character->resetTemporaryStats(); }
 #pragma endregion
-
-#pragma region TempCharacterDecorator
-TempCharacterDecorator::TempCharacterDecorator(std::unique_ptr<Character> character,
-                                               std::unique_ptr<Character>* ownerSlot)
-    : CharacterDecorator(std::move(character)), prev(ownerSlot) {}
-
-// destructor just d-e-l-e-t-e-s next ptr like normal
-TempCharacterDecorator::~TempCharacterDecorator() = default;
-
-void TempCharacterDecorator::unlink() {
-  if (unlinked || !prev) return;
-
-  unlinked = true;
-
-  // this is basically like setting *prev = next; in a doubly-linked list, but with a bit more work to avoid leakage
-
-  auto oldPrev = std::move(*prev);
-
-  auto tmp = std::move(this->character);
-  *prev = std::move(tmp);
-
-  prev = nullptr;
-}
-void TempCharacterDecorator::onNotify(const NewFloorEvent&) { this->unlink(); }
-#pragma endregion TempCharacterDecorator
