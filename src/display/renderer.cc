@@ -32,6 +32,8 @@ export class Renderer : public Observer<NewFloorEvent, EntityDeathEvent, EntityM
  public:
   virtual ~Renderer() = default;
 
+  // Display the title screen before a race is selected.
+  virtual void drawStartScreen() = 0;
   // Draw the current state of the game to the screen.
   virtual void draw(const PlayerDisplayInfo& info) = 0;
   // Display the outcome of a game.

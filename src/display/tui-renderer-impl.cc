@@ -75,6 +75,19 @@ namespace {
 
 TUIRenderer::TUIRenderer() : currentFloor{nullptr} {}
 
+void TUIRenderer::drawStartScreen() {
+  clearConsole();
+  cout << Color::CYAN << Color::BOLD;
+  cout << "  ================================================\n";
+  cout << "             C C 3 K   D U N G E O N\n";
+  cout << "  ================================================" << Color::RESET << "\n\n";
+  cout << "  Escape the dungeon by reaching the stairs on floor 5.\n\n";
+  cout << Color::YELLOW << "  Choose your adventurer" << Color::RESET << "\n";
+  cout << "    s  Shade     d  Drow     v  Vampire\n";
+  cout << "    g  Goblin    t  Troll\n\n";
+  cout << "  Enter q at any prompt to leave the game.\n\n";
+}
+
 // TODO: Send the rendere an event with the finished grid instead of tracking the floor all the time
 void TUIRenderer::rebuildGrid() {
   if (!currentFloor) return;
@@ -184,16 +197,24 @@ void TUIRenderer::draw(const PlayerDisplayInfo& info) {
 }
 
 void TUIRenderer::drawGameOutcome(bool victory, double score) {
+  clearConsole();
+  cout << "\n";
   if (victory) {
-    cout << endl << "----------GAME WON----------" << endl;
-    cout << "You passed floor 5!" << endl;
-    cout << "Score: " << score << endl;
+    cout << Color::GREEN << Color::BOLD;
+    cout << "  ================================================\n";
+    cout << "                   V I C T O R Y\n";
+    cout << "  ================================================" << Color::RESET << "\n\n";
+    cout << "  You escaped the dungeon and passed floor 5.\n";
+    cout << "  Final score: " << Color::YELLOW << score << Color::RESET << "\n";
   } else {
-    cout << endl << "----------GAME OVER----------" << endl;
-    cout << "Your player has died." << endl;
-    // Don't display score as per assignment instructions
+    cout << Color::RED << Color::BOLD;
+    cout << "  ================================================\n";
+    cout << "                   G A M E  O V E R\n";
+    cout << "  ================================================" << Color::RESET << "\n\n";
+    cout << "  Your adventurer has fallen in the dungeon.\n";
   }
-  cout << "Enter r to restart or q to quit the game." << endl;
+  cout << "\n  Enter " << Color::YELLOW << "r" << Color::RESET << " to play again or "
+       << Color::YELLOW << "q" << Color::RESET << " to quit.\n\n";
 }
 
 string TUIRenderer::buildStatsFooter(const PlayerDisplayInfo& info) const {

@@ -93,6 +93,8 @@ Action BaseCharacter::getNextMove(Floor& floor) {
 }
 
 void BaseCharacter::damage(unsigned int amt, bool lethal, Character* source) {
+  if (this->isDead()) return;
+
   if (amt < this->hp) {
     this->hp -= amt;
     return;

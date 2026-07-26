@@ -29,6 +29,8 @@ int Character::getGold() const { return 0; }
 void Character::addGold(int) {}
 
 void Character::attack(Character& defender, Floor& floor) {
+  if (dead() || defender.dead()) return;
+
   const unsigned int attacks = this->getAttacksPerTurn();
   for (unsigned int i = 0; i < attacks; i++) {
     const double accuracy = this->getAccuracy(defender);
@@ -47,7 +49,8 @@ void Character::attack(Character& defender, Floor& floor) {
 
     const unsigned int hpBefore = defender.currentHp();
     defender.damage(damage, true, this);
-    const unsigned int damageDealt = hpBefore - defender.currentHp();
+    const unsigned int hpAfter = defender.currentHp();
+    const unsigned int damageDealt = hpBefore > hpAfter ? hpBefore - hpAfter : 0;
     this->onHit(defender, damage);
     defender.onBeingAttacked(*this, damage);
 

@@ -142,6 +142,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
   }
 
   attach(this->renderer.get());
+  this->renderer->drawStartScreen();
 }
 
 Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
@@ -160,6 +161,7 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
   }
 
   attach(this->renderer.get());
+  this->renderer->drawStartScreen();
 }
 
 void Game::newGame(RaceType race) {
@@ -281,6 +283,8 @@ void Game::onNotify(const CharacterAttackEvent& event) {
 
 void Game::onNotify(const RaceSelectEvent& event) { newGame(event.raceType); }
 
+void Game::onNotify(const RestartEvent&) { renderer->drawStartScreen(); }
+
 void Game::onNotify(const FreezeEnemiesEvent&) {
   if (pendingGameOver) return;
   freezeEnemies();
@@ -354,6 +358,7 @@ void Game::runEnemyTurn() {
 
   // Run each Enemy's turn
   for (const shared_ptr<Character>& enemy : enemies) {
+    if (player->dead() || pendingGameOver) break;
     enemy->act(*floor);
   }
   renderer->draw(playerDisplayInfo());

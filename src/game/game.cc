@@ -54,7 +54,7 @@ using namespace std;
 export class Game
     : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent, EntityMoveEvent,
                       CharacterAttackEvent, CharacterDeathEvent, FreezeEnemiesEvent,
-                      RaceSelectEvent>,
+                      RaceSelectEvent, RestartEvent>,
       public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent, GameOverEvent> {
   RNG rng;
   Scoreboard scoreboard;
@@ -88,6 +88,7 @@ export class Game
   virtual void onNotify(const CharacterDeathEvent& event) override;
   virtual void onNotify(const FreezeEnemiesEvent& event) override;
   virtual void onNotify(const RaceSelectEvent& event) override;
+  virtual void onNotify(const RestartEvent& event) override;
 
   // Run a full turn cycle with the specified player action.
   void runTurnCycle(const Action& playerAction);

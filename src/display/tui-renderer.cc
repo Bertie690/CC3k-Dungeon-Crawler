@@ -43,6 +43,7 @@ export class TUIRenderer : public Renderer {
 
  public:
   TUIRenderer();
+  virtual void drawStartScreen() override;
   virtual void draw(const PlayerDisplayInfo& info) override;
   virtual void drawGameOutcome(bool victory, double score) override;
 };
