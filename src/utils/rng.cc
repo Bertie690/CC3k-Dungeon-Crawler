@@ -78,13 +78,13 @@ export class RNG {
   // Pick a uniformly chosen element from the given container.
   // Must have a known size and support input iteration, and throws `std::out_of_range` if the container is empty.
   template <IterableContainer C>
+    requires(!Container<C>)
   typename C::value_type pick(C& c);
   // Pick a uniformly chosen element from the given container.
   // Must have a known size and support input iteration, and throws `std::out_of_range` if the container is empty.
   template <IterableContainer C>
+    requires(!Container<C>)
   const typename C::value_type pick(const C& c);
-
-
 };
 
 #pragma region Implementation
@@ -111,38 +111,41 @@ double RNG::randDouble() {
   return dist(twister);
 }
 
-template <IterableContainer C>
+template <Container C>
 typename C::value_type RNG::pick(C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }
-  auto it = c.begin();
-  std::advance(it, this->intRange(c.size()));
-  return *it;
+  return c[this->intRange(c.size())];
 }
-template <IterableContainer C>
+template <Container C>
 const typename C::value_type RNG::pick(const C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }
-  auto it = c.begin();
-  std::advance(it, this->intRange(c.size()));
-  return *it;
+  return c[this->intRange(c.size())];
 }
 
-template <Container C>
+template <IterableContainer C>
+  requires(!Container<C>)
 typename C::value_type RNG::pick(C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }
-  return c[this->intRange(c.size())];
+  auto it = c.begin();
+  std::advance(it, this->intRange(c.size()));
+  return *it;
 }
-template <Container C>
+template <IterableContainer C>
+  requires(!Container<C>)
+
 const typename C::value_type RNG::pick(const C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");
   }
-  return c[this->intRange(c.size())];
+  auto it = c.begin();
+  std::advance(it, this->intRange(c.size()));
+  return *it;
 }
 
 template <typename T>
