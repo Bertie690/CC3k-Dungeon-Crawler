@@ -20,7 +20,7 @@ import <type_traits>;
 export template <typename T>
 concept Container = requires(T c) {
   { c.size() } -> std::integral;
-  { c[decltype(c.size()){}] } -> std::same_as<typename T::value_type&>;
+  { c[decltype(c.size()){}] } -> std::convertible_to<const typename T::value_type&>;
 } && requires { typename T::value_type; };  // Ensure the container has a value_type defined
 
 // Concept representing a container that can be iterated over to extract a random value.
@@ -30,7 +30,7 @@ concept IterableContainer = requires(T c) {
   // input iterator access
   { c.begin() } -> std::input_iterator;
   { c.end() } -> std::sentinel_for<decltype(c.begin())>;
-  { *c.begin() } -> std::same_as<typename T::value_type&>;
+  { *c.begin() } -> std::convertible_to<const typename T::value_type&>;
 } && requires { typename T::value_type; };  // Ensure the container has a value_type defined
 
 // Class representing a seeded random number generator.
@@ -138,7 +138,6 @@ typename C::value_type RNG::pick(C& c) {
 }
 template <IterableContainer C>
   requires(!Container<C>)
-
 const typename C::value_type RNG::pick(const C& c) {
   if (c.size() <= 0) {
     throw std::out_of_range("Cannot pick from an empty container!");

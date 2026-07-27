@@ -50,7 +50,7 @@ import actionlog;
 import scoreboard;
 #endif  // __INTELLISENSE__
 
-// Game owns and manages the main game objects, alongside miscellaneous tasks that cannot be performed lower down the chain of command.
+// The Game class owns and manages the main game objects, alongside performing miscellaneous tasks that cannot be performed lower down the chain of command.
 // It also forwards a large quantity of events to various UI components.
 export class Game
     : public Observer<FloorTransitionEvent, GameQuitEvent, PlayerActionEvent, EntityMoveEvent,
@@ -59,7 +59,7 @@ export class Game
       public Subject<NewFloorEvent, PlayerActionEvent, CharacterDeathEvent, GameOverEvent> {
   static inline const unsigned int MAX_NUM_FLOORS = 5;
 
-  // The global RNG instance. Used for all random number generation in the game.
+  // The global RNG singleton. Used for all random number generation in the game; no other instances should be created.
   RNG rng;
   Scoreboard scoreboard;
   PlayerFactory playerFactory;
