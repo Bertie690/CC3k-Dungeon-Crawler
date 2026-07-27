@@ -15,4 +15,9 @@ export namespace Color {
   const std::string BLUE = "\033[34m";
   const std::string MAGENTA = "\033[35m";
   const std::string CYAN = "\033[36m";
+
+  // Apply a color to the given text.
+  std::string colorize(const std::string& color, const std::string& text) {
+    return color + text + RESET;
+  }
 }  // namespace Color
