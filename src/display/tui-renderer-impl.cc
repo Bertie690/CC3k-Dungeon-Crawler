@@ -2,6 +2,7 @@ module tuirenderer;
 
 #ifdef __INTELLISENSE__
 #include <iostream>
+#include <limits>
 #include <sstream>
 
 #include "../entities/character.cc"
@@ -12,10 +13,12 @@ module tuirenderer;
 #include "../enums/race-type.cc"
 #include "../enums/tile-type.cc"
 #include "../floor/position.cc"
+#include "../utils/colors.cc"
 #include "tui-renderer.cc"
 #else
 import <iostream>;
 import <sstream>;
+import <limits>;
 import staircase;
 import entity;
 import character;
@@ -24,20 +27,10 @@ import itemtype;
 import racetype;
 import tiletype;
 import position;
+import colors;
 #endif  // __INTELLISENSE__
 
 using namespace std;
-
-namespace Color {
-  const string RESET = "\033[0m";
-  const string BOLD = "\033[1m";
-  const string RED = "\033[31m";
-  const string GREEN = "\033[32m";
-  const string YELLOW = "\033[33m";
-  const string BLUE = "\033[34m";
-  const string MAGENTA = "\033[35m";
-  const string CYAN = "\033[36m";
-}  // namespace Color
 
 namespace {
   void clearConsole() { std::cout << "\033[2J\033[1;1H"; }
@@ -88,7 +81,6 @@ void TUIRenderer::drawStartScreen() {
   cout << "  Enter q at any prompt to leave the game.\n\n";
 }
 
-// TODO: Send the rendere an event with the finished grid instead of tracking the floor all the time
 void TUIRenderer::rebuildGrid() {
   if (!currentFloor) return;
 
@@ -219,12 +211,15 @@ void TUIRenderer::drawGameOutcome(bool victory, double score) {
 
 string TUIRenderer::buildStatsFooter(const PlayerDisplayInfo& info) const {
   ostringstream out;
+  const std::string maxHpStr = info.stats.maxHp == std::numeric_limits<unsigned int>::max()
+                                   ? "∞"
+                                   : std::to_string(info.stats.maxHp);
   out << "Race: " << raceName(info.race) << "   Gold: " << info.gold << "   Floor "
-      << info.floorNumber << endl;
-  out << "HP: " << info.hp << "/" << info.stats.maxHp << endl;
-  out << "Atk: " << info.stats.atk << endl;
-  out << "Def: " << info.stats.def << endl;
-  out << "Action: " << info.action << endl;
+      << info.floorNumber << "\n";
+  out << "HP: " << info.hp << "/" << maxHpStr << "\n";
+  out << "Atk: " << info.stats.atk << "\n";
+  out << "Def: " << info.stats.def << "\n";
+  out << "Action: " << info.action << "\n";
   return out.str();
 }
 

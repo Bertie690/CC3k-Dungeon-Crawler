@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-prog_name="${1:-a.out}"
+prog_name="${1:-cc3k}"
 
 scripts_dir="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 root_dir="$(realpath "$scripts_dir/..")"

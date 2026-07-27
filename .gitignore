@@ -7,6 +7,7 @@
 !.vscode/extensions.json
 **/gcm.cache
 *.out
+cc3k
 *.exe
 # ignore these 2 since we can trivially auto-generate them
 order.txt

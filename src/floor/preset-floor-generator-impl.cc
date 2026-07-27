@@ -62,14 +62,14 @@ PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
     : rng{rng},
       enemyFactory{rng},
       goldFactory{rng},
-      nextFloor{floorNumber + 1U},
       potionFactory{rng},
+      nextFloor{floorNumber + 1U},
       dragonHoardFactory{rng, enemyFactory},
       strategy{allowAmbiguousDragonPlacement ? static_cast<std::unique_ptr<HoardPlacementStrategy>>(
-                                                   make_unique<DefaultHoardPlacementStrategy>(
+                                                   make_unique<PerfectMatchHoardPlacementStrategy>(
                                                        dragonHoardFactory, goldFactory))
                                              : static_cast<std::unique_ptr<HoardPlacementStrategy>>(
-                                                   make_unique<PerfectMatchHoardPlacementStrategy>(
+                                                   make_unique<DefaultHoardPlacementStrategy>(
                                                        dragonHoardFactory, goldFactory))},
       input{fileName} {}
 

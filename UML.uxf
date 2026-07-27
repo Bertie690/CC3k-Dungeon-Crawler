@@ -607,9 +607,9 @@ rng</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1134</x>
+      <x>1143</x>
       <y>243</y>
-      <w>72</w>
+      <w>63</w>
       <h>162</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
@@ -617,7 +617,7 @@ cbase=l
 renderer
 m2=1
 m2pos=-13,1</panel_attributes>
-    <additional_attributes>60;10;60;160</additional_attributes>
+    <additional_attributes>50;10;50;160</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -691,7 +691,7 @@ m2pos=0,-5</panel_attributes>
     <coordinates>
       <x>1242</x>
       <y>243</y>
-      <w>72</w>
+      <w>63</w>
       <h>504</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
@@ -2574,7 +2574,7 @@ NorthWest</panel_attributes>
     <coordinates>
       <x>1872</x>
       <y>1062</y>
-      <w>135</w>
+      <w>126</w>
       <h>117</h>
     </coordinates>
     <panel_attributes>lt=-
@@ -2587,7 +2587,7 @@ dragonHoardFactory</panel_attributes>
     <coordinates>
       <x>2025</x>
       <y>1008</y>
-      <w>90</w>
+      <w>81</w>
       <h>540</h>
     </coordinates>
     <panel_attributes>lt=-
@@ -2737,7 +2737,7 @@ cbase=l</panel_attributes>
     <coordinates>
       <x>1782</x>
       <y>1215</y>
-      <w>99</w>
+      <w>90</w>
       <h>153</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-
@@ -2963,16 +2963,16 @@ group=group-2</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1926</x>
+      <x>1935</x>
       <y>1143</y>
-      <w>99</w>
+      <w>90</w>
       <h>297</h>
     </coordinates>
     <panel_attributes>lt=-
 m2=1
 cbase=ld
 enemyFactory</panel_attributes>
-    <additional_attributes>90;10;90;300;50;300</additional_attributes>
+    <additional_attributes>80;10;80;300;40;300</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -2990,7 +2990,7 @@ enemyFactory</panel_attributes>
     <coordinates>
       <x>1440</x>
       <y>1008</y>
-      <w>756</w>
+      <w>747</w>
       <h>693</h>
     </coordinates>
     <panel_attributes>lt=-
@@ -3102,7 +3102,7 @@ group=group-3</panel_attributes>
     <coordinates>
       <x>963</x>
       <y>2079</y>
-      <w>117</w>
+      <w>108</w>
       <h>126</h>
     </coordinates>
     <panel_attributes>lt=-

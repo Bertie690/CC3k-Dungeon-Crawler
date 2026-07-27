@@ -129,11 +129,11 @@ PerfectMatchHoardPlacementStrategy::buildFlowNetwork(const Floor& floor,
   Arc forwardSourceArc = Arc{&network.source, &network.sink};
   Arc reverseSourceArc = Arc{&network.sink, &network.source};
 
-  network.sink.arcs.push_back(forwardSourceArc);
-  network.sink.arcs.push_back(reverseSourceArc);
+  network.source.arcs.push_back(forwardSourceArc);
+  network.source.arcs.push_back(reverseSourceArc);
 
+  // Add an edge from source to the given node, and one from the given node to sink.
   const auto linkNode = [&network](Node node) {
-    // add an edge from source to every node, and one from every node to sink
     Arc forwardSourceArc = Arc{&network.source, &node};
     Arc reverseSourceArc = Arc{&node, &network.source};
     forwardSourceArc.reverse = &reverseSourceArc;
@@ -147,8 +147,8 @@ PerfectMatchHoardPlacementStrategy::buildFlowNetwork(const Floor& floor,
     forwardSinkArc.reverse = &reverseSinkArc;
     reverseSinkArc.reverse = &forwardSinkArc;
 
-    node.arcs.push_back(reverseSinkArc);
     node.arcs.push_back(forwardSinkArc);
+    node.arcs.push_back(reverseSinkArc);
   };
 
   for (auto& [_, node] : network.hoardNodes) {

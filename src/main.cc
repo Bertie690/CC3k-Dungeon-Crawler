@@ -35,6 +35,26 @@ import featureflags;
 
 using namespace std;
 
+void printHelpMessage(string prog_name = "./cc3k") {
+  // clang-format off
+
+  const string msg =
+      "CC3K\n"
+      "A simple rogue-like dungeon crawler implemented in C++.\n"
+      "Usage: " + prog_name + " [options] [floor_file]\n"
+      "Options:"
+      "  --help                     Show this help message and exit.\n"
+      "  --version                  Show the version information and exit.\n"
+      "  --seed=<number>            Set the random seed for the game.\n"
+      "  --debug                    Enable debug mode (spawns on floor 5).\n"
+      "  --enhanced-graphics        Enable enhanced graphics.\n"
+      "  --improved-hoard-placement Enable the improved dragon hoard placement algorithm.\n"
+      "Arguments:\n"
+      "  floor_file                 Optional path to a preset floor file to load.\n";
+  // clang-format on
+  cout << msg << endl;
+}
+
 string parseFloorFile(int argc, char* argv[]) {
   for (int i = 1; i < argc; ++i) {
     if (argv[i][0] != '-') {
@@ -109,6 +129,14 @@ char convertNumberToItem(int number) {
 }
 
 int main(int argc, char* argv[]) {
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    if (arg == "--help") {
+      printHelpMessage(argv[0]);
+      return 0;
+    }
+  }
+
   string floorFile = parseFloorFile(argc, argv);
   unsigned int seed = parseSeed(argc, argv);
   parseFeatureFlags(argc, argv);
