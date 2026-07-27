@@ -36,7 +36,9 @@ export class Cell {
   // Return a read-only view of all entities in this Cell.
   const std::vector<std::shared_ptr<Entity>>& getEntities() const;
 
+  // Return whether this Cell is walkable (i.e. not a wall).
   bool isWalkable() const;
+  // Return whether this Cell is occupied by any entity that has collision.
   bool isOccupied() const;
 
   void add(std::shared_ptr<Entity> entity);

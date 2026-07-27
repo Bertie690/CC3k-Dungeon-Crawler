@@ -76,13 +76,13 @@ vector<Room*> Floor::getRooms() {
 
 void Floor::move(Entity& entity, const Position& to) {
   if (!hasCell(to)) {
-    throw out_of_range{"Position doesn't exist"};
+    throw out_of_range{"Position " + std::string(to) + " doesn't exist"};
   }
   Position fromPosition = entity.position();
   Cell& fromCell = getCell(fromPosition);
   Cell& toCell = getCell(to);
 
-  if (!toCell.isWalkable()) throw invalid_argument{"Position is not walkable"};
+  if (!toCell.isWalkable()) throw invalid_argument{"Position " + std::string(to) + " is not walkable"};
 
   shared_ptr<Entity> movingEntity;
   for (const shared_ptr<Entity>& currentEntity : fromCell.getEntities()) {
@@ -91,13 +91,13 @@ void Floor::move(Entity& entity, const Position& to) {
       break;
     }
   }
-  if (!movingEntity) throw invalid_argument{"Entity isn't on the Floor"};
+  if (!movingEntity) throw invalid_argument{"Entity at position " + std::string(fromPosition) + " isn't on the Floor"};
 
   vector<Entity*> consumedEntities;
   for (const shared_ptr<Entity>& destinationEntity : toCell.getEntities()) {
     switch (destinationEntity->onOverlap(entity)) {
       case OverlapResult::Blocked:
-        throw invalid_argument{"Position is occupied"};
+        throw invalid_argument{"Position " + std::string(to) + " is occupied"};
       case OverlapResult::Enter:
         break;
       case OverlapResult::Consumed:
