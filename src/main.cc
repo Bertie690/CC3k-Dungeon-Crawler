@@ -43,14 +43,14 @@ void printHelpMessage(string prog_name = "./cc3k") {
       "A simple rogue-like dungeon crawler implemented in C++.\n"
       "Usage: " + prog_name + " [options] [floor_file]\n"
       "Options:"
-      "  --help                     Show this help message and exit.\n"
-      "  --version                  Show the version information and exit.\n"
-      "  --seed=<number>            Set the random seed for the game.\n"
-      "  --debug                    Enable debug mode (spawns on floor 5).\n"
-      "  --enhanced-graphics        Enable enhanced graphics.\n"
-      "  --improved-hoard-placement Enable the improved dragon hoard placement algorithm.\n"
+      "  --help                      Show this help message and exit.\n"
+      "  --version                   Show the version information and exit.\n"
+      "  --seed=<number>             Set the random seed for the game.\n"
+      "  --debug                     Enable debug mode (spawns on floor 5).\n"
+      "  --enhanced-graphics         Enable enhanced graphics.\n"
+      "  --improved-hoard-resolution Enable the improved dragon hoard resolution algorithm for preset floors.\n"
       "Arguments:\n"
-      "  floor_file                 Optional path to a preset floor file to load.\n";
+      "  floor_file                  Optional path to a preset floor file to load.\n";
   // clang-format on
   cout << msg << endl;
 }
@@ -95,8 +95,8 @@ void parseFeatureFlags(int argc, char* argv[]) {
       FeatureFlags::enableDebugMode = true;
     } else if (arg == "--enhanced-graphics") {
       FeatureFlags::enableEnhancedGraphics = true;
-    } else if (arg == "--improved-hoard-placement") {
-      FeatureFlags::enableImprovedHoardPlacement = true;
+    } else if (arg == "--improved-hoard-resolution") {
+      FeatureFlags::useImprovedHoardResolution = true;
     }
   }
 }
@@ -149,8 +149,8 @@ int main(int argc, char* argv[]) {
     cout << "Enhanced graphics enabled" << endl;
   }
 
-  if (FeatureFlags::enableImprovedHoardPlacement) {
-    cout << "Improved hoard placement algorithm enabled" << endl;
+  if (FeatureFlags::useImprovedHoardResolution) {
+    cout << "Improved dragon hoard resolution algorithm enabled" << endl;
   }
 
   unique_ptr<InputHandler> inputHandler = make_unique<StdinInputHandler>();

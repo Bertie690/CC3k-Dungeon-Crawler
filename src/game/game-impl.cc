@@ -140,8 +140,8 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile, const int see
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
-    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile,
-                                                       FeatureFlags::enableImprovedHoardPlacement);
+    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile, floorNumber,
+                                                       FeatureFlags::useImprovedHoardResolution);
   }
 
   attach(this->renderer.get());
@@ -160,8 +160,8 @@ Game::Game(unique_ptr<Renderer> renderer, const string& floorFile)
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
-    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile,
-                                                       FeatureFlags::enableImprovedHoardPlacement);
+    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile, floorNumber,
+                                                       FeatureFlags::useImprovedHoardResolution);
   }
 
   attach(this->renderer.get());
@@ -180,7 +180,8 @@ void Game::newGame(RaceType race) {
   if (floorFile.empty()) {
     floorGenerator = make_unique<RandomFloorGenerator>(rng);
   } else {
-    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile);
+    floorGenerator = make_unique<PresetFloorGenerator>(rng, floorFile, floorNumber,
+                                                       FeatureFlags::useImprovedHoardResolution);
   }
   if (player) {
     if (Observer<PlayerActionEvent>* observer = player->inputObserver()) {

@@ -23,6 +23,7 @@ export module game;
 #include "../floor/floor.cc"
 #include "../utils/rng.cc"
 #include "action-log.cc"
+#include "feature-flags.cc"
 #include "scoreboard.cc"
 #else
 import <memory>;

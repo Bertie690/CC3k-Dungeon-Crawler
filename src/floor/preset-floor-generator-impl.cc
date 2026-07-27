@@ -58,19 +58,19 @@ vector<string> readFloorLines(ifstream& input) {
 
 PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
                                            unsigned int floorNumber,
-                                           bool allowAmbiguousDragonPlacement)
+                                           bool useImprovedHoardResolution)
     : rng{rng},
       enemyFactory{rng},
       goldFactory{rng},
       potionFactory{rng},
       nextFloor{floorNumber + 1U},
       dragonHoardFactory{rng, enemyFactory},
-      strategy{allowAmbiguousDragonPlacement ? static_cast<std::unique_ptr<HoardPlacementStrategy>>(
-                                                   make_unique<PerfectMatchHoardPlacementStrategy>(
-                                                       dragonHoardFactory, goldFactory))
-                                             : static_cast<std::unique_ptr<HoardPlacementStrategy>>(
-                                                   make_unique<DefaultHoardPlacementStrategy>(
-                                                       dragonHoardFactory, goldFactory))},
+      strategy{useImprovedHoardResolution ? static_cast<std::unique_ptr<HoardPlacementStrategy>>(
+                                                make_unique<PerfectMatchHoardPlacementStrategy>(
+                                                    dragonHoardFactory, goldFactory))
+                                          : static_cast<std::unique_ptr<HoardPlacementStrategy>>(
+                                                make_unique<DefaultHoardPlacementStrategy>(
+                                                    dragonHoardFactory, goldFactory))},
       input{fileName} {}
 
 void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string>& floorLines) {

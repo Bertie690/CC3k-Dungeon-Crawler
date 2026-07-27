@@ -99,12 +99,13 @@ void PerfectMatchHoardPlacementStrategy::FlowNetwork::addNodePair(const Position
 
   Node& hoardNode = this->hoardNodes[hoardPos];
   Node& dragonNode = this->dragonNodes[dragonPos];
-  Arc forwardArc = Arc{&hoardNode, &dragonNode};
-  Arc reverseArc = Arc{&dragonNode, &hoardNode};
-  forwardArc.reverse = &reverseArc;
-  reverseArc.reverse = &forwardArc;
-  hoardNode.arcs.push_back(forwardArc);
-  hoardNode.arcs.push_back(reverseArc);
+  hoardNode.arcs.emplace_back(Arc{&hoardNode, &dragonNode});
+  dragonNode.arcs.emplace_back(Arc{&dragonNode, &hoardNode});
+
+  Arc* forwardArc = &hoardNode.arcs.back();
+  Arc* reverseArc = &dragonNode.arcs.back();
+  forwardArc->reverse = reverseArc;
+  reverseArc->reverse = forwardArc;
 }
 std::size_t PerfectMatchHoardPlacementStrategy::FlowNetwork::size() const {
   return this->hoardNodes.size() + this->dragonNodes.size() + 2;  // +2 for source and sink
@@ -126,29 +127,34 @@ PerfectMatchHoardPlacementStrategy::buildFlowNetwork(const Floor& floor,
 
   network.sink = Node{.pos = Position{-1, -1}};
   network.source = Node{.pos = Position{-1, -1}};
-  Arc forwardSourceArc = Arc{&network.source, &network.sink};
-  Arc reverseSourceArc = Arc{&network.sink, &network.source};
-
-  network.source.arcs.push_back(forwardSourceArc);
-  network.source.arcs.push_back(reverseSourceArc);
+  network.source.arcs.emplace_back(Arc{&network.source, &network.sink});
+  network.sink.arcs.emplace_back(Arc{&network.sink, &network.source});
+  {
+    Arc* forwardSourceArc = &network.source.arcs.back();
+    Arc* reverseSourceArc = &network.sink.arcs.back();
+    forwardSourceArc->reverse = reverseSourceArc;
+    reverseSourceArc->reverse = forwardSourceArc;
+  }
 
   // Add an edge from source to the given node, and one from the given node to sink.
-  const auto linkNode = [&network](Node node) {
-    Arc forwardSourceArc = Arc{&network.source, &node};
-    Arc reverseSourceArc = Arc{&node, &network.source};
-    forwardSourceArc.reverse = &reverseSourceArc;
-    reverseSourceArc.reverse = &forwardSourceArc;
+  const auto linkNode = [&network](Node& node) {
+    network.source.arcs.emplace_back(Arc{&network.source, &node});
+    node.arcs.emplace_back(Arc{&node, &network.source});
+    {
+      Arc* forwardSourceArc = &network.source.arcs.back();
+      Arc* reverseSourceArc = &node.arcs.back();
+      forwardSourceArc->reverse = reverseSourceArc;
+      reverseSourceArc->reverse = forwardSourceArc;
+    }
 
-    network.source.arcs.push_back(forwardSourceArc);
-    network.source.arcs.push_back(reverseSourceArc);
-
-    Arc forwardSinkArc = Arc{&node, &network.sink};
-    Arc reverseSinkArc = Arc{&network.sink, &node};
-    forwardSinkArc.reverse = &reverseSinkArc;
-    reverseSinkArc.reverse = &forwardSinkArc;
-
-    node.arcs.push_back(forwardSinkArc);
-    node.arcs.push_back(reverseSinkArc);
+    node.arcs.emplace_back(Arc{&node, &network.sink});
+    network.sink.arcs.emplace_back(Arc{&network.sink, &node});
+    {
+      Arc* forwardSinkArc = &node.arcs.back();
+      Arc* reverseSinkArc = &network.sink.arcs.back();
+      forwardSinkArc->reverse = reverseSinkArc;
+      reverseSinkArc->reverse = forwardSinkArc;
+    }
   };
 
   for (auto& [_, node] : network.hoardNodes) {
@@ -215,15 +221,16 @@ PerfectMatchHoardPlacementStrategy::traverseFlowNetwork(FlowNetwork& network) {
   // we have our maximal flow, now we need to extract the matching from it
   Result result;
   for (const auto& [_, hoardNode] : network.hoardNodes) {
+    bool included = false;
     for (const Arc& arc : hoardNode.arcs) {
-      bool included = false;
       if (arc.flow > 0 && arc.to->isDragon) {
         result.matches.emplace(arc.to->pos, hoardNode.pos);
         included = true;
+        break;
       }
-      if (!included) {
-        result.unmatchedHoards.insert(hoardNode.pos);
-      }
+    }
+    if (!included) {
+      result.unmatchedHoards.insert(hoardNode.pos);
     }
   }
   return result;

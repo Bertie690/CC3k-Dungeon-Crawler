@@ -4,6 +4,7 @@ export module presetfloorgenerator;
 
 #ifdef __INTELLISENSE__
 #include <fstream>
+#include <list>
 #include <map>
 #include <memory>
 #include <optional>
@@ -25,6 +26,7 @@ import <fstream>;
 import <string>;
 import <optional>;
 import <vector>;
+import <list>;
 import <map>;
 import <set>;
 import <utility>;
@@ -74,16 +76,18 @@ class PerfectMatchHoardPlacementStrategy final : public HoardPlacementStrategy {
 
  private:
   struct Result {
+    // A map matching
     std::map<Position, Position> matches;
     std::set<Position> unmatchedHoards;
   };
 
   struct Arc;
   struct Node {
-    // Array containing both the forward and reverse edges.
-    std::vector<Arc> arcs;
+    // List containing all forward arcs coming out of this node, alongside the respective backwards arcs.
+    std::list<Arc> arcs;
+    // The position of the hoard or dragon represented by this node.
     Position pos;
-    // marker to avoid needing to re-check every node
+    // Whether this Node represents a Dragon or a Hoard.
     bool isDragon = false;
   };
   struct Arc {
@@ -134,7 +138,7 @@ export class PresetFloorGenerator : public FloorGenerator {
 
  public:
   PresetFloorGenerator(RNG& rng, const std::string& fileName, unsigned int floorNumber = 0,
-                       bool allowAmbiguousDragonPlacement = false);
+                       bool useImprovedHoardResolution = false);
   Floor generateFloor() override;
 };
 
