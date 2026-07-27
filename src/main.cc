@@ -15,6 +15,7 @@
 #include "game/game.cc"
 #include "input/input-handler.cc"
 #include "input/stdin-input-handler.cc"
+#include "utils/colors.cc"
 #else
 import <iostream>;
 import <memory>;
@@ -30,6 +31,7 @@ import racetype;
 import game;
 import stdininputhandler;
 import inputhandler;
+import colors;
 import featureflags;
 #endif  // __INTELLISENSE__
 
@@ -173,7 +175,9 @@ int main(int argc, char* argv[]) {
     try {
       running = inputHandler->processInput();
     } catch (const exception& e) {
-      cerr << "Error while running game: " << e.what() << endl;
+      cerr << "Uncaught exception while running game: \n" << Color::colorize(Color::RED, e.what())
+           << endl;
+      return 1;
     }
   }
   return 0;
