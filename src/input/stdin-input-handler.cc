@@ -28,6 +28,8 @@ export class StdinInputHandler final : public InputHandler {
 
   std::optional<Direction> parseDirection(const std::string& dirStr) noexcept;
 
+  std::optional<Direction> parseNumpadDirection(const std::string& key) noexcept;
+
   // Read a race command from stdin.
   UIAction readRaceCommand();
 

@@ -51,6 +51,7 @@ void printHelpMessage(string prog_name = "./cc3k") {
       "  --debug                     Enable debug mode (spawns on floor 5).\n"
       "  --enhanced-graphics         Enable enhanced graphics.\n"
       "  --improved-hoard-resolution Enable the improved dragon hoard resolution algorithm for preset floors.\n"
+      "  --numpad                    Enable numeric keypad movement (1-4, 6-9).\n"
       "Arguments:\n"
       "  floor_file                  Optional path to a preset floor file to load.\n";
   // clang-format on
@@ -99,6 +100,8 @@ void parseFeatureFlags(int argc, char* argv[]) {
       FeatureFlags::enableEnhancedGraphics = true;
     } else if (arg == "--improved-hoard-resolution") {
       FeatureFlags::useImprovedHoardResolution = true;
+    } else if (arg == "--numpad") {
+      FeatureFlags::enableNumpadInput = true;
     }
   }
 }
@@ -153,6 +156,10 @@ int main(int argc, char* argv[]) {
 
   if (FeatureFlags::useImprovedHoardResolution) {
     cout << "Improved dragon hoard resolution algorithm enabled" << endl;
+  }
+
+  if (FeatureFlags::enableNumpadInput) {
+    cout << "Numpad movement enabled" << endl;
   }
 
   unique_ptr<InputHandler> inputHandler = make_unique<StdinInputHandler>();

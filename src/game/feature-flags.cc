@@ -7,4 +7,5 @@ export struct FeatureFlags {
   inline static bool useImprovedHoardResolution = false;
   inline static bool enableDebugMode = false;
   inline static bool enableEnhancedGraphics = false;
+  inline static bool enableNumpadInput = false;
 };
