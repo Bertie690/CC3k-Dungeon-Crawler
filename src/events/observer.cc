@@ -29,14 +29,6 @@ class ObserverFor {
   virtual ~ObserverFor() = default;
 };
 
-// Interface representing an observer that tracks one or more event types.
-export template <typename... Event>
-  requires(std::is_class_v<Event> && ...) && (sizeof...(Event) > 0)
-class Observer : public ObserverFor<Event>... {
- public:
-  virtual ~Observer() = default;
-};
-
 // Class representing a subject that can emit a single event type.
 template <typename Event>
   requires std::is_class_v<Event>
@@ -58,6 +50,14 @@ class SubjectFor {
   void detach(ObserverFor<Event>* observer);
 
   virtual ~SubjectFor() = default;
+};
+
+// Interface representing an observer that tracks one or more event types.
+export template <typename... Event>
+  requires(std::is_class_v<Event> && ...) && (sizeof...(Event) > 0)
+class Observer : public ObserverFor<Event>... {
+ public:
+  virtual ~Observer() = default;
 };
 
 // Class representing a subject that can emit multiple event types.
