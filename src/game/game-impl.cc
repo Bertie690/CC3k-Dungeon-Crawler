@@ -112,17 +112,17 @@ namespace {
   constexpr string potionName(const PotionType type) noexcept {
     switch (type) {
       case PotionType::RestoreHealth:
-        return "RH";
+        return "RH (Restore Health)";
       case PotionType::BoostAttack:
-        return "BA";
+        return "BA (Boost Attack)";
       case PotionType::BoostDefense:
-        return "BD";
+        return "BD (Boost Defense)";
       case PotionType::PoisonHealth:
-        return "PH";
+        return "PH (Poison Health)";
       case PotionType::WoundAttack:
-        return "WA";
+        return "WA (Wound Attack)";
       case PotionType::WoundDefense:
-        return "WD";
+        return "WD (Wound Defense)";
     }
     return "unknown potion";
   }
