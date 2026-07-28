@@ -112,33 +112,6 @@ void parseFeatureFlags(int argc, char* argv[]) {
   }
 }
 
-char convertNumberToItem(int number) {
-  switch (number) {
-    case 0:
-      return 'R';  // RH (Restoration Health)
-    case 1:
-      return 'B';  // BA (Boost Attack)
-    case 2:
-      return 'D';  // BD (Boost Defense)
-    case 3:
-      return 'P';  // PH (Poison Health)
-    case 4:
-      return 'W';  // WA (Wound Attack)
-    case 5:
-      return 'V';  // WD (Wound Defense)
-    case 6:
-      return 'G';  // normal gold pile
-    case 7:
-      return 'S';  // small hoard
-    case 8:
-      return 'M';  // merchant hoard
-    case 9:
-      return 'D';  // dragon hoard
-    default:
-      return '.';  // unknown item
-  }
-}
-
 int main(int argc, char* argv[]) {
   for (int i = 1; i < argc; ++i) {
     string arg = argv[i];
