@@ -54,6 +54,8 @@ done
 cd "$stage"
 "$project/scripts/depcrawl"
 
+cp -R "$project/test-demos" "$stage/test-demos"
+
 rm -f "$output"
 zip "$output" ./*.cc order.txt syslibs.txt
 
