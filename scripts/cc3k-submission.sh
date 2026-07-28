@@ -57,8 +57,7 @@ cd "$stage"
 cp -R "$project/test-demos" "$stage/test-demos"
 
 rm -f "$output"
-zip "$output" ./*.cc order.txt syslibs.txt
-
+zip -r "$output" ./*.cc order.txt syslibs.txt test-demos
 echo
 read -r -p "submit $output to code-cc3k? y/n " response
 
