@@ -10,7 +10,7 @@
 
 shopt -s nullglob globstar
 
-cxx=${CXX:-g++-16}
+cxx=g++
 
 # - disable warnings about #pragma once in non-header files, since we have to import .cc files for IDE support
 # - turn unhandled switch clauses into errors
