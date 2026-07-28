@@ -96,6 +96,8 @@ PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
 void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string>& floorLines) {
   vector<Position> dragonHoards;
   vector<Position> dragons;
+  bool seenPlayerSpawn = false;
+  bool seenStaircase = false;
 
   for (int y = 0; y < Floor::HEIGHT; ++y) {
     for (int x = 0; x < Floor::WIDTH; ++x) {
@@ -104,9 +106,16 @@ void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string
       switch (c) {
         case STAIRCASE_SYMBOL:
           floor.getCell(position).add(make_shared<Staircase>(position));
+          seenStaircase = true;
           break;
         case PLAYER_SPAWN_SYMBOL:
+          if (seenPlayerSpawn) {
+            throw std::runtime_error{
+                "Cannot generate preset floor - multiple player spawn points found in preset floor "
+                "layout!"};
+          }
           floor.playerSpawn = position;
+          seenPlayerSpawn = true;
           break;
         case HUMAN_SYMBOL:
         case DWARF_SYMBOL:
@@ -143,6 +152,15 @@ void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string
           break;
       }
     }
+  }
+
+  if (!seenPlayerSpawn) {
+    throw std::runtime_error{
+        "Cannot generate preset floor - no player spawn point found in preset floor layout!"};
+  }
+  if (!seenStaircase) {
+    throw std::runtime_error{
+        "Cannot generate preset floor - no staircase found in preset floor layout!"};
   }
 
   this->strategy->placeDragonHoards(floor, dragonHoards, dragons);

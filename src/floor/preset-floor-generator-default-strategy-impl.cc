@@ -50,11 +50,15 @@ void DefaultHoardPlacementStrategy::placeDragonHoards(
     std::optional<Position> hoardPosition =
         findAdjacentHoard(floor, unclaimedDragonHoards, dragonPosition);
     if (!hoardPosition.has_value()) {
-      throw std::invalid_argument{"No adjacent Dragon Hoard found for Dragon at " +
-                                  std::string(dragonPosition) +
-                                  "!\n"
-                                  "This is likely due to a misconfiguration in the preset floor "
-                                  "layout or an ambiguous arrangement of Dragons and Hoards."};
+      const std::string message =
+          // clang-format off
+        "No adjacent Dragon Hoard found for Dragon at " + std::string(dragonPosition) + "!\n"
+        "This is likely due to a misconfigured preset floor layout\n"
+        "or an ambiguous arrangement of Dragons and Hoards.\n"
+        "Consider passing the --improved-hoard-resolution flag to use the improved Dragon Hoard resolution algorithm,\n"
+        "which is guaranteed to find a valid placement for all Dragons and Hoards if one exists.";
+      // clang-format on
+      throw std::runtime_error{message};
     }
     unclaimedDragonHoards.erase(*hoardPosition);
     dragonHoardFactory.process(floor.getRoomAt(*hoardPosition), *hoardPosition, dragonPosition);

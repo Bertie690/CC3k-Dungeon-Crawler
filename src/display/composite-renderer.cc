@@ -17,8 +17,10 @@ import gameevents;
 import renderer;
 #endif
 
-// Fans rendering events out to each configured display.
+// Composite class for rendering.
+// Forwards rendering events out to each configured display in order.
 export class CompositeRenderer final : public Renderer {
+  // The underlying displays to forward events to.
   std::vector<std::unique_ptr<Renderer>> renderers;
 
   virtual void onNotify(const EntityDeathEvent& event) override;

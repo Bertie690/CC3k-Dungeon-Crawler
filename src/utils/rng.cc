@@ -99,7 +99,8 @@ T RNG::intRange(const T range, const T start) {
     throw std::out_of_range("Cannot generate a random integer from an empty range!");
   }
   if (range > std::numeric_limits<T>::max() - start) {
-    throw std::out_of_range("Range results in integer overflow!");
+    throw std::overflow_error("Integer range (start " + std::to_string(start) + ", range " +
+                              std::to_string(range) + ") would result in integer overflow!");
   }
   // subtract 1 due to inclusivity
   std::uniform_int_distribution<T> dist(start, start + range - 1);

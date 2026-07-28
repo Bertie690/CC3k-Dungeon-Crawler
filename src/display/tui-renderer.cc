@@ -25,7 +25,7 @@ import <vector>;
 import <string>;
 #endif
 
-export class TUIRenderer : public Renderer {
+export class TUIRenderer final : public Renderer {
   const Floor* currentFloor;
   // The underlying grid of strings to be displayed, stored in row-major order.
   std::vector<std::vector<std::string>> displayGrid;
@@ -34,7 +34,10 @@ export class TUIRenderer : public Renderer {
   std::string getCellText(const Cell& cell) const;
   // Return the text to be displayed for the given Entity.
   std::string getEntitySymbol(const Entity& entity) const noexcept;
+  // Return a string representing the stats footer to be displayed at the bottom of the screen.
   std::string buildStatsFooter(const PlayerDisplayInfo& info) const;
+
+  // Rebuild the grid of tiles on the floor being changed.
   void rebuildGrid();
 
   virtual void onNotify(const EntityDeathEvent& event) override;

@@ -41,12 +41,12 @@ class SubjectFor {
   void notify(const Event& event);
 
  public:
-  // Attach a (compatibly-typed) observer to this Subject, which will be notified upon a corresponding event being emitted.
+  // Attach a (compatibly-typed) observer to this `Subject`, which will be notified upon a corresponding event being emitted.
   //
-  // The Subject does not take ownership of the observer; it is the caller's responsibility to ensure the Observer
+  // The `Subject` does not take ownership of the observer; it is the caller's responsibility to ensure the Observer
   // lives longer than the duration of its attachment.
   void attach(ObserverFor<Event>* observer);
-  // Detach an observer from this Subject, which will no longer be notified upon a corresponding event being emitted.
+  // Detach an observer from this `Subject`, which will no longer be notified upon a corresponding event being emitted.
   void detach(ObserverFor<Event>* observer);
 
   virtual ~SubjectFor() = default;
@@ -94,12 +94,12 @@ class Subject : public SubjectFor<Events>... {
  public:
   virtual ~Subject() = default;
 
-  // Attach a (compatibly-typed) observer to this Subject, which will be notified upon a corresponding event being emitted.
-  // The Subject does not take ownership of the observer; it is the caller's responsibility to ensure the Observer
+  // Attach a (compatibly-typed) observer to this `Subject`, which will be notified upon a corresponding event being emitted.
+  // The `Subject` does not take ownership of the observer; it is the caller's responsibility to ensure the Observer
   // lives longer than the duration of its attachment.
   //
   // This, by default, subscribes the observer to all event types that it is compatible with.
-  // Consumers that want to subscribe to specific events can use the attach/detach methods from SubjectFor instead.
+  // Consumers that want to subscribe to specific events can use the attach/detach methods from `SubjectFor` instead.
   template <typename ObserverType>
     requires(std::is_class_v<ObserverType>) &&
             // non-empty intersection (at least 1 matches)
@@ -108,10 +108,10 @@ class Subject : public SubjectFor<Events>... {
     (attachForEvent<Events>(observer), ...);
   }
 
-  // Detach an observer from this Subject, which will no longer be notified upon a corresponding event being emitted.
+  // Detach an observer from this `Subject`, which will no longer be notified upon a corresponding event being emitted.
   //
   // This, by default, unsubscribes the observer from all event types that it is compatible with.
-  // Consumers that want to unsubscribe from specific events can use the attach/detach methods from SubjectFor instead.
+  // Consumers that want to unsubscribe from specific events can use the attach/detach methods from `SubjectFor` instead.
   template <typename ObserverType>
     requires(std::is_class_v<ObserverType>) &&
             // non-empty intersection (at least 1 matches)

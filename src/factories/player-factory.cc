@@ -21,11 +21,15 @@ import position;
 import standardfactory;
 #endif  // __INTELLISENSE__
 
+// Factory responsible for generating the player character.
+// Unlike other factories, this does not (currently) partake in random generation, as the player character is stored/created inside Game.
+//
+// It still conforms to the same interface regardless.
 export class PlayerFactory final : public StandardFactory<Character, RaceType> {
   // Return the base stats for the player RaceType.
   Stats baseStatsFor(RaceType race) const;
 
-  // always produce shades as default
+  // Arbitrary dummy implementation to satisfy StandardFactory
   virtual std::tuple<RaceType> generateArgs() override;
 
  public:

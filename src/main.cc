@@ -48,12 +48,12 @@ void printHelpMessage(string prog_name = "./cc3k") {
 
   const string msg =
       "CC3K\n"
-      "A simple rogue-like dungeon crawler implemented in C++.\n"
+      "A simple rogue-like dungeon crawler implemented in C++, inspired by Rogue and Hack.\n"
       "Usage: " + prog_name + " [options] [floor_file]\n"
       "Options:\n"
       "  --help                      Show this help message and exit.\n"
-      "  --version                   Show the version information and exit.\n"
-      "  --seed=<number>             Set the random seed for the game.\n"
+      "  --version                   Show version information and exit.\n"
+      "  --seed=<number>             Set the initial random seed for the game.\n"
       "  --debug                     Enable debug mode (spawns on floor 5).\n"
       "  --enhanced-graphics         Open an X11 graphical display alongside the terminal display.\n"
       "  --improved-hoard-resolution Enable the improved dragon hoard resolution algorithm for preset floors.\n"
@@ -113,10 +113,16 @@ void parseFeatureFlags(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
+  static const string VERSION = "1.0.0";
+
   for (int i = 1; i < argc; ++i) {
     string arg = argv[i];
     if (arg == "--help") {
       printHelpMessage(argv[0]);
+      return 0;
+    }
+    if (arg == "--version") {
+      cout << "CC3K version " << VERSION << endl;
       return 0;
     }
   }
@@ -125,20 +131,25 @@ int main(int argc, char* argv[]) {
   unsigned int seed = parseSeed(argc, argv);
   parseFeatureFlags(argc, argv);
 
+  bool flush = false;
   if (FeatureFlags::enableDebugMode) {
-    cout << "Debug mode enabled" << endl;
+    cout << "Debug mode enabled!\n";
+    flush = true;
   }
-
   if (FeatureFlags::enableEnhancedGraphics) {
-    cout << "Enhanced graphics enabled" << endl;
+    cout << "Enhanced graphics enabled!\n";
+    flush = true;
   }
-
   if (FeatureFlags::useImprovedHoardResolution) {
-    cout << "Improved dragon hoard resolution algorithm enabled" << endl;
+    cout << "Improved dragon hoard resolution algorithm enabled!\n";
+    flush = true;
   }
-
   if (FeatureFlags::enableNumpadInput) {
-    cout << "Numpad movement enabled" << endl;
+    cout << "Numpad movement enabled!\n";
+    flush = true;
+  }
+  if (flush) {
+    cout.flush();
   }
 
   unique_ptr<InputHandler> inputHandler = make_unique<StdinInputHandler>();
@@ -166,15 +177,16 @@ int main(int argc, char* argv[]) {
   // Main game loop using InputHandler
   bool running = true;
   while (running) {
+    // This error handling could make a clearer distinction between recoverable and unrecoverable errors,
+    // but if it works it works...
     try {
       running = inputHandler->processInput();
     } catch (const invalid_argument& e) {
-      cerr << "Input error: " << e.what() << endl;
+      cerr << "Input error: " << colorize(Color::RED, e.what()) << endl;
     } catch (const out_of_range& e) {
-      cerr << "Input error: " << e.what() << endl;
+      cerr << "Input error: " << colorize(Color::RED, e.what()) << endl;
     } catch (const exception& e) {
-      cerr << "Uncaught exception while running game: \n" << Color::colorize(Color::RED, e.what())
-           << endl;
+      cerr << "Uncaught exception while running game: \n" << colorize(Color::RED, e.what()) << endl;
       return 1;
     }
   }

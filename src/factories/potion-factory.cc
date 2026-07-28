@@ -18,6 +18,7 @@ import position;
 import standardfactory;
 #endif
 
+// Factory responsible for generating potions.
 export class PotionFactory final : public StandardFactory<Potion, PotionType> {
   virtual std::tuple<PotionType> generateArgs() override;
 
