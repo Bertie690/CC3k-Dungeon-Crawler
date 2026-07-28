@@ -17,8 +17,6 @@ export class Enemy : public BaseCharacter, public Subject<EntityDeathEvent> {
   virtual double getAccuracy(const Character& defender) const override;
   virtual void onDeath(Character* killer) override;
 
- public:  // TODO: remove public access once no longer using enemy demo
+ public:
   using BaseCharacter::BaseCharacter;
-
-  // TODO: Add removal from floor
 };

@@ -66,7 +66,6 @@ RaceType parseEnemyRaceSymbol(const char symbol) {
 vector<string> readFloorLines(ifstream& input) {
   vector<string> floorLines;
   for (int y = 0; y < Floor::HEIGHT; ++y) {
-    // TODO: invalid input handling necessary? Probably not..
     if (input.eof()) {
       throw invalid_argument{"Unexpected end of file while reading floor layout!"};
     }

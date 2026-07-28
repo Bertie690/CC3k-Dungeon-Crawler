@@ -201,7 +201,6 @@ void Game::newGame(RaceType race) {
     attach(observer);
   }
   loadNextFloor();
-  // TODO: start turns
 }
 
 void Game::loadNextFloor() {
@@ -363,7 +362,6 @@ void Game::runEnemyTurn() {
     }
   }
 
-  // TODO: could possibly be optimized
   sort(enemies.begin(), enemies.end(),
        [](const shared_ptr<Character>& a, const shared_ptr<Character>& b) {
          return a->position() < b->position();
@@ -393,8 +391,6 @@ void Game::onNotify(const CharacterDeathEvent& event) {
   if (!playerKilledEnemy) {
     return;
   }
-
-  // TODO: move action messages into wherever the action bar is moved
 
   string message = "PC killed " + characterName(event.entity);
 

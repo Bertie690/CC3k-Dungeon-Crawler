@@ -71,7 +71,6 @@ TUIRenderer::TUIRenderer() : currentFloor{nullptr} {}
 void TUIRenderer::drawStartScreen() {
   clearConsole();
 
-  // manually format to give a good idea of what the end result looks like
   // clang-format off
   cout << colorize(Color::BLUE + Color::BOLD,
     "  =================================================\n"
@@ -179,7 +178,6 @@ string TUIRenderer::getEntitySymbol(const Entity& entity) const noexcept {
 
 void TUIRenderer::draw(const PlayerDisplayInfo& info) {
   if (!currentFloor) {
-    // TODO: Add race selection screen?
     cerr << "No floor loaded!" << endl;
     return;
   }

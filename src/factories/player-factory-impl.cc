@@ -47,11 +47,9 @@ shared_ptr<Character> PlayerFactory::create(const Position& position, RaceType r
   DecoratorChain<Character> decoratorChain{move(player)};
   switch (race) {
     case RaceType::Shade:
-      // TODO: handle multi in end of game scoring flow
       decoratorChain.add<ScoreMultiCharacterDecorator>(1.5);
       break;
     case RaceType::Drow:
-      // TODO: add to potion implementation
       decoratorChain.add<PotionEffectCharacterDecorator>(1.5);
       break;
     case RaceType::Vampire:

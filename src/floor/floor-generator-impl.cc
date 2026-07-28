@@ -27,8 +27,6 @@ import position;
 
 using namespace std;
 
-// TODO: potential bonus handling any floor layout with flood fill
-
 // fixed terrain layout (emptyfloor.txt)
 const vector<string> BASE_TERRAIN{
     "|-----------------------------------------------------------------------------|",

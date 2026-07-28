@@ -44,7 +44,7 @@ std::optional<RaceType> StdinInputHandler::parseRaceSelection(const char raceCha
     case 't':
       return RaceType::Troll;
     default:
-      return std::nullopt;  // TODO: Handle invalid race selection
+      return std::nullopt;
   }
 }
 

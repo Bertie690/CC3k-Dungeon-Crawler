@@ -34,7 +34,6 @@ export class Player : public BaseCharacter, public Observer<NewFloorEvent> {
   virtual void addGold(int amount) override;
 
   int gold = 0;
-  // TODO: Add game over handling
 
  private:
   virtual void onNotify(const NewFloorEvent& event) override;

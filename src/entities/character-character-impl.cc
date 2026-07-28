@@ -63,7 +63,6 @@ void Character::attack(Character& defender, Floor& floor) {
     }
 
     if (defender.isDead()) {
-      // TODO: Push action from onDeath function if possible
       floor.reportCharacterDeath(
           CharacterDeathEvent{defender, position(), defender.raceType(), defender.getGoldDrop()});
       // Defender was removed, so Elves shouldn't attack again

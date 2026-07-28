@@ -94,7 +94,6 @@ Floor RandomFloorGenerator::generateFloor() {
 
   // Staircase must be in a different chamber than the player
 
-  // TODO: Do a quick dynamic_cast
   factories.front()->setPopulationStrategy(make_shared<FilterFloorPopulationStrategy>(
       make_shared<RandomSampleFloorPopulationStrategy>(rng, 1),
       [playerRoom = &regions[playerRegion].room](const FloorRegion& region) {

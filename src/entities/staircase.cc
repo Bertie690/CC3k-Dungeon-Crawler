@@ -11,7 +11,6 @@ import overlapresult;
 #endif  // __INTELLISENSE__
 
 // A Staircase represents an Entity that allows players to move between floors.
-// TODO: Implement floor transitions
 export class Staircase final : public BaseEntity {
   virtual OverlapResult onOverlap(Entity& movingEntity) override;
 

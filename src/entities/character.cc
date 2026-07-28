@@ -64,8 +64,6 @@ export class Character : public virtual Entity {
 
   virtual Action getNextMove(Floor& floor) = 0;
 
-  // TODO: See if we can make some of these private inside this/CharacterBase (still exposing them as protected inside decorator)
-
   // Return this Character's current accuracy multiplier against the given defender.
   virtual double getAccuracy(const Character& defender) const = 0;
   // Return this Character's current evasion multiplier against the given attacker.
@@ -130,7 +128,6 @@ export class Character : public virtual Entity {
   // The source parameter indicates the Character dealing the damage, if any.
   //
   // This is responsible for triggering all on-death effects as needed.
-  // TODO: This should also trigger the action log, once that is moved to something like a singleton
   virtual void damage(unsigned int amt, bool lethal = true, Character* source = nullptr) = 0;
   // Heal this Character up to its maximum HP.
   virtual void heal(unsigned int amt) = 0;
