@@ -43,6 +43,7 @@ export class X11Renderer final : public Renderer {
   unsigned long color(const char* name, unsigned long fallback) const;
   unsigned long cellColor(const Cell& cell) const;
   unsigned long entityColor(const Entity& entity) const;
+  std::string entitySymbol(const Entity& entity) const;
   void drawText(int x, int y, const std::string& text, unsigned long textColor) const;
   void redraw(const PlayerDisplayInfo* info = nullptr) const;
 

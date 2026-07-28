@@ -19,6 +19,7 @@ import <stdexcept>;
 import character;
 import item;
 import itemtype;
+import racetype;
 import staircase;
 import cell;
 import floor;
@@ -109,6 +110,35 @@ unsigned long X11Renderer::entityColor(const Entity& entity) const {
   return white;
 }
 
+string X11Renderer::entitySymbol(const Entity& entity) const {
+  if (dynamic_cast<const Staircase*>(&entity)) return "\\";
+  if (const auto* character = dynamic_cast<const Character*>(&entity)) {
+    if (isPlayer(character->raceType())) return "@";
+    switch (character->raceType()) {
+      case RaceType::Human:
+        return "H";
+      case RaceType::Dwarf:
+        return "W";
+      case RaceType::Elf:
+        return "E";
+      case RaceType::Orc:
+        return "O";
+      case RaceType::Merchant:
+        return "M";
+      case RaceType::Dragon:
+        return "D";
+      case RaceType::Halfling:
+        return "L";
+      default:
+        return "?";
+    }
+  }
+  if (const auto* item = dynamic_cast<const Item*>(&entity)) {
+    return item->type == ItemType::Potion ? "P" : "G";
+  }
+  return "?";
+}
+
 void X11Renderer::drawText(int x, int y, const string& text, unsigned long textColor) const {
   Display* xDisplay = static_cast<Display*>(display);
   GC gc = static_cast<GC>(graphicsContext);
@@ -135,9 +165,11 @@ void X11Renderer::redraw(const PlayerDisplayInfo* info) const {
       XFillRectangle(xDisplay, static_cast<Window>(window), gc, MAP_X + x * CELL_SIZE,
                      MAP_Y + y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
       if (!cell.getEntities().empty()) {
-        XSetForeground(xDisplay, gc, entityColor(*cell.getEntities().back()));
-        XFillArc(xDisplay, static_cast<Window>(window), gc, MAP_X + x * CELL_SIZE + 2,
-                 MAP_Y + y * CELL_SIZE + 2, CELL_SIZE - 5, CELL_SIZE - 5, 0, 360 * 64);
+        const Entity& entity = *cell.getEntities().back();
+        const string symbol = entitySymbol(entity);
+        XSetForeground(xDisplay, gc, entityColor(entity));
+        XDrawString(xDisplay, static_cast<Window>(window), gc, MAP_X + x * CELL_SIZE + 3,
+                    MAP_Y + y * CELL_SIZE + 9, symbol.c_str(), symbol.size());
       }
     }
   }
