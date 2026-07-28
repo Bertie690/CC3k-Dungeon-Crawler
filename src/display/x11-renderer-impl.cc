@@ -10,6 +10,7 @@ module x11renderer;
 #include "../entities/item.cc"
 #include "../entities/staircase.cc"
 #include "../enums/item-type.cc"
+#include "../enums/race-type.cc"
 #include "../floor/cell.cc"
 #include "../floor/floor.cc"
 #include "x11-renderer.cc"
@@ -23,6 +24,7 @@ import cell;
 import floor;
 import position;
 import tiletype;
+import racetype;
 #endif
 
 using namespace std;
