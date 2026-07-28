@@ -12,11 +12,17 @@ trap 'rm -rf "$stage"' EXIT
 missing_newlines="$(cd "$project" && find src -name '*.cc' -type f -exec sh -c 'for file do [ -s "$file" ] && [ -n "$(tail -c 1 "$file")" ] && echo "$file"; done; exit 0' sh {} +)"
 
 if [[ -n "$missing_newlines" ]]; then
+  echo "The following files are missing a newline at the end:"
   echo "$missing_newlines"
-  exit 1
+  echo "Correcting..."
+  for file in $missing_newlines; do
+    echo >> "$project/$file"
+  done
 fi
 
 find "$project/src" -name '*.cc' -exec cp {} "$stage" \;
+
+#TODO strip #includes
 
 cd "$stage"
 "$project/scripts/depcrawl"
