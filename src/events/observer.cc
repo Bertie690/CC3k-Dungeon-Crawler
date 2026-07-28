@@ -21,10 +21,11 @@ template <typename Event>
   requires std::is_class_v<Event>
 class ObserverFor {
   friend class SubjectFor<Event>;
+
+ public:
   // Trigger effects upon an event of the given type being emitted.
   virtual void onNotify(const Event& event) = 0;
 
- public:
   virtual ~ObserverFor() = default;
 };
 

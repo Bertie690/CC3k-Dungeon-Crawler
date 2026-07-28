@@ -7,8 +7,10 @@
 #include <string>
 #include <vector>
 
+#include "display/composite-renderer.cc"
 #include "display/renderer.cc"
 #include "display/tui-renderer.cc"
+#include "display/x11-renderer.cc"
 #include "enums/action.cc"
 #include "enums/direction.cc"
 #include "enums/race-type.cc"
@@ -26,7 +28,9 @@ import <vector>;
 import <fstream>;
 import <cstdlib>;
 import tuirenderer;
+import compositerenderer;
 import renderer;
+import x11renderer;
 import action;
 import direction;
 import racetype;
@@ -51,7 +55,7 @@ void printHelpMessage(string prog_name = "./cc3k") {
       "  --version                   Show the version information and exit.\n"
       "  --seed=<number>             Set the random seed for the game.\n"
       "  --debug                     Enable debug mode (spawns on floor 5).\n"
-      "  --enhanced-graphics         Enable enhanced graphics.\n"
+      "  --enhanced-graphics         Open an X11 graphical display alongside the terminal display.\n"
       "  --improved-hoard-resolution Enable the improved dragon hoard resolution algorithm for preset floors.\n"
       "  --numpad                    Enable numeric keypad movement (1-4, 6-9).\n"
       "Arguments:\n"
@@ -165,7 +169,15 @@ int main(int argc, char* argv[]) {
   }
 
   unique_ptr<InputHandler> inputHandler = make_unique<StdinInputHandler>();
-  unique_ptr<Renderer> renderer = make_unique<TUIRenderer>();
+  unique_ptr<Renderer> renderer;
+  if (FeatureFlags::enableEnhancedGraphics) {
+    vector<unique_ptr<Renderer>> displays;
+    displays.emplace_back(make_unique<TUIRenderer>());
+    displays.emplace_back(make_unique<X11Renderer>());
+    renderer = make_unique<CompositeRenderer>(move(displays));
+  } else {
+    renderer = make_unique<TUIRenderer>();
+  }
 
   // Create game with appropriate parameters
   unique_ptr<Game> game;
