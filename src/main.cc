@@ -53,7 +53,7 @@ void printHelpMessage(string prog_name = "./cc3k") {
       "Options:\n"
       "  --help                      Show this help message and exit.\n"
       "  --version                   Show version information and exit.\n"
-      "  --seed=<number>             Set the initial random seed for the game.\n"
+      "  --seed=<number>             Set the initial random seed for the game (set to 0 to display). \n"
       "  --debug                     Enable debug mode (spawns on floor 5).\n"
       "  --enhanced-graphics         Open an X11 graphical display alongside the terminal display.\n"
       "  --improved-hoard-resolution Enable the improved dragon hoard resolution algorithm for preset floors.\n"
