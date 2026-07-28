@@ -17,7 +17,7 @@ void Potion::use(Character& character) const {
       character.heal(amount);
       break;
     case PotionType::PoisonHealth:
-      character.damage(amount);
+      character.damage(amount, false);
       break;
     case PotionType::BoostAttack:
       character.addTemporaryStats(statAmount, 0);
