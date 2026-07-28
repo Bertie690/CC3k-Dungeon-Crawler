@@ -61,10 +61,10 @@ zip -r "$output" ./*.cc order.txt syslibs.txt test-demos
 echo
 read -r -p "submit $output to code-cc3k? y/n " response
 
-# if [[ "$response" == "y" || "$response" == "Y" ]]; then
-#   /u/cs_build/bin/marmoset_submit \
-#     --username=-l2dohert-mw2taylo-s4suri- \
-#     submit CS246_PROJECT code-cc3k "$output"
-# else
-#   echo "not submitting.."
-# fi
+if [[ "$response" == "y" || "$response" == "Y" ]]; then
+  /u/cs_build/bin/marmoset_submit \
+    --username=-l2dohert-mw2taylo-s4suri- \
+    submit CS246_PROJECT code-cc3k "$output"
+else
+  echo "not submitting.."
+fi
