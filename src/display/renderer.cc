@@ -32,6 +32,16 @@ export class Renderer : public Observer<NewFloorEvent, EntityDeathEvent, EntityM
  public:
   virtual ~Renderer() = default;
 
+  void onEntityDeath(const EntityDeathEvent& event) {
+    static_cast<ObserverFor<EntityDeathEvent>*>(this)->onNotify(event);
+  }
+  void onEntityMove(const EntityMoveEvent& event) {
+    static_cast<ObserverFor<EntityMoveEvent>*>(this)->onNotify(event);
+  }
+  void onNewFloor(const NewFloorEvent& event) {
+    static_cast<ObserverFor<NewFloorEvent>*>(this)->onNotify(event);
+  }
+
   // Display the title screen before a race is selected.
   virtual void drawStartScreen() = 0;
   // Draw the current state of the game to the screen.
