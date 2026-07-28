@@ -50,7 +50,7 @@ void printHelpMessage(string prog_name = "./cc3k") {
       "CC3K\n"
       "A simple rogue-like dungeon crawler implemented in C++.\n"
       "Usage: " + prog_name + " [options] [floor_file]\n"
-      "Options:"
+      "Options:\n"
       "  --help                      Show this help message and exit.\n"
       "  --version                   Show the version information and exit.\n"
       "  --seed=<number>             Set the random seed for the game.\n"

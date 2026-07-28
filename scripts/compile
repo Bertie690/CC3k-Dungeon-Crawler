@@ -15,9 +15,12 @@ cxx=g++
 # - turn unhandled switch clauses into errors
 cxxflags="-std=c++20 -fmodules-ts -Wall -g -Wno-pragma-once-outside-header -Werror=switch"
 x11_link="-lX11"
-if [ -d "/opt/X11/include" ]; then
+if [ -d "/opt/X11/include" ]; then # MacOS
   cxxflags="$cxxflags -I /opt/X11/include"
   x11_link="-L /opt/X11/lib -lX11"
+elif [ -d "/etc/X11" ]; then # Linux
+  cxxflags="$cxxflags -I /etc/X11/include"
+  x11_link="-L /etc/X11/lib -lX11"
 fi
 gcmsyspath="gcm.cache/**/*.gcm"
 
