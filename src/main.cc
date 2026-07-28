@@ -53,7 +53,7 @@ void printHelpMessage(string prog_name = "./cc3k") {
       "Options:\n"
       "  --help                      Show this help message and exit.\n"
       "  --version                   Show version information and exit.\n"
-      "  --seed=<number>             Set the initial random seed for the game (set to 0 to display). \n"
+      "  --seed=<number>             Set the initial random seed for the game. Set to 0 to disable.\n"
       "  --debug                     Enable debug mode (spawns on floor 5).\n"
       "  --enhanced-graphics         Open an X11 graphical display alongside the terminal display.\n"
       "  --improved-hoard-resolution Enable the improved dragon hoard resolution algorithm for preset floors.\n"
@@ -76,23 +76,24 @@ string parseFloorFile(int argc, char* argv[]) {
 unsigned int parseSeed(int argc, char* argv[]) {
   for (int i = 1; i < argc; ++i) {
     string arg = argv[i];
-    if (arg.find("--seed=") == 0) {
-      string seedStr = arg.substr(7);
-      if (seedStr.empty()) {
-        cerr << "Invalid seed value: (empty)" << endl;
+    if (arg.find("--seed=") != 0) {
+      continue;
+    }
+    string seedStr = arg.substr(7);
+    if (seedStr.empty()) {
+      cerr << "Invalid seed value: (empty)" << endl;
+      return 0;
+    }
+
+    unsigned int result = 0;
+    for (char c : seedStr) {
+      if (c < '0' || c > '9') {
+        cerr << "Invalid seed value: " << seedStr << endl;
         return 0;
       }
-
-      unsigned int result = 0;
-      for (char c : seedStr) {
-        if (c < '0' || c > '9') {
-          cerr << "Invalid seed value: " << seedStr << endl;
-          return 0;
-        }
-        result = result * 10 + static_cast<unsigned int>(c - '0');
-      }
-      return result;
+      result = result * 10 + static_cast<unsigned int>(c - '0');
     }
+    return result;
   }
   return 0;
 }
@@ -132,6 +133,10 @@ int main(int argc, char* argv[]) {
   parseFeatureFlags(argc, argv);
 
   bool flush = false;
+  if (seed != 0) {
+    cout << "Initial seed set to " << seed << "!\n";
+    flush = true;
+  }
   if (FeatureFlags::enableDebugMode) {
     cout << "Debug mode enabled!\n";
     flush = true;

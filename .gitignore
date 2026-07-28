@@ -12,3 +12,4 @@ cc3k
 # ignore these 2 since we can trivially auto-generate them
 order.txt
 syslibs.txt
+cc3k.zip

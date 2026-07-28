@@ -79,9 +79,9 @@ void TUIRenderer::drawStartScreen() {
     "\n"
     "  Escape the dungeon by reaching the stairs on floor 5.\n"
     "\n" << colorize(Color::YELLOW,
-    "  Choose your adventurer\n") +
-    "    s  Shade     d  Drow     v  Vampire\n";
-    "    g  Goblin    t  Troll\n\n";
+    "  Choose your adventurer\n") <<
+    "    s  Shade     d  Drow     v  Vampire\n" <<
+    "    g  Goblin    t  Troll\n\n" <<
     "  Enter q at any point to leave the game.\n\n";
 
   // clang-format on
