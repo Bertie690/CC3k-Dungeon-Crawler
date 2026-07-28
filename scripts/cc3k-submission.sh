@@ -22,7 +22,34 @@ fi
 
 find "$project/src" -name '*.cc' -exec cp {} "$stage" \;
 
-#TODO strip #includes
+for file in "$stage"/*.cc; do
+  awk '
+    /^#ifdef[[:space:]]+__INTELLISENSE__[[:space:]]*$/ {
+      skipping = 1
+      next
+    }
+    skipping && /^#else([[:space:]].*)?$/ {
+      skipping = 0
+      inside_else_branch = 1
+      next
+    }
+    skipping && /^#endif([[:space:]].*)?$/ {
+      skipping = 0
+      next
+    }
+    inside_else_branch && /^#endif([[:space:]].*)?$/ {
+      inside_else_branch = 0
+      next
+    }
+    skipping {
+      next
+    }
+    {
+      print
+    }
+  ' "$file" > "$file.tmp"
+  mv "$file.tmp" "$file"
+done
 
 cd "$stage"
 "$project/scripts/depcrawl"
