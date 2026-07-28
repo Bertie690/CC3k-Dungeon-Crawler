@@ -62,8 +62,8 @@ export class Game
   // The global RNG singleton. Used for all random number generation in the game; no other instances should be created.
   RNG rng;
   Scoreboard scoreboard;
-  PlayerFactory playerFactory;
-  GoldFactory goldFactory;
+  const PlayerFactory playerFactory;
+  const GoldFactory goldFactory;
   const std::string floorFile;
   std::unique_ptr<Renderer> renderer;
   std::unique_ptr<FloorGenerator> floorGenerator;

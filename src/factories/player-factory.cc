@@ -12,6 +12,7 @@ export module playerfactory;
 #include "standard-factory.cc"
 #else
 import <memory>;
+import <tuple>;
 import character;
 import player;
 import stats;
@@ -20,14 +21,15 @@ import position;
 import standardfactory;
 #endif  // __INTELLISENSE__
 
-export class PlayerFactory : public StandardFactory<Character> {
+export class PlayerFactory final : public StandardFactory<Character, RaceType> {
   // Return the base stats for the player RaceType.
   Stats baseStatsFor(RaceType race) const;
+
+  // always produce shades as default
+  virtual std::tuple<RaceType> generateArgs() override;
+
  public:
-  using StandardFactory<Character>::StandardFactory;
-  // Create a default Shade Player at position.
-  // note: This isn't used, but is necessary to be a concrete StandardFactory which isn't really necessary for Player..
-  virtual std::shared_ptr<Character> create(const Position& position) override;
-  // Create a chosen RaceType Player at position.
-  std::shared_ptr<Character> create(const Position& position, RaceType race);
+  using StandardFactory<Character, RaceType>::StandardFactory;
+
+  virtual std::shared_ptr<Character> create(const Position& position, RaceType race) const override;
 };

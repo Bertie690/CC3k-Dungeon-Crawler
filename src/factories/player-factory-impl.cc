@@ -39,11 +39,9 @@ Stats PlayerFactory::baseStatsFor(RaceType race) const {
   }
 }
 
-shared_ptr<Character> PlayerFactory::create(const Position& position) {
-  return create(position, RaceType::Shade);
-}
+tuple<RaceType> PlayerFactory::generateArgs() { return make_tuple(RaceType::Shade); }
 
-shared_ptr<Character> PlayerFactory::create(const Position& position, RaceType race) {
+shared_ptr<Character> PlayerFactory::create(const Position& position, RaceType race) const {
   Stats stats = baseStatsFor(race);
   unique_ptr<Character> player = make_unique<Player>(position, stats, race);
   DecoratorChain<Character> decoratorChain{move(player)};

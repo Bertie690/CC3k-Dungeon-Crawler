@@ -4,17 +4,21 @@ export module goldfactory;
 
 #ifdef __INTELLISENSE__
 #include <memory>
-#include <vector>
+#include <set>
+#include <tuple>
 
 #include "../entities/gold-pile.cc"
 #include "../enums/gold-size.cc"
 #include "../floor/position.cc"
 #include "../floor/room.cc"
+#include "floor-region.cc"
 #include "standard-factory.cc"
 #else
 import <memory>;
+import <tuple>;
 import <stdexcept>;
-import <vector>;
+import <set>;
+import floorregion;
 import goldpile;
 import goldsize;
 import position;
@@ -22,18 +26,13 @@ import room;
 import standardfactory;
 #endif  // __INTELLISENSE__
 
-export class GoldFactory : public StandardFactory<GoldPile> {
- public:
-  using StandardFactory<GoldPile>::StandardFactory;
+// Factory resposible for generating gold.
+export class GoldFactory final : public StandardFactory<GoldPile, GoldSize> {
+  // Generate a random GoldSize.
+  virtual std::tuple<GoldSize> generateArgs() override;
 
-  // Randomly select a GoldSize using the required probabilities.
-  GoldSize randomGoldSize();
-  // Create a random size GoldPile at position per Gold probability distribution.
-  virtual std::shared_ptr<GoldPile> create(const Position& position) override;
-  // Create a GoldPile of the given size at position.
-  std::shared_ptr<GoldPile> create(const Position& position, GoldSize size);
-  // Place a randomly sized GoldPile in the availablePositions.
-  void process(Room& room, std::vector<Position>& availablePositions) override;
-  // Place a GoldPile of the given size in the availablePositions.
-  void process(Room& room, std::vector<Position>& availablePositions, GoldSize size);
+ protected:
+ public:
+  using StandardFactory<GoldPile, GoldSize>::StandardFactory;
+  virtual std::shared_ptr<GoldPile> create(const Position& position, GoldSize size) const override;
 };

@@ -45,24 +45,24 @@ export class PresetFloorGenerator;
 
 class HoardPlacementStrategy {
   friend class PresetFloorGenerator;
-
- protected:
-  HoardPlacementStrategy(DragonHoardFactory& dragonHoardFactory, GoldFactory& goldFactory)
-      : dragonHoardFactory{dragonHoardFactory}, goldFactory{goldFactory} {}
-
-  DragonHoardFactory& dragonHoardFactory;
-  GoldFactory& goldFactory;
-
   // Attempt to place dragon hoards on the given positions.
   // Throws if the hoards cannot be placed successfully.
   virtual void placeDragonHoards(Floor& floor, const std::vector<Position>& hoardPositions,
                                  const std::vector<Position>& dragonPositions) = 0;
+
+ protected:
+  const DragonHoardFactory& dragonHoardFactory;
+  const GoldFactory& goldFactory;
+
+ public:
+  HoardPlacementStrategy(const DragonHoardFactory& dragonHoardFactory,
+                         const GoldFactory& goldFactory)
+      : dragonHoardFactory{dragonHoardFactory}, goldFactory{goldFactory} {}
 };
 
 class DefaultHoardPlacementStrategy final : public HoardPlacementStrategy {
  public:
-  DefaultHoardPlacementStrategy(DragonHoardFactory& dragonHoardFactory, GoldFactory& goldFactory)
-      : HoardPlacementStrategy{dragonHoardFactory, goldFactory} {}
+  using HoardPlacementStrategy::HoardPlacementStrategy;
 
  private:
   virtual void placeDragonHoards(Floor& floor, const std::vector<Position>& hoardPositions,
@@ -70,41 +70,49 @@ class DefaultHoardPlacementStrategy final : public HoardPlacementStrategy {
 };
 class PerfectMatchHoardPlacementStrategy final : public HoardPlacementStrategy {
  public:
-  PerfectMatchHoardPlacementStrategy(DragonHoardFactory& dragonHoardFactory,
-                                     GoldFactory& goldFactory)
-      : HoardPlacementStrategy{dragonHoardFactory, goldFactory} {}
+  using HoardPlacementStrategy::HoardPlacementStrategy;
 
  private:
+  // The result of a flow network traversal.
   struct Result {
-    // A map matching
+    // A map matching each Dragon's Position to its corresponding Hoard's Position.
     std::map<Position, Position> matches;
+    // A set of Hoard Positions that were not matched to any Dragon.
     std::set<Position> unmatchedHoards;
   };
 
   struct Arc;
+  // A node in the flow network, representing either a Dragon or a Hoard.
   struct Node {
-    // List containing all forward arcs coming out of this node, alongside the respective backwards arcs.
+    // A list containing all forward arcs coming out of this node, alongside the respective backwards arcs.
     std::list<Arc> arcs;
     // The position of the hoard or dragon represented by this node.
     Position pos;
     // Whether this Node represents a Dragon or a Hoard.
     bool isDragon = false;
   };
+  // An arc in the flow network, representing an adjacency relationship between a Dragon and its Hoard.
   struct Arc {
     Node* from;
     Node* to;
     int flow = 0;
     Arc* reverse = nullptr;
   };
+  // Struct representing the flow network of Dragons and Hoards, with a source and sink node.
   struct FlowNetwork {
+    // A map of all hoard nodes in the flow network, keyed by their Position.
     std::map<Position, Node> hoardNodes;
+    // A map of all dragon nodes in the flow network, keyed by their Position.
     std::map<Position, Node> dragonNodes;
+    // The source node of the flow network, representing the starting point for flow traversal.
     Node source;
+    // The sink node of the flow network, representing the endpoint for flow traversal.
     Node sink;
 
+    // Add a pair of nodes to the flow network, representing a Dragon and its adjacent Hoard.
     void addNodePair(const Position& hoardPos, const Position& dragonPos);
+    // Return the number of nodes in the flow network.
     size_t size() const;
-    std::vector<Arc*> getPath(Node* start, Node* end);
   };
 
   // Convert the given input positions into a flow network to be traversed.
@@ -125,10 +133,10 @@ class PerfectMatchHoardPlacementStrategy final : public HoardPlacementStrategy {
 
 export class PresetFloorGenerator : public FloorGenerator {
   RNG& rng;
-  EnemyFactory enemyFactory;
-  GoldFactory goldFactory;
-  PotionFactory potionFactory;
-  DragonHoardFactory dragonHoardFactory;
+  const EnemyFactory enemyFactory;
+  const GoldFactory goldFactory;
+  const PotionFactory potionFactory;
+  const DragonHoardFactory dragonHoardFactory;
   std::unique_ptr<HoardPlacementStrategy> strategy;
 
   std::ifstream input;
@@ -139,7 +147,7 @@ export class PresetFloorGenerator : public FloorGenerator {
  public:
   PresetFloorGenerator(RNG& rng, const std::string& fileName, unsigned int floorNumber = 0,
                        bool useImprovedHoardResolution = false);
-  Floor generateFloor() override;
+  virtual Floor generateFloor() override;
 };
 
 // private namespace for various hardcoded symbols used in preset floor generation

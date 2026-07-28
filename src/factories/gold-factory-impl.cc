@@ -2,40 +2,27 @@ module goldfactory;
 
 #ifdef __INTELLISENSE__
 #include <memory>
-#include <vector>
+#include <set>
+#include <stdexcept>
 
 #include "gold-factory.cc"
 #else
 import <memory>;
-import <vector>;
+import <set>;
+import <stdexcept>;
 #endif  // __INTELLISENSE__
 
-GoldSize GoldFactory::randomGoldSize() {
+std::tuple<GoldSize> GoldFactory::generateArgs() {
   int randomGoldSizeSelection = rng.intRange(8);
   if (randomGoldSizeSelection < 5) {
-    return GoldSize::Normal;
+    return std::make_tuple(GoldSize::Normal);
   } else if (randomGoldSizeSelection < 7) {
-    return GoldSize::Small;
+    return std::make_tuple(GoldSize::Small);
   } else {
-    return GoldSize::DragonHoard;  // randomGoldSizeSelection == 7
+    return std::make_tuple(GoldSize::DragonHoard);  // randomGoldSizeSelection == 7
   }
 }
 
-std::shared_ptr<GoldPile> GoldFactory::create(const Position& position) {
-  return create(position, randomGoldSize());
-}
-std::shared_ptr<GoldPile> GoldFactory::create(const Position& position, GoldSize size) {
+std::shared_ptr<GoldPile> GoldFactory::create(const Position& position, GoldSize size) const {
   return std::make_shared<GoldPile>(position, size);
-}
-
-void GoldFactory::process(Room& room, std::vector<Position>& availablePositions) {
-  StandardFactory<GoldPile>::process(room, availablePositions);
-}
-
-void GoldFactory::process(Room& room, std::vector<Position>& availablePositions, GoldSize size) {
-  int selectedIndex = rng.intRange(static_cast<int>(availablePositions.size()));
-  Position position = availablePositions[selectedIndex];
-  availablePositions[selectedIndex] = availablePositions.back();
-  availablePositions.pop_back();
-  room[position].add(create(position, size));
 }

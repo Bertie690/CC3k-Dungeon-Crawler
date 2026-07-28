@@ -26,6 +26,7 @@ import <string>;
 import <vector>;
 import <memory>;
 import <stdexcept>;
+import racetype;
 import direction;
 import dragonhoardfactory;
 import goldsize;
@@ -42,6 +43,25 @@ import staircase;
 
 using namespace std;
 using namespace PresetSymbols;
+
+RaceType parseEnemyRaceSymbol(const char symbol) {
+  switch (symbol) {
+    case HUMAN_SYMBOL:
+      return RaceType::Human;
+    case DWARF_SYMBOL:
+      return RaceType::Dwarf;
+    case ELF_SYMBOL:
+      return RaceType::Elf;
+    case ORC_SYMBOL:
+      return RaceType::Orc;
+    case MERCHANT_SYMBOL:
+      return RaceType::Merchant;
+    case HALFLING_SYMBOL:
+      return RaceType::Halfling;
+    default:
+      throw invalid_argument{"Unknown enemy race symbol"};
+  }
+}
 
 vector<string> readFloorLines(ifstream& input) {
   vector<string> floorLines;
@@ -63,7 +83,6 @@ PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
       enemyFactory{rng},
       goldFactory{rng},
       potionFactory{rng},
-      nextFloor{floorNumber + 1U},
       dragonHoardFactory{rng, enemyFactory},
       strategy{useImprovedHoardResolution ? static_cast<std::unique_ptr<HoardPlacementStrategy>>(
                                                 make_unique<PerfectMatchHoardPlacementStrategy>(
@@ -71,7 +90,8 @@ PresetFloorGenerator::PresetFloorGenerator(RNG& rng, const string& fileName,
                                           : static_cast<std::unique_ptr<HoardPlacementStrategy>>(
                                                 make_unique<DefaultHoardPlacementStrategy>(
                                                     dragonHoardFactory, goldFactory))},
-      input{fileName} {}
+      input{fileName},
+      nextFloor{floorNumber + 1U} {}
 
 void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string>& floorLines) {
   vector<Position> dragonHoards;
@@ -94,7 +114,7 @@ void PresetFloorGenerator::placePresetEntities(Floor& floor, const vector<string
         case ORC_SYMBOL:
         case MERCHANT_SYMBOL:
         case HALFLING_SYMBOL:
-          floor.getCell(position).add(enemyFactory.create(position, c));
+          floor.getCell(position).add(enemyFactory.create(position, parseEnemyRaceSymbol(c)));
           break;
         case RH_POTION_SYMBOL:
         case BA_POTION_SYMBOL:

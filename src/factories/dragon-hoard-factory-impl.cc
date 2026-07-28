@@ -1,8 +1,8 @@
 module dragonhoardfactory;
 
 #ifdef __INTELLISENSE__
-#include <algorithm>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include <vector>
 
@@ -15,8 +15,8 @@ module dragonhoardfactory;
 #include "../floor/cell.cc"
 #include "dragon-hoard-factory.cc"
 #else
-import <algorithm>;
 import <memory>;
+import <set>;
 import <stdexcept>;
 import <vector>;
 import cell;
@@ -30,31 +30,24 @@ import goldsize;
 
 using namespace std;
 
-DragonHoardFactory::DragonHoardFactory(RNG& rng, EnemyFactory& enemyFactory)
-    : FactoryBase{rng}, enemyFactory{enemyFactory} {}
+DragonHoardFactory::DragonHoardFactory(RNG& rng, const EnemyFactory& enemyFactory,
+                                       std::shared_ptr<FloorPopulationStrategy> strategy)
+    : FactoryBase{rng, strategy}, enemyFactory{enemyFactory} {}
 
-// Find the position in availablePositions and remove it
-void removeAvailablePosition(vector<Position>& availablePositions, const Position& position) {
-  vector<Position>::iterator positionIter = availablePositions.begin();
-  while (*positionIter != position) {
-    ++positionIter;
-  }
-  *positionIter = availablePositions.back();
-  availablePositions.pop_back();
-}
-
-void DragonHoardFactory::place(Room& room, const Position& hoardPosition,
-                               const Position& dragonPosition) {
+void DragonHoardFactory::process(Room& room, const Position& hoardPosition,
+                                 const Position& dragonPosition) const {
   shared_ptr<Enemy> dragon = enemyFactory.createDragon(dragonPosition, hoardPosition);
   shared_ptr<DragonHoard> hoard = make_shared<DragonHoard>(hoardPosition, dragon);
   room[hoardPosition].add(hoard);
   room[dragonPosition].add(dragon);
 }
 
-void DragonHoardFactory::process(Room& room, vector<Position>& availablePositions) {
+void DragonHoardFactory::processRoom(FloorRegion& region) {
+  Room& room = region.room;
+  set<Position>& availablePositions = region.availablePositions;
   vector<Position> hoardPositions;
   // Find DragonHoard goldSize placeholders in the room
-  for (Cell* cell : room.getCells()) {
+  for (const Cell* cell : room.getCells()) {
     for (const shared_ptr<Entity>& entity : cell->getEntities()) {
       const shared_ptr<GoldPile> goldPile = dynamic_pointer_cast<GoldPile>(entity);
       if (goldPile && !dynamic_pointer_cast<DragonHoard>(entity) &&
@@ -70,8 +63,7 @@ void DragonHoardFactory::process(Room& room, vector<Position>& availablePosition
     // Find available spots beside the hoard
     for (const Direction direction : room.getAdjacentCells(hoardPosition, true)) {
       Position pos = hoardPosition + direction;
-      if (find(availablePositions.begin(), availablePositions.end(), pos) !=
-          availablePositions.end()) {
+      if (availablePositions.contains(pos)) {
         validDragonPositions.push_back(pos);
       }
     }
@@ -80,7 +72,7 @@ void DragonHoardFactory::process(Room& room, vector<Position>& availablePosition
     }
 
     Position dragonPosition = rng.pick(validDragonPositions);
-    removeAvailablePosition(availablePositions, dragonPosition);
+    availablePositions.erase(dragonPosition);
     // Replace the dragonhoard size gold piles with DragonHoards
     Cell& hoardCell = room[hoardPosition];
     shared_ptr<GoldPile> placeholder;
@@ -94,11 +86,6 @@ void DragonHoardFactory::process(Room& room, vector<Position>& availablePosition
     }
     hoardCell.remove(*placeholder);
 
-    place(room, hoardPosition, dragonPosition);
+    process(room, hoardPosition, dragonPosition);
   }
-}
-
-void DragonHoardFactory::process(Room& room, const Position& hoardPosition,
-                                 const Position& dragonPosition) {
-  place(room, hoardPosition, dragonPosition);
 }

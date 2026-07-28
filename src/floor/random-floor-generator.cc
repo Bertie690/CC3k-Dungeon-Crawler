@@ -3,18 +3,17 @@ export module randomfloorgenerator;
 #pragma once
 
 #ifdef __INTELLISENSE__
-#include "../factories/dragon-hoard-factory.cc"
-#include "../factories/enemy-factory.cc"
-#include "../factories/gold-factory.cc"
-#include "../factories/potion-factory.cc"
+#include <memory>
+#include <vector>
+
+#include "../factories/factory-base.cc"
 #include "../utils/rng.cc"
 #include "floor-generator.cc"
 #include "floor.cc"
 #else
-import dragonhoardfactory;
-import enemyfactory;
-import goldfactory;
-import potionfactory;
+import <memory>;
+import <vector>;
+import factorybase;
 import rng;
 import floor;
 import floorgenerator;
@@ -26,13 +25,14 @@ export class RandomFloorGenerator : public FloorGenerator {
   static inline const int NUM_ENEMIES_SPAWNED = 20;
 
   RNG& rng;
-  EnemyFactory enemyFactory;
-  GoldFactory goldFactory;
-  PotionFactory potionFactory;
-  DragonHoardFactory dragonHoardFactory;
+  // An ordered vector of all factories used to generate entities on the floor.
+  // They will be applied in the order they are listed.
+  std::vector<std::shared_ptr<FactoryBase>> factories;
+
+  std::vector<std::shared_ptr<FactoryBase>> initializeFactories();
 
  public:
   RandomFloorGenerator(RNG& rng);
-  // Generates Floor using random entity placements
-  Floor generateFloor() override;
+  // Generate a Floor using random entity placements.
+  virtual Floor generateFloor() override;
 };

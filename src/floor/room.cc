@@ -24,13 +24,19 @@ import position;
 #endif  // __INTELLISENSE__
 
 // A Room groups a number of Cells in the same area.
+//
+// Notably, Rooms do not have to be rectangular, but are assumed to be contiguous and non-overlapping with other Rooms on the same Floor.
 export class Room {
   // The underlying backing storage for the cells, sorted in row-major order.
   std::map<Position, std::unique_ptr<Cell>> cells;
 
  public:
   Room(std::vector<std::unique_ptr<Cell>> cells);
-  std::vector<Cell*> getCells() const;
+
+  // Return a mutable view of all Cells in this Room.
+  std::vector<Cell*> getCells();
+  // Return a read-only view of all Cells in this Room.
+  const std::vector<Cell*> getCells() const;
 
   // Return the type of this Room.
   virtual RoomType type() const noexcept = 0;

@@ -20,14 +20,14 @@ import character;
 
 using namespace std;
 
-RaceType EnemyFactory::randomRace() {
+tuple<RaceType> EnemyFactory::generateArgs() {
   int randomInt = rng.intRange(18);
-  if (randomInt < 4) return RaceType::Human;
-  if (randomInt < 7) return RaceType::Dwarf;
-  if (randomInt < 12) return RaceType::Halfling;
-  if (randomInt < 14) return RaceType::Elf;
-  if (randomInt < 16) return RaceType::Orc;
-  return RaceType::Merchant;
+  if (randomInt < 4) return make_tuple(RaceType::Human);
+  if (randomInt < 7) return make_tuple(RaceType::Dwarf);
+  if (randomInt < 12) return make_tuple(RaceType::Halfling);
+  if (randomInt < 14) return make_tuple(RaceType::Elf);
+  if (randomInt < 16) return make_tuple(RaceType::Orc);
+  return make_tuple(RaceType::Merchant);
 }
 
 Stats EnemyFactory::baseStatsFor(RaceType race) const {
@@ -51,11 +51,7 @@ Stats EnemyFactory::baseStatsFor(RaceType race) const {
   }
 }
 
-shared_ptr<Character> EnemyFactory::create(const Position& position) {
-  return create(position, randomRace());
-}
-
-shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType race) {
+shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType race) const {
   if (race == RaceType::Dragon) {
     throw invalid_argument{"Cannot create a Dragon without an associated hoard!"};
   }
@@ -98,28 +94,7 @@ shared_ptr<Character> EnemyFactory::create(const Position& position, RaceType ra
 }
 
 shared_ptr<Enemy> EnemyFactory::createDragon(const Position& dragonPosition,
-                                             const Position& hoardPosition) {
+                                             const Position& hoardPosition) const {
   return make_shared<Enemy>(dragonPosition, baseStatsFor(RaceType::Dragon), RaceType::Dragon,
                             make_unique<DragonMoveStrategy>(hoardPosition));
-}
-
-shared_ptr<Character> EnemyFactory::create(const Position& position, char symbol) {
-  switch (symbol) {
-    case 'H':
-      return create(position, RaceType::Human);
-    case 'W':
-      return create(position, RaceType::Dwarf);
-    case 'E':
-      return create(position, RaceType::Elf);
-    case 'O':
-      return create(position, RaceType::Orc);
-    case 'M':
-      return create(position, RaceType::Merchant);
-    case 'D':
-      throw invalid_argument{"symbol create: use createDragon"};
-    case 'L':
-      return create(position, RaceType::Halfling);
-    default:
-      throw invalid_argument{"Unknown enemy race symbol"};
-  }
 }

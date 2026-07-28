@@ -29,7 +29,14 @@ bool Room::isInBounds(const Position& position) const {
   return cells.find(position) != cells.end();
 }
 
-vector<Cell*> Room::getCells() const {
+vector<Cell*> Room::getCells() {
+  vector<Cell*> cellPtrs;
+  for (const auto& [_, cell] : cells) {
+    cellPtrs.push_back(cell.get());
+  }
+  return cellPtrs;
+}
+const vector<Cell*> Room::getCells() const {
   vector<Cell*> cellPtrs;
   for (const auto& [_, cell] : cells) {
     cellPtrs.push_back(cell.get());
@@ -50,7 +57,7 @@ const vector<Direction>& Room::getAdjacentCells(const Position& position,
   for (const Direction dir : allDirections) {
     const Position adjacentPos = position + dir;
     if (isInBounds(adjacentPos) && (!walkableOnly || (!(*this)[adjacentPos].isOccupied() &&
-                                                         (*this)[adjacentPos].isWalkable()))) {
+                                                      (*this)[adjacentPos].isWalkable()))) {
       adjacentDirections.push_back(dir);
     }
   }
