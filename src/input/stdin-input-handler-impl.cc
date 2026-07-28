@@ -3,6 +3,7 @@ module stdininputhandler;
 #ifdef __INTELLISENSE__
 #include <iostream>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -16,6 +17,7 @@ module stdininputhandler;
 #else
 import <optional>;
 import <iostream>;
+import <sstream>;
 import <stdexcept>;
 import <string>;
 import inputhandler;
@@ -88,7 +90,7 @@ UIAction StdinInputHandler::readRaceCommand() {
   while (true) {
     cout << "Select your race (s=Shade, d=Drow, v=Vampire, g=Goblin, t=Troll) or q to quit: ";
     string token;
-    if (!(cin >> token)) {
+    if (!getline(cin, token)) {
       return Quit{};
     }
     if (token == "q") {
@@ -101,70 +103,73 @@ UIAction StdinInputHandler::readRaceCommand() {
         awaitingRace = false;
         return RaceSelect{*raceOpt};
       }
-      cerr << "Invalid race selection command. Please enter a valid race character." << endl;
     }
+    cerr << "Invalid race selection command. Please enter a valid race character." << endl;
   }
 }
 
 UIAction StdinInputHandler::readGameCommand() {
-  cout << "Enter command (no,so,ea,we,ne,nw,se,sw,a <direction>,u <direction>,f,r,q";
-  if (FeatureFlags::enableNumpadInput) {
-    cout << ", numpad 1-4,6-9";
-  }
-  cout << "): ";
+  while (true) {
+    cout << "Enter command (no,so,ea,we,ne,nw,se,sw,a <direction>,u <direction>,f,r,q";
+    if (FeatureFlags::enableNumpadInput) {
+      cout << ", numpad 1-4,6-9";
+    }
+    cout << "): ";
 
-  string token;
-  if (!(cin >> token)) {
-    return Quit{};
-  }
+    string command;
+    if (!getline(cin, command)) return Quit{};
+    if (command.empty()) {
+      cerr << "Invalid command" << endl;
+      continue;
+    }
 
-  if (token == "q") return Quit{};
+    istringstream commandInput{command};
+    string token;
+    commandInput >> token;
 
-  if (token == "f") return FreezeEnemies{};
+    if (token == "q") return Quit{};
+    if (token == "f") return FreezeEnemies{};
+    if (token == "r") {
+      awaitingRace = true;
+      return Restart{};
+    }
 
-  if (token == "r") {
-    awaitingRace = true;
-    return Restart{};
-  }
-
-  if (const auto& dir = parseDirection(token)) {
-    return Move{*dir};
-  }
-
-  if (FeatureFlags::enableNumpadInput) {
-    if (const auto& dir = parseNumpadDirection(token)) {
+    if (const auto& dir = parseDirection(token)) {
       return Move{*dir};
     }
-  }
 
-  if (token == "a" || token == "u") {
-    string dirToken;
-    if (!(cin >> dirToken)) {
-      return Quit{};
+    if (FeatureFlags::enableNumpadInput) {
+      if (const auto& dir = parseNumpadDirection(token)) {
+        return Move{*dir};
+      }
     }
-    if (const auto& d = parseDirection(dirToken)) {
-      if (token == "a") return Attack{*d};
-      return UsePotion{*d};
+
+    if (token == "a" || token == "u") {
+      string dirToken;
+      if (commandInput >> dirToken) {
+        if (const auto& direction = parseDirection(dirToken)) {
+          if (token == "a") return Attack{*direction};
+          return UsePotion{*direction};
+        }
+      }
     }
+    cerr << "Invalid command" << endl;
   }
-  throw invalid_argument{"Invalid command"};
 }
 
 UIAction StdinInputHandler::readGameOverCommand() {
-  cout << "> ";
-  string token;
-  if (!(cin >> token)) {
-    return Quit{};
+  while (true) {
+    cout << "> ";
+    string token;
+    if (!getline(cin, token)) return Quit{};
+    if (token == "q") return Quit{};
+    if (token == "r") {
+      awaitingGameOver = false;
+      awaitingRace = true;
+      return Restart{};
+    }
+    cerr << "Invalid command" << endl;
   }
-  if (token == "q") {
-    return Quit{};
-  }
-  if (token == "r") {
-    awaitingGameOver = false;
-    awaitingRace = true;
-    return Restart{};
-  }
-  throw invalid_argument{"Game is over; enter r to restart or q to quit the game."};
 }
 
 UIAction StdinInputHandler::readCommand() {

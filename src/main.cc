@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,7 @@
 #else
 import <iostream>;
 import <memory>;
+import <stdexcept>;
 import <string>;
 import <vector>;
 import <fstream>;
@@ -181,6 +183,10 @@ int main(int argc, char* argv[]) {
   while (running) {
     try {
       running = inputHandler->processInput();
+    } catch (const invalid_argument& e) {
+      cerr << "Input error: " << e.what() << endl;
+    } catch (const out_of_range& e) {
+      cerr << "Input error: " << e.what() << endl;
     } catch (const exception& e) {
       cerr << "Uncaught exception while running game: \n" << Color::colorize(Color::RED, e.what())
            << endl;
