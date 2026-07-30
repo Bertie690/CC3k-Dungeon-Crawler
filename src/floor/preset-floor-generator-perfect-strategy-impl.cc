@@ -127,17 +127,9 @@ PerfectMatchHoardPlacementStrategy::buildFlowNetwork(const Floor& floor,
 
   network.sink = Node{.pos = Position{-1, -1}};
   network.source = Node{.pos = Position{-1, -1}};
-  network.source.arcs.emplace_back(Arc{&network.source, &network.sink});
-  network.sink.arcs.emplace_back(Arc{&network.sink, &network.source});
-  {
-    Arc* forwardSourceArc = &network.source.arcs.back();
-    Arc* reverseSourceArc = &network.sink.arcs.back();
-    forwardSourceArc->reverse = reverseSourceArc;
-    reverseSourceArc->reverse = forwardSourceArc;
-  }
 
-  // Add an edge from source to the given node, and one from the given node to sink.
-  const auto linkNode = [&network](Node& node) {
+  // Add an edge from source to all hoards, and one from all dragons to the sink
+  for (auto& [_, node] : network.hoardNodes) {
     network.source.arcs.emplace_back(Arc{&network.source, &node});
     node.arcs.emplace_back(Arc{&node, &network.source});
     {
@@ -146,7 +138,8 @@ PerfectMatchHoardPlacementStrategy::buildFlowNetwork(const Floor& floor,
       forwardSourceArc->reverse = reverseSourceArc;
       reverseSourceArc->reverse = forwardSourceArc;
     }
-
+  }
+  for (auto& [_, node] : network.dragonNodes) {
     node.arcs.emplace_back(Arc{&node, &network.sink});
     network.sink.arcs.emplace_back(Arc{&network.sink, &node});
     {
@@ -155,13 +148,6 @@ PerfectMatchHoardPlacementStrategy::buildFlowNetwork(const Floor& floor,
       forwardSinkArc->reverse = reverseSinkArc;
       reverseSinkArc->reverse = forwardSinkArc;
     }
-  };
-
-  for (auto& [_, node] : network.hoardNodes) {
-    linkNode(node);
-  }
-  for (auto& [_, node] : network.dragonNodes) {
-    linkNode(node);
   }
 
   return network;
@@ -213,8 +199,9 @@ PerfectMatchHoardPlacementStrategy::traverseFlowNetwork(FlowNetwork& network) {
     maxFlow += deltaFlow;
   }
 
-  // check that the matching is perfect
-  if (maxFlow != network.hoardNodes.size()) {
+  // check that the matching is perfect wrt. dragons
+  // spare hoards are OK; spare dragons are not
+  if (maxFlow != network.dragonNodes.size()) {
     return std::nullopt;
   }
 
